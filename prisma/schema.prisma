@@ -14,7 +14,7 @@ datasource db {
 // Book Trial Request
 // ─────────────────────────────────────────────
 model BookTrialRequest {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  id             String      @id @default(auto()) @map("_id") @db.ObjectId
   firstName      String
   lastName       String
   email          String
@@ -26,8 +26,8 @@ model BookTrialRequest {
   availability   String
   message        String?
   status         TrialStatus @default(PENDING)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
 }
 
 enum TrialStatus {
@@ -49,4 +49,38 @@ model FAQ {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────
+// Testimonial
+// ─────────────────────────────────────────────
+model Testimonial {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  role          String
+  rating        Int      @default(5)
+  text          String
+  program       String?
+  country       String?
+  imageUrl      String?
+  imagePublicId String?
+  isActive      Boolean  @default(true)
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────
+// Student Achievement
+// ─────────────────────────────────────────────
+model StudentAchievement {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  description   String
+  imageUrl      String
+  imagePublicId String
+  isActive      Boolean  @default(true)
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }

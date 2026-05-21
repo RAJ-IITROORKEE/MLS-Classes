@@ -40,6 +40,8 @@ import {
   LogOut,
   ExternalLink,
   BarChart3,
+  MessageSquare,
+  Trophy,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -96,6 +98,16 @@ const NAV_ITEMS = [
         label: "Users",
         href: "/admin/users",
         icon: Users,
+      },
+      {
+        label: "Testimonials",
+        href: "/admin/testimonials",
+        icon: MessageSquare,
+      },
+      {
+        label: "Student Corner",
+        href: "/admin/student-corner",
+        icon: Trophy,
       },
       {
         label: "FAQ",

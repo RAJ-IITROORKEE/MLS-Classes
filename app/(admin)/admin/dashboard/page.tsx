@@ -13,14 +13,18 @@ import {
   Clock,
   CheckCircle2,
   TrendingUp,
+  MessageSquare,
+  Trophy,
 } from "lucide-react";
 
 async function getDashboardStats() {
-  const [totalContacts, pendingContacts, totalFAQs, recentContacts] =
+  const [totalContacts, pendingContacts, totalFAQs, totalTestimonials, totalAchievements, recentContacts] =
     await Promise.all([
       prisma.bookTrialRequest.count(),
       prisma.bookTrialRequest.count({ where: { status: "PENDING" } }),
       prisma.fAQ.count({ where: { isActive: true } }),
+      prisma.testimonial.count({ where: { isActive: true } }),
+      prisma.studentAchievement.count({ where: { isActive: true } }),
       prisma.bookTrialRequest.findMany({
         take: 5,
         orderBy: { createdAt: "desc" },
@@ -36,7 +40,7 @@ async function getDashboardStats() {
       }),
     ]);
 
-  return { totalContacts, pendingContacts, totalFAQs, recentContacts };
+  return { totalContacts, pendingContacts, totalFAQs, totalTestimonials, totalAchievements, recentContacts };
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -48,7 +52,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default async function AdminDashboardPage() {
-  const { totalContacts, pendingContacts, totalFAQs, recentContacts } =
+  const { totalContacts, pendingContacts, totalFAQs, totalTestimonials, totalAchievements, recentContacts } =
     await getDashboardStats();
 
   const CARDS = [
@@ -80,6 +84,20 @@ export default async function AdminDashboardPage() {
       icon: TrendingUp,
       trend: "Improving",
     },
+    {
+      title: "Testimonials",
+      value: totalTestimonials,
+      description: "Published on website",
+      icon: MessageSquare,
+      trend: "Manage in Testimonials",
+    },
+    {
+      title: "Student Achievements",
+      value: totalAchievements,
+      description: "Live in Student Corner",
+      icon: Trophy,
+      trend: "Manage in Student Corner",
+    },
   ];
 
   return (
@@ -92,7 +110,7 @@ export default async function AdminDashboardPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {CARDS.map((card) => (
           <Card key={card.title}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

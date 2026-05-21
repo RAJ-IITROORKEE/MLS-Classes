@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         hostname: "www.mlsclasses.com",
         pathname: "/static/**",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
+      },
     ],
   },
 };

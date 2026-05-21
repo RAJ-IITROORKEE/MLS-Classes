@@ -4,7 +4,7 @@ import { ProgramsSection } from "@/components/home/programs-section";
 import { FeaturesSection } from "@/components/home/features-section";
 import { LiveClassesSection } from "@/components/home/live-classes-section";
 import { YoutubeSection } from "@/components/home/youtube-section";
-import { TestimonialsSection } from "@/components/home/testimonials-section";
+import { TestimonialsSectionHome } from "@/components/home/testimonials-section";
 import { FAQSection } from "@/components/home/faq-section";
 import { CTASection } from "@/components/home/cta-section";
 
@@ -17,7 +17,7 @@ export default function HomePage() {
       <FeaturesSection />
       <LiveClassesSection />
       <YoutubeSection />
-      <TestimonialsSection />
+      <TestimonialsSectionHome />
       <FAQSection />
       <CTASection />
     </>
