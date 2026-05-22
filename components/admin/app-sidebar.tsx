@@ -47,7 +47,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { useUser, useClerk } from "@clerk/nextjs";
+import { useSession, signOut } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 const NAV_ITEMS = [
   {
@@ -130,8 +131,9 @@ const NAV_ITEMS = [
 
 export function AdminAppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
-  const { user } = useUser();
-  const { signOut } = useClerk();
+  const router = useRouter();
+  const { data: session } = useSession();
+  const user = session?.user;
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -234,18 +236,18 @@ export function AdminAppSidebar({ ...props }: React.ComponentProps<typeof Sideba
                   size="lg"
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
-                  <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src={user?.imageUrl} alt={user?.fullName ?? "Admin"} />
+                   <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarImage src={user?.image ?? undefined} alt={user?.name ?? "Admin"} />
                     <AvatarFallback className="rounded-lg">
-                      {user?.firstName?.[0] ?? "A"}
+                      {user?.name?.[0]?.toUpperCase() ?? "A"}
                     </AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">
-                      {user?.fullName ?? "Admin"}
+                      {user?.name ?? "Admin"}
                     </span>
                     <span className="truncate text-xs text-muted-foreground">
-                      {user?.primaryEmailAddress?.emailAddress ?? "admin"}
+                      {user?.email ?? "admin"}
                     </span>
                   </div>
                   <ChevronRight className="ml-auto h-3.5 w-3.5" />
@@ -265,7 +267,9 @@ export function AdminAppSidebar({ ...props }: React.ComponentProps<typeof Sideba
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  onClick={() => signOut({ redirectUrl: "/" })}
+                  onClick={() =>
+                    signOut({ fetchOptions: { onSuccess: () => router.push("/") } })
+                  }
                   className="text-destructive focus:text-destructive"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
