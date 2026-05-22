@@ -1,7 +1,8 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 import { AdminAppSidebar } from "@/components/admin/app-sidebar";
 import { AdminSiteHeader } from "@/components/admin/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
@@ -15,9 +16,16 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const { isLoaded, isSignedIn } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.replace("/sign-in");
+    }
+  }, [isLoaded, isSignedIn, router]);
 
   // Still loading Clerk session — show spinner
-  if (!isLoaded) {
+  if (!isLoaded || !isSignedIn) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-3">
@@ -26,11 +34,6 @@ export default function AdminLayout({
         </div>
       </div>
     );
-  }
-
-  // Not signed in — middleware should have already redirected, render nothing
-  if (!isSignedIn) {
-    return null;
   }
 
   return (
