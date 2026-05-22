@@ -11,7 +11,7 @@ const PROGRAMS = [
     badge: "Test Prep",
     description:
       "1500+ Score Mastery. Comprehensive 1-on-1 coaching for Digital SAT prep — Math, Reading & Writing.",
-    link: "https://www.mlsclasses.com/test-prep/digital-sat",
+    link: "/test-prep/digital-sat",
     color: "blue",
   },
   {
@@ -19,7 +19,7 @@ const PROGRAMS = [
     badge: "Test Prep",
     description:
       "35+ Score Mastery. Standardized test coaching for US and Canada college admissions.",
-    link: "https://www.mlsclasses.com/test-prep/act",
+    link: "/test-prep/act",
     color: "blue",
   },
   {
@@ -27,7 +27,7 @@ const PROGRAMS = [
     badge: "Test Prep",
     description:
       "Unlock 5/5 in AP exams with expert-led Advanced Placement courses across all subjects.",
-    link: "https://www.mlsclasses.com/test-prep/ap-test",
+    link: "/test-prep/ap-test",
     color: "blue",
   },
   {
@@ -35,7 +35,7 @@ const PROGRAMS = [
     badge: "Test Prep",
     description:
       "Expert AMC 8, AMC 10 & AMC 12 preparation with comprehensive problem-solving plans.",
-    link: "https://www.mlsclasses.com/test-prep/amc-8",
+    link: "/test-prep/amc-8",
     color: "blue",
   },
   {
@@ -43,7 +43,7 @@ const PROGRAMS = [
     badge: "UK Curriculum",
     description:
       "Full A-level potential achieved through individualized coaching and a methodical approach.",
-    link: "https://www.mlsclasses.com/academic-tutoring/as-a-level-curriculum",
+    link: "/academic-tutoring/as-a-level-curriculum",
     color: "purple",
   },
   {
@@ -51,7 +51,7 @@ const PROGRAMS = [
     badge: "UK Curriculum",
     description:
       "Complete IGCSE/GCSE mastery with dedicated tools and preparation for future success.",
-    link: "https://www.mlsclasses.com/academic-tutoring/igcse-curriculum",
+    link: "/academic-tutoring/igcse-curriculum",
     color: "purple",
   },
   {
@@ -59,7 +59,7 @@ const PROGRAMS = [
     badge: "International",
     description:
       "Best IB (International Baccalaureate) exam preparation with expert study techniques.",
-    link: "https://www.mlsclasses.com/academic-tutoring/ib-curriculum",
+    link: "/academic-tutoring/ib-curriculum",
     color: "purple",
   },
   {
@@ -67,7 +67,7 @@ const PROGRAMS = [
     badge: "AU Curriculum",
     description:
       "Boost NAPLAN performance with expert tutors who ensure thorough exam readiness.",
-    link: "https://www.mlsclasses.com/academic-tutoring/au-curriculum/naplan",
+    link: "/academic-tutoring/au-curriculum/naplan",
     color: "purple",
   },
   {
@@ -75,7 +75,7 @@ const PROGRAMS = [
     badge: "Core Subject",
     description:
       "Algebra, Geometry, Pre-Calculus, AP Calculus — comprehensive math for grades K-12.",
-    link: "https://www.mlsclasses.com/test-prep/mathcounts",
+    link: "/test-prep/mathcounts",
     color: "green",
   },
   {
@@ -83,7 +83,7 @@ const PROGRAMS = [
     badge: "Core Subject",
     description:
       "Biology, Chemistry, Physics — innovative study material with expert-led live sessions.",
-    link: "https://www.mlsclasses.com/college-courses/college-biology",
+    link: "/college-courses/college-biology",
     color: "green",
   },
   {
@@ -91,7 +91,7 @@ const PROGRAMS = [
     badge: "Core Subject",
     description:
       "Reading, writing, grammar & literature analysis. Build confidence in English at every grade.",
-    link: "https://www.mlsclasses.com/college-courses/college-english",
+    link: "/college-courses/college-english",
     color: "green",
   },
   {
@@ -99,7 +99,7 @@ const PROGRAMS = [
     badge: "IT Courses",
     description:
       "Python, Java, HTML/CSS & more — from basics to advanced programming for K-12 students.",
-    link: "https://www.mlsclasses.com/it-courses/html-web-development",
+    link: "/it-courses/html-web-development",
     color: "orange",
   },
 ];
@@ -165,15 +165,13 @@ export function ProgramsSection() {
               </p>
 
               {/* CTA */}
-              <a
+              <Link
                 href={program.link}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:gap-3 transition-all duration-200"
               >
                 Learn More
                 <ArrowRight className="h-3.5 w-3.5" />
-              </a>
+              </Link>
             </motion.div>
           ))}
         </div>

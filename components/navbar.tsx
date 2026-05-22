@@ -14,19 +14,19 @@ import { cn } from "@/lib/utils";
 const TEST_PREP_MENU = [
   {
     label: "Digital SAT",
-    href: "https://www.mlsclasses.com/test-prep/digital-sat",
+    href: "/test-prep/digital-sat",
     sub: [
-      { label: "Digital SAT Math", href: "https://www.mlsclasses.com/test-prep/digital-sat/math" },
-      { label: "Digital SAT Reading & Writing", href: "https://www.mlsclasses.com/test-prep/digital-sat/reading-writing" },
+      { label: "Digital SAT Math", href: "/test-prep/digital-sat" },
+      { label: "Digital SAT Reading & Writing", href: "/test-prep/digital-sat" },
     ],
   },
   {
     label: "ACT",
-    href: "https://www.mlsclasses.com/test-prep/act",
+    href: "/test-prep/act",
   },
   {
     label: "AP",
-    href: "https://www.mlsclasses.com/test-prep/ap-test",
+    href: "/test-prep/ap-test",
   },
   {
     label: "PSAT",
@@ -34,9 +34,10 @@ const TEST_PREP_MENU = [
   },
   {
     label: "Other Test Prep",
-    href: "https://www.mlsclasses.com/test-prep",
+    href: "/test-prep/amc-8",
     sub: [
-      { label: "AMC", href: "https://www.mlsclasses.com/test-prep/amc-8" },
+      { label: "AMC", href: "/test-prep/amc-8" },
+      { label: "MATHCOUNTS", href: "/test-prep/mathcounts" },
       { label: "STAAR", href: "https://www.mlsclasses.com/test-prep/staar" },
     ],
   },
@@ -54,44 +55,44 @@ const ACADEMIC_MENU = [
   },
   {
     label: "UK Curriculum",
-    href: "https://www.mlsclasses.com/academic-tutoring/uk-curriculum",
+    href: "/academic-tutoring/igcse-curriculum",
     sub: [
-      { label: "GCSE", href: "https://www.mlsclasses.com/academic-tutoring/igcse-curriculum" },
-      { label: "A-levels", href: "https://www.mlsclasses.com/academic-tutoring/as-a-level-curriculum" },
+      { label: "GCSE", href: "/academic-tutoring/igcse-curriculum" },
+      { label: "A-levels", href: "/academic-tutoring/as-a-level-curriculum" },
     ],
   },
   {
     label: "AU Curriculum",
-    href: "https://www.mlsclasses.com/academic-tutoring/au-curriculum",
+    href: "/academic-tutoring/au-curriculum/naplan",
     sub: [
-      { label: "NAPLAN", href: "https://www.mlsclasses.com/academic-tutoring/au-curriculum/naplan" },
+      { label: "NAPLAN", href: "/academic-tutoring/au-curriculum/naplan" },
     ],
   },
   {
     label: "IB Curriculum",
-    href: "https://www.mlsclasses.com/academic-tutoring/ib-curriculum",
+    href: "/academic-tutoring/ib-curriculum",
   },
   {
     label: "IGCSE Curriculum",
-    href: "https://www.mlsclasses.com/academic-tutoring/igcse-curriculum",
+    href: "/academic-tutoring/igcse-curriculum",
   },
   {
     label: "AS/A Level Curriculum",
-    href: "https://www.mlsclasses.com/academic-tutoring/as-a-level-curriculum",
+    href: "/academic-tutoring/as-a-level-curriculum",
   },
   {
     label: "College Courses",
-    href: "https://www.mlsclasses.com/college-courses",
+    href: "/college-courses/college-biology",
     sub: [
-      { label: "College Biology", href: "https://www.mlsclasses.com/college-courses/college-biology" },
-      { label: "College English", href: "https://www.mlsclasses.com/college-courses/college-english" },
+      { label: "College Biology", href: "/college-courses/college-biology" },
+      { label: "College English", href: "/college-courses/college-english" },
     ],
   },
   {
     label: "IT Courses",
-    href: "https://www.mlsclasses.com/it-courses",
+    href: "/it-courses/html-web-development",
     sub: [
-      { label: "HTML & Web Dev", href: "https://www.mlsclasses.com/it-courses/html-web-development" },
+      { label: "HTML & Web Dev", href: "/it-courses/html-web-development" },
       { label: "Python", href: "https://www.mlsclasses.com/it-courses" },
     ],
   },
@@ -165,25 +166,42 @@ function MegaDropdown({ items, onClose }: { items: MenuItem[]; onClose: () => vo
     >
       {/* Primary column */}
       <div className="py-2 min-w-[200px]">
-        {items.map((item) => (
-          <a
-            key={item.label}
-            href={item.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            onMouseEnter={() => setHoveredItem(item.sub ? item.label : null)}
-            onClick={onClose}
-            className={cn(
-              "flex items-center justify-between gap-2 px-4 py-2.5 text-sm font-medium transition-colors",
-              hoveredItem === item.label
-                ? "bg-primary/10 text-primary"
-                : "text-foreground hover:bg-muted hover:text-primary"
-            )}
-          >
-            {item.label}
-            {item.sub && <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />}
-          </a>
-        ))}
+        {items.map((item) => {
+          const isExternal = item.href.startsWith("http");
+          const linkProps = isExternal
+            ? { target: "_blank", rel: "noopener noreferrer" }
+            : {};
+          const className = cn(
+            "flex items-center justify-between gap-2 px-4 py-2.5 text-sm font-medium transition-colors",
+            hoveredItem === item.label
+              ? "bg-primary/10 text-primary"
+              : "text-foreground hover:bg-muted hover:text-primary"
+          );
+          return isExternal ? (
+            <a
+              key={item.label}
+              href={item.href}
+              {...linkProps}
+              onMouseEnter={() => setHoveredItem(item.sub ? item.label : null)}
+              onClick={onClose}
+              className={className}
+            >
+              {item.label}
+              {item.sub && <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />}
+            </a>
+          ) : (
+            <Link
+              key={item.label}
+              href={item.href}
+              onMouseEnter={() => setHoveredItem(item.sub ? item.label : null)}
+              onClick={onClose}
+              className={className}
+            >
+              {item.label}
+              {item.sub && <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />}
+            </Link>
+          );
+        })}
       </div>
 
       {/* Sub column */}
@@ -197,18 +215,32 @@ function MegaDropdown({ items, onClose }: { items: MenuItem[]; onClose: () => vo
             transition={{ duration: 0.12 }}
             className="border-l border-border py-2 w-max bg-muted/40"
           >
-            {active.sub.map((sub) => (
-              <a
-                key={sub.label}
-                href={sub.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={onClose}
-                className="block px-4 py-2.5 text-sm text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors"
-              >
-                {sub.label}
-              </a>
-            ))}
+            {active.sub.map((sub) => {
+              const isExternal = sub.href.startsWith("http");
+              const className =
+                "block px-4 py-2.5 text-sm text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors";
+              return isExternal ? (
+                <a
+                  key={sub.label}
+                  href={sub.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={onClose}
+                  className={className}
+                >
+                  {sub.label}
+                </a>
+              ) : (
+                <Link
+                  key={sub.label}
+                  href={sub.href}
+                  onClick={onClose}
+                  className={className}
+                >
+                  {sub.label}
+                </Link>
+              );
+            })}
           </motion.div>
         )}
       </AnimatePresence>
@@ -483,35 +515,57 @@ export function Navbar() {
               <p className="px-3 py-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
                 Test Preparation
               </p>
-              {TEST_PREP_MENU.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setIsOpen(false)}
-                  className="px-3 py-2.5 text-sm font-medium text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-                >
-                  {item.label}
-                </a>
-              ))}
+              {TEST_PREP_MENU.map((item) =>
+                item.href.startsWith("http") ? (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsOpen(false)}
+                    className="px-3 py-2.5 text-sm font-medium text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className="px-3 py-2.5 text-sm font-medium text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                )
+              )}
 
               <div className="my-1 border-t border-border" />
               <p className="px-3 py-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
                 Academic Tutoring
               </p>
-              {ACADEMIC_MENU.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setIsOpen(false)}
-                  className="px-3 py-2.5 text-sm font-medium text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-                >
-                  {item.label}
-                </a>
-              ))}
+              {ACADEMIC_MENU.map((item) =>
+                item.href.startsWith("http") ? (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsOpen(false)}
+                    className="px-3 py-2.5 text-sm font-medium text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className="px-3 py-2.5 text-sm font-medium text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                )
+              )}
 
               <div className="my-1 border-t border-border" />
               <Link

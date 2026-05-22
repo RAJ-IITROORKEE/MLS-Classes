@@ -1,10 +1,12 @@
 "use client";
 
+import { Suspense } from "react";
 import { useUser } from "@clerk/nextjs";
 import { AdminAppSidebar } from "@/components/admin/app-sidebar";
 import { AdminSiteHeader } from "@/components/admin/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
+import { TopProgress } from "@/components/top-progress";
 import { Loader2 } from "lucide-react";
 
 export default function AdminLayout({
@@ -40,6 +42,9 @@ export default function AdminLayout({
         } as React.CSSProperties
       }
     >
+      <Suspense fallback={null}>
+        <TopProgress />
+      </Suspense>
       <AdminAppSidebar variant="inset" />
       <SidebarInset>
         <AdminSiteHeader />
