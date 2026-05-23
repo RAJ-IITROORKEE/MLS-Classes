@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { assertAdminAccess } from "@/lib/admin-auth"
 
@@ -116,5 +116,45 @@ export async function GET() {
     }
     console.error("[/api/admin/users]", err)
     return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 })
+  }
+}
+
+export async function PATCH(req: NextRequest) {
+  try {
+    await assertAdminAccess()
+
+    const body = await req.json()
+    const { userId, role } = body
+
+    if (!userId || !role) {
+      return NextResponse.json(
+        { error: "userId and role are required" },
+        { status: 400 }
+      )
+    }
+
+    if (!["STUDENT", "ADMIN"].includes(role)) {
+      return NextResponse.json(
+        { error: "Invalid role. Must be STUDENT or ADMIN" },
+        { status: 400 }
+      )
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { role },
+      select: { id: true, name: true, email: true, role: true },
+    })
+
+    return NextResponse.json({ user: updatedUser })
+  } catch (err) {
+    if (err instanceof Error && err.name === "AuthError") {
+      return NextResponse.json(
+        { error: err.message },
+        { status: (err as Error & { statusCode?: number }).statusCode ?? 401 }
+      )
+    }
+    console.error("[/api/admin/users PATCH]", err)
+    return NextResponse.json({ error: "Failed to update role" }, { status: 500 })
   }
 }
