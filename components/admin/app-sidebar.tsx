@@ -42,6 +42,10 @@ import {
   BarChart3,
   MessageSquare,
   Trophy,
+  FileText,
+  Package,
+  BarChart2,
+  ClipboardList,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -114,6 +118,20 @@ const NAV_ITEMS = [
         label: "FAQ",
         href: "/admin/faq",
         icon: HelpCircle,
+      },
+    ],
+  },
+  {
+    title: "Mocks & Tests",
+    items: [
+      {
+        label: "Mocks",
+        icon: ClipboardList,
+        subItems: [
+          { label: "Manage Mocks", href: "/admin/mocks" },
+          { label: "Mock Bundles", href: "/admin/mock-bundles" },
+          { label: "User Stats", href: "/admin/mock-stats" },
+        ],
       },
     ],
   },

@@ -8,6 +8,9 @@ import { Menu, X, ChevronDown, ChevronRight, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
+import { SignedIn } from "@/components/auth/signed-in";
+import { SignedOut } from "@/components/auth/signed-out";
+import { UserButton } from "@/components/auth/user-button";
 
 /* ─── Nav Data ─────────────────────────────────────────────────────── */
 
@@ -432,64 +435,62 @@ export function Navbar() {
               </AnimatePresence>
             </div>
 
-            {/* About Us */}
-            <Link
-              href="/about"
-              onClick={() => setActiveDropdown(null)}
-              className="px-3.5 py-2 text-[0.9rem] font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-            >
-              About Us
-            </Link>
+             {/* About Us */}
+             <Link
+               href="/about"
+               onClick={() => setActiveDropdown(null)}
+               className="px-3.5 py-2 text-[0.9rem] font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
+             >
+               About Us
+             </Link>
 
-            {/* Student Corner */}
-            <Link
-              href="/student-corner"
-              onClick={() => setActiveDropdown(null)}
-              className="px-3.5 py-2 text-[0.9rem] font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-            >
-              Student Corner
-            </Link>
+             {/* Practice Tests */}
+             <Link
+               href="/mocks"
+               onClick={() => setActiveDropdown(null)}
+               className="px-3.5 py-2 text-[0.9rem] font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
+             >
+               Practice Tests
+             </Link>
 
-            {/* Login dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => toggleDropdown("login")}
-                className={cn(
-                  "flex items-center gap-1 px-3.5 py-2 text-[0.9rem] font-semibold rounded-md transition-colors",
-                  activeDropdown === "login"
-                    ? "text-primary bg-primary/10"
-                    : "text-foreground hover:text-primary hover:bg-primary/5"
-                )}
-              >
-                Login
-                <ChevronDown
-                  className={cn(
-                    "h-3.5 w-3.5 transition-transform duration-200",
-                    activeDropdown === "login" && "rotate-180"
-                  )}
-                />
-              </button>
-              <AnimatePresence>
-                {activeDropdown === "login" && (
-                  <LoginDropdown onClose={() => setActiveDropdown(null)} />
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
+             {/* Student Corner */}
+             <Link
+               href="/student-corner"
+               onClick={() => setActiveDropdown(null)}
+               className="px-3.5 py-2 text-[0.9rem] font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
+             >
+               Student Corner
+             </Link>
+           </div>
 
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center gap-3">
-            <ThemeToggle />
-            <Button asChild size="sm" className="font-bold text-sm px-5 h-9">
-              <Link href="/book-trial" onClick={() => setActiveDropdown(null)}>
-                Book Trial
-              </Link>
-            </Button>
+            <SignedOut>
+              <ThemeToggle />
+              <Button asChild size="sm" className="font-bold text-sm px-5 h-9">
+                <Link href="/book-trial" onClick={() => setActiveDropdown(null)}>
+                  Book Trial
+                </Link>
+              </Button>
+              <Button asChild size="sm" variant="outline" className="font-semibold text-sm px-5 h-9">
+                <Link href="/mocks/sign-in" onClick={() => setActiveDropdown(null)}>
+                  Sign In
+                </Link>
+              </Button>
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
           </div>
 
           {/* Mobile Menu Button */}
           <div className="flex lg:hidden items-center gap-2">
-            <ThemeToggle />
+            <SignedOut>
+              <ThemeToggle />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="rounded-md p-2 text-muted-foreground hover:text-foreground hover:bg-accent/20 transition-colors"
@@ -576,6 +577,13 @@ export function Navbar() {
                 About Us
               </Link>
               <Link
+                href="/mocks"
+                onClick={() => setIsOpen(false)}
+                className="px-3 py-2.5 text-sm font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
+              >
+                Practice Tests
+              </Link>
+              <Link
                 href="/student-corner"
                 onClick={() => setIsOpen(false)}
                 className="px-3 py-2.5 text-sm font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
@@ -583,22 +591,31 @@ export function Navbar() {
                 Student Corner
               </Link>
 
-              <div className="my-1 border-t border-border" />
-              <p className="px-3 py-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                Login
-              </p>
-              {LOGIN_MENU.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setIsOpen(false)}
-                  className="px-3 py-2.5 text-sm font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-                >
-                  {item.label}
-                </a>
-              ))}
+              <SignedOut>
+                <div className="my-1 border-t border-border" />
+                <p className="px-3 py-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                  Login
+                </p>
+                {LOGIN_MENU.map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsOpen(false)}
+                    className="px-3 py-2.5 text-sm font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
+                  >
+                    {item.label}
+                  </a>
+                ))}
+                <div className="mt-2">
+                  <Button asChild className="w-full font-bold" size="default">
+                    <Link href="/mocks/sign-in" onClick={() => setIsOpen(false)}>
+                      Sign In
+                    </Link>
+                  </Button>
+                </div>
+              </SignedOut>
 
               {/* Social row */}
               <div className="flex items-center gap-4 px-3 pt-2">
@@ -610,13 +627,15 @@ export function Navbar() {
                 <a href="https://www.youtube.com/@mlsclasses8293?si=KBojcjPosvKjfwjH" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><YoutubeIcon /></a>
               </div>
 
-              <div className="mt-3">
-                <Button asChild className="w-full font-bold" size="default">
-                  <Link href="/book-trial" onClick={() => setIsOpen(false)}>
-                    Book Free Trial
-                  </Link>
-                </Button>
-              </div>
+              <SignedOut>
+                <div className="mt-3">
+                  <Button asChild className="w-full font-bold" size="default">
+                    <Link href="/book-trial" onClick={() => setIsOpen(false)}>
+                      Book Free Trial
+                    </Link>
+                  </Button>
+                </div>
+              </SignedOut>
             </div>
           </motion.div>
         )}

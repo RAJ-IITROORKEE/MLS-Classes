@@ -11,6 +11,42 @@ datasource db {
 }
 
 // ─────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────
+
+enum TrialStatus {
+  PENDING
+  CONTACTED
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum UserRole {
+  STUDENT
+  ADMIN
+}
+
+enum DifficultyLevel {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum PublishStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum MockAccessType {
+  FREE
+  PAID
+  BUNDLE
+  ADMIN
+}
+
+// ─────────────────────────────────────────────
 // Book Trial Request
 // ─────────────────────────────────────────────
 model BookTrialRequest {
@@ -28,14 +64,6 @@ model BookTrialRequest {
   status         TrialStatus @default(PENDING)
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
-}
-
-enum TrialStatus {
-  PENDING
-  CONTACTED
-  SCHEDULED
-  COMPLETED
-  CANCELLED
 }
 
 // ─────────────────────────────────────────────
@@ -86,6 +114,121 @@ model StudentAchievement {
 }
 
 // ─────────────────────────────────────────────
+// Mock Test
+// ─────────────────────────────────────────────
+
+model MockTest {
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String?
+  // 0 = free; >0 = paid
+  price       Int             @default(0)
+  // Original price before discount (shown crossed-out)
+  actualPrice Int?
+  // Duration in minutes
+  duration    Int?
+  // JSON array of question objects
+  questions   Json            @default("[]")
+  tags        String[]        @default([])
+  difficulty  DifficultyLevel @default(EASY)
+  status      PublishStatus   @default(DRAFT)
+  // Attempt limits (0 = unlimited)
+  maxAttempts Int             @default(0)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  attempts MockAttempt[]
+  access   MockAccess[]
+
+  @@index([status])
+  @@index([status, createdAt])
+  @@index([difficulty])
+}
+
+// ─────────────────────────────────────────────
+// Mock Attempt — one attempt per user per mock session
+// ─────────────────────────────────────────────
+
+model MockAttempt {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String
+  mockTestId      String    @db.ObjectId
+  // JSON: { [questionId]: answerValue }
+  answers         Json      @default("{}")
+  score           Int       @default(0)
+  correctCount    Int       @default(0)
+  incorrectCount  Int       @default(0)
+  unansweredCount Int       @default(0)
+  totalQuestions  Int       @default(0)
+  percentage      Float     @default(0)
+  startedAt       DateTime  @default(now())
+  submittedAt     DateTime?
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mockTest MockTest @relation(fields: [mockTestId], references: [id], onDelete: Cascade)
+
+  @@index([userId, mockTestId])
+  @@index([userId, submittedAt])
+  @@index([mockTestId, submittedAt])
+}
+
+// ─────────────────────────────────────────────
+// Mock Bundle — a bundle of mock tests at a discounted price
+// ─────────────────────────────────────────────
+
+model MockBundle {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  description     String?
+  // Array of MockTest IDs included in the bundle
+  mockIds         String[]      @default([])
+  // Auto-calculated sum of individual mock prices
+  basePrice       Int           @default(0)
+  // The bundle sale price (actual price user pays)
+  discountedPrice Int?
+  status          PublishStatus @default(DRAFT)
+  // Display order
+  order           Int           @default(0)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  access MockAccess[]
+
+  @@index([status])
+  @@index([status, order])
+}
+
+// ─────────────────────────────────────────────
+// Mock Access — tracks who has access to which mock/bundle
+// ─────────────────────────────────────────────
+
+model MockAccess {
+  id                String         @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String
+  mockTestId        String?        @db.ObjectId
+  mockBundleId      String?        @db.ObjectId
+  type              MockAccessType @default(FREE)
+  // Razorpay payment details
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  paid              Boolean        @default(false)
+  originalPrice     Int?
+  discountApplied   Int?
+  paidAt            DateTime?
+  expiresAt         DateTime?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mockTest   MockTest?   @relation(fields: [mockTestId], references: [id], onDelete: SetNull)
+  mockBundle MockBundle? @relation(fields: [mockBundleId], references: [id], onDelete: SetNull)
+
+  @@index([userId, mockTestId])
+  @@index([userId, mockBundleId])
+  @@index([razorpayOrderId])
+}
+
+// ─────────────────────────────────────────────
 // Better Auth — Auth models
 // Plain string IDs (not ObjectId) — Better Auth uses nanoid strings by default
 // ─────────────────────────────────────────────
@@ -95,10 +238,14 @@ model User {
   email         String    @unique
   emailVerified Boolean   @default(false)
   image         String?
+  role          UserRole  @default(STUDENT)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+
+  mockAttempts MockAttempt[]
+  mockAccess   MockAccess[]
 }
 
 model Session {
@@ -124,6 +271,7 @@ model Account {
   refreshTokenExpiresAt DateTime?
   scope                 String?
   idToken               String?
+  password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
