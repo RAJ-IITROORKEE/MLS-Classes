@@ -97,13 +97,12 @@ export function DashboardClient({
           </Avatar>
 
           {/* Welcome text */}
-          <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-            Welcome back, {profileData.name?.split(" ")[0] ?? "Student"}
-          </p>
-
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-800 via-purple-700 to-pink-800 bg-clip-text text-transparent drop-shadow-lg mt-1">
-            Student Dashboard
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+            Welcome back, {profileData.name?.split(" ")[0] ?? "Student"}!
           </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Here&apos;s what&apos;s happening with your learning journey
+          </p>
         </div>
       </div>
 

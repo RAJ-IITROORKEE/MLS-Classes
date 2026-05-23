@@ -1,15 +1,18 @@
-import type { Metadata } from "next";
-import { Users } from "lucide-react";
-import { ComingSoonPage } from "@/components/admin/coming-soon-page";
+import type { Metadata } from "next"
+import AdminUsersClient from "@/components/admin/users-table"
 
-export const metadata: Metadata = { title: "Users | MLS Classes Admin" };
+export const metadata: Metadata = { title: "Users | MLS Classes Admin" }
 
 export default function AdminUsersPage() {
   return (
-    <ComingSoonPage
-      title="Users"
-      description="Manage admin users and their access permissions."
-      icon={Users}
-    />
-  );
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Users</h1>
+        <p className="text-muted-foreground text-sm mt-1">
+          Overview of all registered users and their mock activity.
+        </p>
+      </div>
+      <AdminUsersClient />
+    </div>
+  )
 }
