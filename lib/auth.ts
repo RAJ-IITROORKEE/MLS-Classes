@@ -2,6 +2,22 @@ import { betterAuth } from "better-auth"
 import { prismaAdapter } from "@better-auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
 
+// Validate required environment variables
+if (typeof window === "undefined") {
+  if (!process.env.BETTER_AUTH_SECRET) {
+    console.error("❌ [BETTER-AUTH] CRITICAL: BETTER_AUTH_SECRET is missing! Set it in your environment variables.")
+  }
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+    console.error("❌ [BETTER-AUTH] CRITICAL: Google OAuth credentials are missing! Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET.")
+  }
+  console.log("✅ [BETTER-AUTH] baseURL:", getBaseURL())
+  console.log("✅ [BETTER-AUTH] trustedOrigins:", [
+    "http://localhost:3000",
+    "https://mls-classes.vercel.app",
+    getBaseURL(),
+  ])
+}
+
 const cleanBaseURL = (url: string) => {
   let cleaned = url.trim().replace(/\/$/, "");
   if (cleaned.endsWith("/api/auth")) {
