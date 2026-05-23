@@ -2,10 +2,19 @@ import { betterAuth } from "better-auth"
 import { prismaAdapter } from "@better-auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
 
+const baseURL =
+  process.env.BETTER_AUTH_URL ??
+  process.env.NEXT_PUBLIC_APP_URL ??
+  "http://localhost:3000"
+
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "mongodb",
   }),
+
+  baseURL,
+
+  trustedOrigins: [baseURL],
 
   emailAndPassword: {
     enabled: true,

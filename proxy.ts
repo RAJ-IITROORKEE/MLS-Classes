@@ -6,9 +6,12 @@ export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl
 
   const isProtectedRoute =
-    pathname.startsWith("/admin") || pathname.startsWith("/dashboard") || pathname.startsWith("/profile")
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/profile")
 
-  const isAuthRoute = pathname.startsWith("/sign-in") || pathname.startsWith("/sign-up")
+  const isAuthRoute =
+    pathname.startsWith("/sign-in") || pathname.startsWith("/sign-up")
 
   if (isProtectedRoute && !session) {
     return NextResponse.redirect(new URL("/sign-in", req.url))
