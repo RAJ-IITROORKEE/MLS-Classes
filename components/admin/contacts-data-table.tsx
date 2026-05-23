@@ -177,14 +177,14 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
           defaultValue={row.original.status}
           onValueChange={(val) => handleStatusChange(row.original.id, val)}
         >
-          <SelectTrigger className="h-7 text-xs w-32 border-0 shadow-none">
+          <SelectTrigger className="h-7 text-xs w-36">
             <span
               className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[row.original.status] ?? ""}`}
             >
               {row.original.status}
             </span>
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent position="popper">
             {STATUS_OPTIONS.map((s) => (
               <SelectItem key={s} value={s} className="text-xs">
                 {s}
@@ -355,13 +355,13 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
 
       {/* Detail Dialog */}
       <Dialog open={!!detailRow} onOpenChange={() => setDetailRow(null)}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Contact Details</DialogTitle>
           </DialogHeader>
           {detailRow && (
-            <div className="space-y-4 text-sm">
-              <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-5 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
                   ["Name", `${detailRow.firstName} ${detailRow.lastName}`],
                   ["Email", detailRow.email],
@@ -374,16 +374,18 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
                   ["Status", detailRow.status],
                   ["Submitted", new Date(detailRow.createdAt).toLocaleString()],
                 ].map(([label, value]) => (
-                  <div key={label}>
+                  <div key={label} className="min-w-0">
                     <p className="text-xs text-muted-foreground mb-0.5">{label}</p>
-                    <p className="font-medium">{value}</p>
+                    <p className="font-medium break-words">{value}</p>
                   </div>
                 ))}
               </div>
               {detailRow.message && (
                 <div>
-                  <p className="text-xs text-muted-foreground mb-0.5">Message</p>
-                  <p className="bg-muted rounded-lg p-3 text-sm">{detailRow.message}</p>
+                  <p className="text-xs text-muted-foreground mb-1">Message</p>
+                  <p className="bg-muted rounded-lg p-3 text-sm break-words whitespace-pre-wrap">
+                    {detailRow.message}
+                  </p>
                 </div>
               )}
             </div>
