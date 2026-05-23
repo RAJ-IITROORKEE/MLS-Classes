@@ -33,18 +33,12 @@ import {
   HelpCircle,
   Mail,
   Settings,
-  GraduationCap,
   ChevronRight,
-  BookOpen,
   Users,
   LogOut,
   ExternalLink,
-  BarChart3,
   MessageSquare,
   Trophy,
-  FileText,
-  Package,
-  BarChart2,
   ClipboardList,
 } from "lucide-react";
 import Link from "next/link";
@@ -63,30 +57,18 @@ const NAV_ITEMS = [
         href: "/admin/dashboard",
         icon: LayoutDashboard,
       },
-      {
-        label: "Analytics",
-        href: "/admin/analytics",
-        icon: BarChart3,
-      },
     ],
   },
   {
-    title: "Academics",
+    title: "Mocks & Tests",
     items: [
       {
-        label: "Academics",
-        icon: GraduationCap,
+        label: "Mocks",
+        icon: ClipboardList,
         subItems: [
-          { label: "Programs", href: "/admin/academics/programs" },
-          { label: "Subjects", href: "/admin/academics/subjects" },
-        ],
-      },
-      {
-        label: "Content",
-        icon: BookOpen,
-        subItems: [
-          { label: "Blog Posts", href: "/admin/content/blogs" },
-          { label: "Resources", href: "/admin/content/resources" },
+          { label: "Manage Mocks", href: "/admin/mocks" },
+          { label: "Mock Bundles", href: "/admin/mock-bundles" },
+          { label: "User Stats", href: "/admin/mock-stats" },
         ],
       },
     ],
@@ -118,20 +100,6 @@ const NAV_ITEMS = [
         label: "FAQ",
         href: "/admin/faq",
         icon: HelpCircle,
-      },
-    ],
-  },
-  {
-    title: "Mocks & Tests",
-    items: [
-      {
-        label: "Mocks",
-        icon: ClipboardList,
-        subItems: [
-          { label: "Manage Mocks", href: "/admin/mocks" },
-          { label: "Mock Bundles", href: "/admin/mock-bundles" },
-          { label: "User Stats", href: "/admin/mock-stats" },
-        ],
       },
     ],
   },
