@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getAuthSession } from "@/lib/admin-auth"
 import { nanoid } from "nanoid"
-import { razorpay } from "@/lib/razorpay"
+import { getRazorpay, isRazorpayConfigured } from "@/lib/razorpay"
 
 
 // POST /api/payment/mock — create a Razorpay order for a mock or bundle
@@ -50,9 +50,16 @@ export async function POST(req: NextRequest) {
       description = `Mock: ${mock.title}`
     }
 
+    if (!isRazorpayConfigured()) {
+      return NextResponse.json(
+        { error: "Payment system is not configured" },
+        { status: 503 }
+      )
+    }
+
     const receiptId = nanoid(16)
 
-    const order = await razorpay.orders.create({
+    const order = await getRazorpay().orders.create({
       amount,
       currency: "INR",
       receipt: receiptId,
