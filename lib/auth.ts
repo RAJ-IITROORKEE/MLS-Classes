@@ -2,10 +2,31 @@ import { betterAuth } from "better-auth"
 import { prismaAdapter } from "@better-auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
 
-const baseURL =
-  process.env.BETTER_AUTH_URL ??
-  process.env.NEXT_PUBLIC_APP_URL ??
-  "http://localhost:3000"
+const cleanBaseURL = (url: string) => {
+  let cleaned = url.trim().replace(/\/$/, "");
+  if (cleaned.endsWith("/api/auth")) {
+    cleaned = cleaned.replace(/\/api\/auth$/, "");
+  }
+  return cleaned;
+};
+
+const getBaseURL = () => {
+  if (process.env.BETTER_AUTH_URL) {
+    return cleanBaseURL(process.env.BETTER_AUTH_URL);
+  }
+  if (process.env.NEXT_PUBLIC_APP_URL && !process.env.NEXT_PUBLIC_APP_URL.includes("localhost")) {
+    return cleanBaseURL(process.env.NEXT_PUBLIC_APP_URL);
+  }
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL.trim()}`;
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL.trim()}`;
+  }
+  return "http://localhost:3000";
+};
+
+const baseURL = getBaseURL();
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -14,7 +35,11 @@ export const auth = betterAuth({
 
   baseURL,
 
-  trustedOrigins: [baseURL],
+  trustedOrigins: [
+    "http://localhost:3000",
+    "https://mls-classes.vercel.app",
+    baseURL,
+  ],
 
   emailAndPassword: {
     enabled: true,
@@ -23,8 +48,8 @@ export const auth = betterAuth({
 
   socialProviders: {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: (process.env.GOOGLE_CLIENT_ID ?? "").trim(),
+      clientSecret: (process.env.GOOGLE_CLIENT_SECRET ?? "").trim(),
     },
   },
 
