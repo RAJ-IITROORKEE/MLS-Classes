@@ -1,0 +1,5 @@
+# Prisma generated binaries - platform specific
+*.dll.node
+*.so.node
+*.dylib
+*.tmp*
