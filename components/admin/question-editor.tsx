@@ -651,9 +651,9 @@ export default function QuestionEditor({ mockId }: QuestionEditorProps) {
 
         {/* ─── Question Form Modal ─────────────────────────────────────────────── */}
         <Dialog open={modalOpen} onOpenChange={(v) => !v && setModalOpen(false)}>
-          <DialogContent className="max-w-5xl max-h-[92vh] overflow-y-auto">
+          <DialogContent className="max-w-4xl max-h-[95vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="text-lg">
+              <DialogTitle className="text-xl font-semibold">
                 {editingIndex !== null ? "Edit Question" : "Add New Question"}
               </DialogTitle>
               <DialogDescription>
@@ -662,15 +662,15 @@ export default function QuestionEditor({ mockId }: QuestionEditorProps) {
             </DialogHeader>
 
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-4">
                 {/* Question Type — full width */}
                 <FormField
                   control={form.control}
                   name="type"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Question Type *</FormLabel>
-                      <div className="grid grid-cols-4 gap-2">
+                      <FormLabel className="text-base font-semibold">Question Type *</FormLabel>
+                      <div className="grid grid-cols-4 gap-3">
                         {(["MCQ", "MSQ", "NAT", "DESCRIPTIVE"] as const).map((t) => {
                           const cfg = typeConfig[t]
                           const Icon = cfg.icon
@@ -680,13 +680,13 @@ export default function QuestionEditor({ mockId }: QuestionEditorProps) {
                               type="button"
                               onClick={() => handleTypeChange(t)}
                               className={cn(
-                                "flex flex-col items-center gap-1 rounded-lg border-2 p-3 text-sm transition-all",
+                                "flex flex-col items-center gap-2 rounded-xl border-2 p-4 text-sm transition-all hover:shadow-md",
                                 field.value === t
-                                  ? "border-primary bg-primary/5"
+                                  ? "border-primary bg-primary/5 shadow-sm"
                                   : "border-muted hover:border-muted-foreground/40"
                               )}
                             >
-                              <Icon className="h-4 w-4" />
+                              <Icon className={cn("h-5 w-5", field.value === t ? "text-primary" : "text-muted-foreground")} />
                               <span className="font-semibold">{cfg.label}</span>
                               <span className="text-xs text-muted-foreground">{cfg.desc}</span>
                             </button>
@@ -698,302 +698,299 @@ export default function QuestionEditor({ mockId }: QuestionEditorProps) {
                   )}
                 />
 
+                {/* Question Text — full width */}
+                <FormField
+                  control={form.control}
+                  name="question"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base font-semibold">Question Text *</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Enter the question text here..."
+                          rows={5}
+                          className="resize-y text-base"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Image URL — full width */}
+                <FormField
+                  control={form.control}
+                  name="imageUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base font-semibold flex items-center gap-2">
+                        <ImageIcon className="h-4 w-4" />
+                        Question Image URL
+                        <span className="text-xs text-muted-foreground font-normal">(optional)</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input placeholder="https://res.cloudinary.com/..." {...field} className="text-base" />
+                      </FormControl>
+                      <FormDescription>Paste a Cloudinary or direct image URL.</FormDescription>
+                      {field.value && (
+                        <div className="mt-2 relative inline-block">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={field.value}
+                            alt="Question preview"
+                            className="max-h-40 rounded-lg border object-contain shadow-sm"
+                            onError={(e) => { (e.target as HTMLImageElement).style.display = "none" }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => field.onChange("")}
+                            className="absolute -top-2 -right-2 rounded-full bg-destructive text-destructive-foreground h-6 w-6 flex items-center justify-center shadow-md hover:bg-destructive/90"
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      )}
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <Separator />
 
-                {/* Two-column layout: left = text/image, right = options/answer/meta */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                  {/* ── Left column ── */}
+                {/* MCQ / MSQ Options */}
+                {(questionType === "MCQ" || questionType === "MSQ") && (
                   <div className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="question"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Question Text *</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="Enter the question text here..."
-                              rows={6}
-                              className="resize-y"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
+                    <div className="flex items-center justify-between">
+                      <FormLabel className="text-base font-semibold">Answer Options *</FormLabel>
+                      {options.length < 6 && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="gap-1.5 h-8"
+                          onClick={() => form.setValue("options", [...options, ""])}
+                        >
+                          <Plus className="h-4 w-4" />
+                          Add Option
+                        </Button>
                       )}
-                    />
+                    </div>
 
-                    <FormField
-                      control={form.control}
-                      name="imageUrl"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center gap-2">
-                            <ImageIcon className="h-4 w-4" />
-                            Question Image URL
-                            <span className="text-xs text-muted-foreground font-normal">(optional)</span>
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="https://res.cloudinary.com/..." {...field} />
-                          </FormControl>
-                          <FormDescription>Paste a Cloudinary or direct image URL.</FormDescription>
-                          {field.value && (
-                            <div className="mt-2 relative inline-block">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img
-                                src={field.value}
-                                alt="Question preview"
-                                className="max-h-32 rounded-md border object-contain"
-                                onError={(e) => { (e.target as HTMLImageElement).style.display = "none" }}
-                              />
-                              <button
-                                type="button"
-                                onClick={() => field.onChange("")}
-                                className="absolute -top-2 -right-2 rounded-full bg-destructive text-destructive-foreground h-5 w-5 flex items-center justify-center"
-                              >
-                                <X className="h-3 w-3" />
-                              </button>
-                            </div>
-                          )}
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  {/* ── Right column ── */}
-                  <div className="space-y-4">
-                    {/* MCQ / MSQ Options */}
-                    {(questionType === "MCQ" || questionType === "MSQ") && (
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <FormLabel>Answer Options *</FormLabel>
-                          {options.length < 6 && (
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              className="gap-1.5 h-7 text-xs"
-                              onClick={() => form.setValue("options", [...options, ""])}
-                            >
-                              <Plus className="h-3 w-3" />
-                              Add Option
-                            </Button>
-                          )}
-                        </div>
-
-                        {questionType === "MSQ" && (
-                          <div className="rounded-md bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 px-3 py-1.5 text-xs text-purple-700 dark:text-purple-300">
-                            Check boxes next to all correct answers.
-                          </div>
-                        )}
-
-                        <div className="space-y-1.5">
-                          {options.map((_, idx) => (
-                            <div key={idx} className="flex items-center gap-2">
-                              {questionType === "MSQ" ? (
-                                <Checkbox
-                                  checked={msqAnswers.includes(options[idx]?.trim())}
-                                  onCheckedChange={() => {
-                                    const opt = options[idx]?.trim()
-                                    if (opt) toggleMsqAnswer(opt)
-                                  }}
-                                  disabled={!options[idx]?.trim()}
-                                />
-                              ) : null}
-                              <span className="text-sm font-semibold text-muted-foreground w-5 shrink-0">
-                                {optionLabels[idx]}.
-                              </span>
-                              <FormField
-                                control={form.control}
-                                name={`options.${idx}`}
-                                render={({ field }) => (
-                                  <FormItem className="flex-1 m-0">
-                                    <FormControl>
-                                      <Input
-                                        placeholder={`Option ${optionLabels[idx]}`}
-                                        {...field}
-                                        className={cn(
-                                          "h-8 text-sm",
-                                          questionType === "MSQ" && msqAnswers.includes(field.value?.trim())
-                                            ? "border-purple-400 bg-purple-50 dark:bg-purple-900/20"
-                                            : ""
-                                        )}
-                                      />
-                                    </FormControl>
-                                  </FormItem>
-                                )}
-                              />
-                              {options.length > 2 && (
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-7 w-7 shrink-0 hover:text-destructive"
-                                  onClick={() => {
-                                    const newOpts = options.filter((_, i) => i !== idx)
-                                    form.setValue("options", newOpts)
-                                    if (questionType === "MSQ") {
-                                      form.setValue(
-                                        "msqAnswers",
-                                        msqAnswers.filter((a) => a !== options[idx]?.trim())
-                                      )
-                                    }
-                                  }}
-                                >
-                                  <Trash2 className="h-3 w-3" />
-                                </Button>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-
-                        {questionType === "MSQ" && msqAnswers.length > 0 && (
-                          <div className="flex items-center gap-1.5 text-xs text-purple-700 dark:text-purple-300">
-                            <CheckCircle2 className="h-3 w-3" />
-                            Selected: {msqAnswers.join("; ")}
-                          </div>
-                        )}
+                    {questionType === "MSQ" && (
+                      <div className="rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 px-4 py-2 text-sm text-purple-700 dark:text-purple-300 flex items-center gap-2">
+                        <CheckSquare className="h-4 w-4" />
+                        Check boxes next to all correct answers.
                       </div>
                     )}
 
-                    {/* MCQ Answer Dropdown */}
-                    {questionType === "MCQ" && (
-                      <FormField
-                        control={form.control}
-                        name="answer"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Correct Answer *</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select the correct option..." />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {options.map((opt, idx) =>
-                                  opt.trim() ? (
-                                    <SelectItem key={idx} value={opt.trim()}>
-                                      {optionLabels[idx]}. {opt.trim()}
-                                    </SelectItem>
-                                  ) : null
-                                )}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    )}
-
-                    {/* MSQ answer display */}
-                    {questionType === "MSQ" && (
-                      <FormField
-                        control={form.control}
-                        name="answer"
-                        render={() => (
-                          <FormItem>
-                            <FormLabel>Correct Answers</FormLabel>
-                            <div className="rounded-md border bg-muted/30 px-3 py-2 text-sm">
-                              {msqAnswers.length > 0 ? (
-                                <span className="font-mono text-purple-700 dark:text-purple-300">
-                                  {msqAnswers.join("; ")}
-                                </span>
-                              ) : (
-                                <span className="text-muted-foreground italic">Check boxes above</span>
-                              )}
-                            </div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    )}
-
-                    {/* NAT Answer */}
-                    {questionType === "NAT" && (
-                      <FormField
-                        control={form.control}
-                        name="answer"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Correct Answer (Numerical) *</FormLabel>
-                            <FormControl>
-                              <Input type="number" step="any" placeholder="e.g. 42 or 3.14" {...field} />
-                            </FormControl>
-                            <FormDescription>Decimal values accepted.</FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    )}
-
-                    {/* DESCRIPTIVE Answer */}
-                    {questionType === "DESCRIPTIVE" && (
-                      <FormField
-                        control={form.control}
-                        name="answer"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Model Answer / Key Points *</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                placeholder="Enter the expected answer or key points..."
-                                rows={3}
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    )}
-
-                    {/* Explanation */}
-                    <FormField
-                      control={form.control}
-                      name="explanation"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            Explanation
-                            <span className="text-xs text-muted-foreground font-normal ml-1">(shown after submission)</span>
-                          </FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="Explain why this is the correct answer..."
-                              rows={3}
-                              className="resize-y"
-                              {...field}
+                    <div className="space-y-2.5">
+                      {options.map((_, idx) => (
+                        <div key={idx} className="flex items-center gap-3">
+                          {questionType === "MSQ" ? (
+                            <Checkbox
+                              checked={msqAnswers.includes(options[idx]?.trim())}
+                              onCheckedChange={() => {
+                                const opt = options[idx]?.trim()
+                                if (opt) toggleMsqAnswer(opt)
+                              }}
+                              disabled={!options[idx]?.trim()}
+                              className="h-5 w-5"
                             />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                          ) : null}
+                          <span className="text-base font-semibold text-muted-foreground w-6 shrink-0 text-center">
+                            {optionLabels[idx]}.
+                          </span>
+                          <FormField
+                            control={form.control}
+                            name={`options.${idx}`}
+                            render={({ field }) => (
+                              <FormItem className="flex-1 m-0">
+                                <FormControl>
+                                  <Input
+                                    placeholder={`Option ${optionLabels[idx]}`}
+                                    {...field}
+                                    className={cn(
+                                      "h-10 text-base",
+                                      questionType === "MSQ" && msqAnswers.includes(field.value?.trim())
+                                        ? "border-purple-400 bg-purple-50 dark:bg-purple-900/20"
+                                        : ""
+                                    )}
+                                  />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          {options.length > 2 && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-10 w-10 shrink-0 hover:text-destructive"
+                              onClick={() => {
+                                const newOpts = options.filter((_, i) => i !== idx)
+                                form.setValue("options", newOpts)
+                                if (questionType === "MSQ") {
+                                  form.setValue(
+                                    "msqAnswers",
+                                    msqAnswers.filter((a) => a !== options[idx]?.trim())
+                                  )
+                                }
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
 
-                    {/* Marks */}
-                    <FormField
-                      control={form.control}
-                      name="marks"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Marks</FormLabel>
-                          <FormControl>
-                            <Input type="number" min={0} step={0.5} className="w-28" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    {questionType === "MSQ" && msqAnswers.length > 0 && (
+                      <div className="flex items-center gap-2 text-sm text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900/20 px-3 py-2 rounded-lg">
+                        <CheckCircle2 className="h-4 w-4" />
+                        <span className="font-medium">Selected: </span>
+                        <span className="font-mono">{msqAnswers.join("; ")}</span>
+                      </div>
+                    )}
                   </div>
-                </div>
+                )}
 
-                <DialogFooter className="gap-2 pt-2">
-                  <Button type="button" variant="outline" onClick={() => setModalOpen(false)}>
+                {/* MCQ Answer Dropdown */}
+                {questionType === "MCQ" && (
+                  <FormField
+                    control={form.control}
+                    name="answer"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-base font-semibold">Correct Answer *</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="h-10">
+                              <SelectValue placeholder="Select the correct option..." />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {options.map((opt, idx) =>
+                              opt.trim() ? (
+                                <SelectItem key={idx} value={opt.trim()}>
+                                  {optionLabels[idx]}. {opt.trim()}
+                                </SelectItem>
+                              ) : null
+                            )}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                {/* MSQ answer display */}
+                {questionType === "MSQ" && (
+                  <FormField
+                    control={form.control}
+                    name="answer"
+                    render={() => (
+                      <FormItem>
+                        <FormLabel className="text-base font-semibold">Correct Answers</FormLabel>
+                        <div className="rounded-lg border bg-muted/50 px-4 py-3 text-base">
+                          {msqAnswers.length > 0 ? (
+                            <span className="font-mono text-purple-700 dark:text-purple-300">
+                              {msqAnswers.join("; ")}
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground italic">Check boxes above to select correct answers</span>
+                          )}
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                {/* NAT Answer */}
+                {questionType === "NAT" && (
+                  <FormField
+                    control={form.control}
+                    name="answer"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-base font-semibold">Correct Answer (Numerical) *</FormLabel>
+                        <FormControl>
+                          <Input type="number" step="any" placeholder="e.g. 42 or 3.14" className="h-10 text-base w-48" {...field} />
+                        </FormControl>
+                        <FormDescription>Decimal values accepted.</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                {/* DESCRIPTIVE Answer */}
+                {questionType === "DESCRIPTIVE" && (
+                  <FormField
+                    control={form.control}
+                    name="answer"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-base font-semibold">Model Answer / Key Points *</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Enter the expected answer or key points..."
+                            rows={4}
+                            className="resize-y text-base"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                {/* Explanation */}
+                <FormField
+                  control={form.control}
+                  name="explanation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base font-semibold">
+                        Explanation
+                        <span className="text-xs text-muted-foreground font-normal ml-1">(shown after submission)</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Explain why this is the correct answer..."
+                          rows={4}
+                          className="resize-y text-base"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Marks */}
+                <FormField
+                  control={form.control}
+                  name="marks"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base font-semibold">Marks</FormLabel>
+                      <FormControl>
+                        <Input type="number" min={0} step={0.5} className="w-32 h-10 text-base" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <DialogFooter className="gap-2 pt-4 border-t">
+                  <Button type="button" variant="outline" onClick={() => setModalOpen(false)} className="h-10 px-6">
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={saving}>
+                  <Button type="submit" disabled={saving} className="h-10 px-6">
                     {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                     {editingIndex !== null ? "Update Question" : "Add Question"}
                   </Button>

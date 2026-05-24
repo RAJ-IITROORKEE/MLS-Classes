@@ -31,7 +31,7 @@ import { CloudinaryUpload, type UploadedFile } from "@/components/shared/cloudin
 import {
   createAchievement, updateAchievement, deleteAchievement, toggleAchievementStatus,
 } from "@/lib/actions/student-achievements";
-import type { StudentAchievement } from "@/lib/generated/prisma/client";
+import type { StudentAchievement } from "@prisma/client";
 
 // ── Schema ────────────────────────────────────────────────────────────────────
 const formSchema = z.object({

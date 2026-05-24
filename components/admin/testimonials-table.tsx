@@ -34,7 +34,7 @@ import { CloudinaryUpload, type UploadedFile } from "@/components/shared/cloudin
 import {
   createTestimonial, updateTestimonial, deleteTestimonial, toggleTestimonialStatus,
 } from "@/lib/actions/testimonials";
-import type { Testimonial } from "@/lib/generated/prisma/client";
+import type { Testimonial } from "@prisma/client";
 
 // ── Schema ────────────────────────────────────────────────────────────────────
 const formSchema = z.object({

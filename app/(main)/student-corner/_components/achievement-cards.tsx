@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Trophy } from "lucide-react";
-import type { StudentAchievement } from "@/lib/generated/prisma/client";
+import type { StudentAchievement } from "@prisma/client";
 
 interface AchievementCardsProps {
   achievements: Pick<StudentAchievement, "id" | "title" | "description" | "imageUrl">[];

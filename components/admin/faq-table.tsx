@@ -37,7 +37,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { createFAQ, updateFAQ, deleteFAQ, toggleFAQStatus } from "@/lib/actions/faq";
-import type { FAQ } from "@/lib/generated/prisma/client";
+import type { FAQ } from "@prisma/client";
 
 const faqFormSchema = z.object({
   question: z.string().min(5, "Question must be at least 5 characters"),
