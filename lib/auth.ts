@@ -28,6 +28,11 @@ const getBaseURL = () => {
 
 // Validate required environment variables
 if (typeof window === "undefined") {
+  console.log("🔍 [BETTER-AUTH] Environment Check:")
+  console.log("🔍 [BETTER-AUTH] BETTER_AUTH_SECRET present:", !!process.env.BETTER_AUTH_SECRET, "Length:", process.env.BETTER_AUTH_SECRET?.length)
+  console.log("🔍 [BETTER-AUTH] GOOGLE_CLIENT_ID present:", !!process.env.GOOGLE_CLIENT_ID)
+  console.log("🔍 [BETTER-AUTH] GOOGLE_CLIENT_SECRET present:", !!process.env.GOOGLE_CLIENT_SECRET)
+  
   if (!process.env.BETTER_AUTH_SECRET) {
     console.error("❌ [BETTER-AUTH] CRITICAL: BETTER_AUTH_SECRET is missing! Set it in your environment variables.")
   }
@@ -64,8 +69,9 @@ export const auth = betterAuth({
 
   socialProviders: {
     google: {
-      clientId: (process.env.GOOGLE_CLIENT_ID ?? "").trim(),
-      clientSecret: (process.env.GOOGLE_CLIENT_SECRET ?? "").trim(),
+      clientId: process.env.GOOGLE_CLIENT_ID?.trim() || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET?.trim() || "",
+      enabled: true,
     },
   },
 
