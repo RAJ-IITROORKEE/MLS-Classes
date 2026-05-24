@@ -28,23 +28,12 @@ const getBaseURL = () => {
 
 // Validate required environment variables
 if (typeof window === "undefined") {
-  console.log("🔍 [BETTER-AUTH] Environment Check:")
-  console.log("🔍 [BETTER-AUTH] BETTER_AUTH_SECRET present:", !!process.env.BETTER_AUTH_SECRET, "Length:", process.env.BETTER_AUTH_SECRET?.length)
-  console.log("🔍 [BETTER-AUTH] GOOGLE_CLIENT_ID present:", !!process.env.GOOGLE_CLIENT_ID)
-  console.log("🔍 [BETTER-AUTH] GOOGLE_CLIENT_SECRET present:", !!process.env.GOOGLE_CLIENT_SECRET)
-  
   if (!process.env.BETTER_AUTH_SECRET) {
-    console.error("❌ [BETTER-AUTH] CRITICAL: BETTER_AUTH_SECRET is missing! Set it in your environment variables.")
+    console.error("❌ [BETTER-AUTH] CRITICAL: BETTER_AUTH_SECRET is missing!")
   }
   if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-    console.error("❌ [BETTER-AUTH] CRITICAL: Google OAuth credentials are missing! Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET.")
+    console.error("❌ [BETTER-AUTH] CRITICAL: Google OAuth credentials are missing!")
   }
-  console.log("✅ [BETTER-AUTH] baseURL:", getBaseURL())
-  console.log("✅ [BETTER-AUTH] trustedOrigins:", [
-    "http://localhost:3000",
-    "https://mls-classes.vercel.app",
-    getBaseURL(),
-  ])
 }
 
 const baseURL = getBaseURL();
