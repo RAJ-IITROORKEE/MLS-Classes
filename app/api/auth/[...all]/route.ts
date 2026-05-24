@@ -26,8 +26,6 @@ export async function POST(req: NextRequest) {
     console.log("🔍 [AUTH DEBUG] POST request to:", req.nextUrl.pathname)
     console.log("🔍 [AUTH DEBUG] Origin:", req.headers.get("origin"))
     console.log("🔍 [AUTH DEBUG] Host:", req.headers.get("host"))
-    const body = await req.json().catch(() => ({}))
-    console.log("🔍 [AUTH DEBUG] POST body:", JSON.stringify(body, null, 2))
     return await handler.POST(req)
   } catch (error: any) {
     console.error("❌ [BETTER-AUTH POST ERROR]:", error)
