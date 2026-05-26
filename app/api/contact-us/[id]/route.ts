@@ -6,10 +6,10 @@ export const runtime = "nodejs";
 // GET - Fetch single contact with its thread
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const contact = await prisma.contactUs.findUnique({
       where: { id },
@@ -40,10 +40,10 @@ export async function GET(
 // PATCH - Update contact status
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await req.json();
     const { status } = body;
 
@@ -78,10 +78,10 @@ export async function PATCH(
 // DELETE - Delete contact message
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     // TODO: Add admin authentication check here
 

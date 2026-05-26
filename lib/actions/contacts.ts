@@ -24,3 +24,18 @@ export async function updateContactStatus(
     return { success: false, message: "Failed to update status." };
   }
 }
+
+export async function deleteContact(
+  id: string
+): Promise<{ success: boolean; message: string }> {
+  try {
+    await prisma.bookTrialRequest.delete({
+      where: { id },
+    });
+    revalidatePath("/admin/contacts");
+    revalidatePath("/admin/dashboard");
+    return { success: true, message: "Trial request deleted successfully." };
+  } catch {
+    return { success: false, message: "Failed to delete trial request." };
+  }
+}

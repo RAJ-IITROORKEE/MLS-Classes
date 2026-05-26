@@ -114,24 +114,28 @@ export default function ContactUsPage() {
       href: "https://wa.me/message/XMS5KMWBGQZLG1",
       icon: MessageCircle,
       color: "hover:text-green-600 dark:hover:text-green-400 bg-green-500/10",
+      isCustom: false,
     },
     {
       label: "Facebook",
       href: "https://www.facebook.com/mlsclasses?mibextid=ZbWKwL",
-      icon: Facebook,
+      icon: FacebookIcon,
       color: "hover:text-[#1877F2] dark:hover:text-[#0A66C2] bg-blue-500/10",
+      isCustom: true,
     },
     {
       label: "Instagram",
       href: "https://www.instagram.com/mlsclasses?utm_source=ig_web_button_share_sheet",
-      icon: Instagram,
+      icon: InstagramIcon,
       color: "hover:text-[#E1306C] dark:hover:text-[#E1306C] bg-pink-500/10",
+      isCustom: true,
     },
     {
       label: "YouTube",
       href: "https://www.youtube.com/@mlsclasses8293?si=KBojcjPosvKjfwjH",
-      icon: Youtube,
+      icon: YoutubeIcon,
       color: "hover:text-[#FF0000] dark:hover:text-[#FF0000] bg-red-500/10",
+      isCustom: true,
     },
   ];
 
@@ -198,23 +202,23 @@ export default function ContactUsPage() {
             <div className="space-y-4 pt-6 border-t border-border">
               <h3 className="text-lg font-bold text-foreground">Follow Us</h3>
               <div className="grid grid-cols-2 gap-3">
-                {socialLinks.map((social) => {
-                  const Icon = social.icon;
-                  return (
-                    <motion.a
-                      key={social.label}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className={`flex items-center justify-center gap-2 rounded-lg border border-border/50 px-4 py-3 text-sm font-semibold transition-all ${social.color}`}
-                    >
-                      <Icon className="h-5 w-5" />
-                      <span className="hidden sm:inline">{social.label}</span>
-                    </motion.a>
-                  );
-                })}
+               {socialLinks.map((social) => {
+                   const Icon = social.icon;
+                   return (
+                     <motion.a
+                       key={social.label}
+                       href={social.href}
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       whileHover={{ scale: 1.05 }}
+                       whileTap={{ scale: 0.95 }}
+                       className={`flex items-center justify-center gap-2 rounded-lg border border-border/50 px-4 py-3 text-sm font-semibold transition-all ${social.color}`}
+                     >
+                       <Icon className="h-5 w-5" />
+                       <span className="hidden sm:inline">{social.label}</span>
+                     </motion.a>
+                   );
+                 })}
               </div>
             </div>
 

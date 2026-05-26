@@ -53,9 +53,10 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
+  Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
-import { updateContactStatus } from "@/lib/actions/contacts";
+import { updateContactStatus, deleteContact } from "@/lib/actions/contacts";
 
 export type ContactRow = {
   id: string;
@@ -115,6 +116,7 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [detailRow, setDetailRow] = useState<ContactRow | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [tableData, setTableData] = useState<ContactRow[]>(data);
 
   async function handleStatusChange(id: string, newStatus: string) {
@@ -126,6 +128,21 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
       );
     } else {
       toast.error(result.message);
+    }
+  }
+
+  async function handleDelete(id: string) {
+    try {
+      const result = await deleteContact(id);
+      if (result.success) {
+        toast.success(result.message);
+        setTableData((prev) => prev.filter((row) => row.id !== id));
+        setDeleteConfirm(null);
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      toast.error("Failed to delete contact");
     }
   }
 
@@ -203,31 +220,39 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
         </span>
       ),
     },
-    {
-      id: "actions",
-      cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-7 w-7">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => setDetailRow(row.original)}>
-              <Eye className="h-4 w-4 mr-2" />
-              View Details
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(row.original.email)}
-            >
-              Copy Email
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ),
-    },
+     {
+       id: "actions",
+       cell: ({ row }) => (
+         <DropdownMenu>
+           <DropdownMenuTrigger asChild>
+             <Button variant="ghost" size="icon" className="h-7 w-7">
+               <MoreHorizontal className="h-4 w-4" />
+             </Button>
+           </DropdownMenuTrigger>
+           <DropdownMenuContent align="end">
+             <DropdownMenuLabel>Actions</DropdownMenuLabel>
+             <DropdownMenuSeparator />
+             <DropdownMenuItem onClick={() => setDetailRow(row.original)}>
+               <Eye className="h-4 w-4 mr-2" />
+               View Details
+             </DropdownMenuItem>
+             <DropdownMenuItem
+               onClick={() => navigator.clipboard.writeText(row.original.email)}
+             >
+               Copy Email
+             </DropdownMenuItem>
+             <DropdownMenuSeparator />
+             <DropdownMenuItem
+               onClick={() => setDeleteConfirm(row.original.id)}
+               className="text-red-600 dark:text-red-400"
+             >
+               <Trash2 className="h-4 w-4 mr-2" />
+               Delete
+             </DropdownMenuItem>
+           </DropdownMenuContent>
+         </DropdownMenu>
+       ),
+     },
   ];
 
   const table = useReactTable({
@@ -353,12 +378,40 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
         </div>
       </div>
 
-      {/* Detail Dialog */}
-      <Dialog open={!!detailRow} onOpenChange={() => setDetailRow(null)}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Contact Details</DialogTitle>
-          </DialogHeader>
+       {/* Delete Confirmation Dialog */}
+       <Dialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>
+         <DialogContent>
+           <DialogHeader>
+             <DialogTitle>Delete Trial Request</DialogTitle>
+           </DialogHeader>
+           <div className="space-y-4">
+             <p className="text-sm text-muted-foreground">
+               Are you sure you want to delete this trial request? This action cannot be undone.
+             </p>
+             <div className="flex gap-3 justify-end">
+               <Button
+                 variant="outline"
+                 onClick={() => setDeleteConfirm(null)}
+               >
+                 Cancel
+               </Button>
+               <Button
+                 variant="destructive"
+                 onClick={() => deleteConfirm && handleDelete(deleteConfirm)}
+               >
+                 Delete
+               </Button>
+             </div>
+           </div>
+         </DialogContent>
+       </Dialog>
+
+       {/* Detail Dialog */}
+       <Dialog open={!!detailRow} onOpenChange={() => setDetailRow(null)}>
+         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+           <DialogHeader>
+             <DialogTitle>Contact Details</DialogTitle>
+           </DialogHeader>
           {detailRow && (
             <div className="space-y-5 text-sm">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

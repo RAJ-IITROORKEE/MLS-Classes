@@ -40,6 +40,7 @@ import {
   MessageSquare,
   Trophy,
   ClipboardList,
+  Send,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -77,9 +78,14 @@ const NAV_ITEMS = [
     title: "Management",
     items: [
       {
-        label: "Contacts",
+        label: "Trial Requests",
         href: "/admin/contacts",
         icon: Mail,
+      },
+      {
+        label: "Contacts",
+        href: "/admin/contact-us",
+        icon: Send,
       },
       {
         label: "Users",

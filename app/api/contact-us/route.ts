@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { v4 as uuidv4 } from "uuid";
+import { randomUUID } from "crypto";
 
 export const runtime = "nodejs";
 
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Create new contact message
-    const threadId = uuidv4();
+    const threadId = randomUUID();
     const contact = await prisma.contactUs.create({
       data: {
         name,
