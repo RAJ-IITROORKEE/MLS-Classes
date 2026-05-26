@@ -63,7 +63,7 @@ export function CTASection() {
                 variant="outline"
                 className="border-white/30 text-white hover:bg-white/10 bg-transparent"
               >
-                <a href="mailto:ritik@mlsclasses.com">Contact Us</a>
+                <Link href="/contact-us">Contact Us</Link>
               </Button>
             </div>
           </div>

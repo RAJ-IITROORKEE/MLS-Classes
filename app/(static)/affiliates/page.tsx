@@ -282,7 +282,7 @@ export default function AffiliatesPage() {
             variant="outline"
             className="font-semibold"
           >
-            <Link href="/#contact">
+            <Link href="/contact-us">
               <ArrowRight className="h-4 w-4 mr-2" />
               Learn More
             </Link>
