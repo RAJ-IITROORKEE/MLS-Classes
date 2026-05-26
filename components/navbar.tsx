@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { cn } from "@/lib/utils";
 import { SignedIn } from "@/components/auth/signed-in";
 import { SignedOut } from "@/components/auth/signed-out";
@@ -586,25 +587,29 @@ export function Navbar() {
             </MotionNavigationMenu>
           </div>
 
-           {/* Desktop Actions */}
-           <div className="hidden lg:flex items-center gap-3">
-             <ThemeToggle />
-             <Button asChild size="sm" className="font-bold text-sm px-5 h-9">
-               <Link href="/book-trial" onClick={() => setActiveDropdown(null)}>
-                 Book Trial
-               </Link>
-             </Button>
-             <SignedOut>
-               <Button asChild size="sm" variant="outline" className="font-semibold text-sm px-5 h-9">
-                 <Link href="/mocks/sign-in" onClick={() => setActiveDropdown(null)}>
-                   Sign In
-                 </Link>
-               </Button>
-             </SignedOut>
-             <SignedIn>
-               <UserButton />
-             </SignedIn>
-           </div>
+            {/* Desktop Actions */}
+            <div className="hidden lg:flex items-center gap-3">
+              <ThemeToggle />
+              <HoverBorderGradient
+                containerClassName="rounded-md"
+                as="button"
+                className="dark:bg-black bg-primary text-white dark:text-white font-bold text-sm px-5 h-9 flex items-center justify-center"
+              >
+                <Link href="/book-trial" onClick={() => setActiveDropdown(null)}>
+                  Book Trial
+                </Link>
+              </HoverBorderGradient>
+              <SignedOut>
+                <Button asChild size="sm" variant="outline" className="font-semibold text-sm px-5 h-9">
+                  <Link href="/mocks/sign-in" onClick={() => setActiveDropdown(null)}>
+                    Sign In
+                  </Link>
+                </Button>
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+            </div>
 
           {/* Mobile Menu Button */}
           <div className="flex lg:hidden items-center gap-2">

@@ -435,48 +435,50 @@ export default function AdminContactPage() {
 
        {/* View Dialog */}
        <Dialog open={viewOpen} onOpenChange={setViewOpen}>
-         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-           <DialogHeader>
-             <DialogTitle className="flex items-center gap-2">
-               <MessageSquare className="h-5 w-5 text-primary" />
+         <DialogContent className="w-11/12 max-w-6xl max-h-[90vh] overflow-y-auto">
+           <DialogHeader className="border-b border-border pb-4">
+             <DialogTitle className="flex items-center gap-3 text-2xl">
+               <div className="rounded-lg bg-primary/10 p-2">
+                 <MessageSquare className="h-6 w-6 text-primary" />
+               </div>
                Contact Message Details
              </DialogTitle>
              {selected && (
-               <DialogDescription>
-                 Message ID: {selected.id.slice(0, 8)}...
+               <DialogDescription className="text-sm mt-2">
+                 Message ID: <span className="font-mono text-xs bg-muted px-2 py-1 rounded">{selected.id.slice(0, 12)}</span>
                </DialogDescription>
              )}
            </DialogHeader>
 
            {selected && (
-             <div className="space-y-6">
-               {/* Contact Info - 3 Column Layout */}
-               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-muted/30 rounded-lg p-4 border border-border">
+             <div className="space-y-5">
+               {/* Contact Info - Better Layout */}
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 bg-gradient-to-br from-muted/40 to-muted/20 rounded-xl p-5 border border-border/60">
                  {/* Name */}
-                 <div className="flex items-start gap-3">
-                   <div className="rounded-lg bg-primary/10 p-2">
+                 <div className="flex items-start gap-4 group">
+                   <div className="rounded-xl bg-primary/15 p-3 group-hover:bg-primary/25 transition-colors">
                      <User className="h-5 w-5 text-primary" />
                    </div>
                    <div className="min-w-0 flex-1">
-                     <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                       Name
+                     <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                       Full Name
                      </label>
-                     <p className="text-foreground font-medium mt-1 break-words">{selected.name}</p>
+                     <p className="text-base font-semibold text-foreground mt-2">{selected.name}</p>
                    </div>
                  </div>
 
                  {/* Email */}
-                 <div className="flex items-start gap-3">
-                   <div className="rounded-lg bg-blue-500/10 p-2">
+                 <div className="flex items-start gap-4 group">
+                   <div className="rounded-xl bg-blue-500/15 p-3 group-hover:bg-blue-500/25 transition-colors">
                      <Mail className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                    </div>
                    <div className="min-w-0 flex-1">
-                     <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                       Email
+                     <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                       Email Address
                      </label>
                      <a
                        href={`mailto:${selected.email}`}
-                       className="text-primary hover:underline mt-1 block break-all text-sm font-medium"
+                       className="text-sm font-semibold text-primary hover:underline mt-2 block break-words"
                      >
                        {selected.email}
                      </a>
@@ -484,33 +486,35 @@ export default function AdminContactPage() {
                  </div>
 
                  {/* Status */}
-                 <div className="flex items-start gap-3">
-                   <div className="rounded-lg bg-amber-500/10 p-2">
+                 <div className="flex items-start gap-4 group md:col-span-2">
+                   <div className="rounded-xl bg-amber-500/15 p-3 group-hover:bg-amber-500/25 transition-colors">
                      <CheckCircle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
                    </div>
                    <div className="min-w-0 flex-1">
-                     <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                       Status
+                     <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                       Current Status
                      </label>
-                     <div className="mt-1">
-                       <Badge>{selected.status}</Badge>
+                     <div className="mt-2">
+                       <Badge variant="secondary" className="text-xs font-semibold px-3 py-1 capitalize">
+                         {selected.status}
+                       </Badge>
                      </div>
                    </div>
                  </div>
                </div>
 
                {/* Date and Time */}
-               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-muted/30 rounded-lg p-4 border border-border">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 bg-gradient-to-br from-muted/40 to-muted/20 rounded-xl p-5 border border-border/60">
                  {/* Created Date */}
-                 <div className="flex items-start gap-3">
-                   <div className="rounded-lg bg-green-500/10 p-2">
+                 <div className="flex items-start gap-4 group">
+                   <div className="rounded-xl bg-green-500/15 p-3 group-hover:bg-green-500/25 transition-colors">
                      <Calendar className="h-5 w-5 text-green-600 dark:text-green-400" />
                    </div>
                    <div className="min-w-0 flex-1">
-                     <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                     <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                        Date Submitted
                      </label>
-                     <p className="text-foreground font-medium mt-1">
+                     <p className="text-base font-semibold text-foreground mt-2">
                        {new Date(selected.createdAt).toLocaleDateString("en-US", {
                          year: "numeric",
                          month: "long",
@@ -521,19 +525,19 @@ export default function AdminContactPage() {
                  </div>
 
                  {/* Time */}
-                 <div className="flex items-start gap-3">
-                   <div className="rounded-lg bg-purple-500/10 p-2">
+                 <div className="flex items-start gap-4 group">
+                   <div className="rounded-xl bg-purple-500/15 p-3 group-hover:bg-purple-500/25 transition-colors">
                      <Clock className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                    </div>
                    <div className="min-w-0 flex-1">
-                     <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                       Time
+                     <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                       Time Submitted
                      </label>
-                     <p className="text-foreground font-medium mt-1">
+                     <p className="text-base font-semibold text-foreground mt-2">
                        {new Date(selected.createdAt).toLocaleTimeString("en-US", {
                          hour: "2-digit",
                          minute: "2-digit",
-                         second: "2-digit",
+                         hour12: true,
                        })}
                      </p>
                    </div>
@@ -541,27 +545,27 @@ export default function AdminContactPage() {
               </div>
 
                {/* Subject */}
-               <div className="bg-muted/30 rounded-lg p-4 border border-border">
-                 <div className="flex items-center gap-2 mb-3">
-                   <div className="rounded-lg bg-orange-500/10 p-2">
+               <div className="bg-gradient-to-br from-muted/40 to-muted/20 rounded-xl p-5 border border-border/60">
+                 <div className="flex items-center gap-3 mb-4">
+                   <div className="rounded-xl bg-orange-500/15 p-3">
                      <Tag className="h-5 w-5 text-orange-600 dark:text-orange-400" />
                    </div>
-                   <label className="text-sm font-semibold text-foreground">Subject</label>
+                   <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Subject</label>
                  </div>
-                 <p className="text-foreground bg-background/50 rounded p-3 border border-border/50">
+                 <p className="text-base text-foreground bg-background/60 rounded-lg p-4 border border-border/40 font-medium">
                    {selected.subject}
                  </p>
                </div>
 
                {/* Message */}
-               <div className="bg-muted/30 rounded-lg p-4 border border-border">
-                 <div className="flex items-center gap-2 mb-3">
-                   <div className="rounded-lg bg-indigo-500/10 p-2">
+               <div className="bg-gradient-to-br from-muted/40 to-muted/20 rounded-xl p-5 border border-border/60">
+                 <div className="flex items-center gap-3 mb-4">
+                   <div className="rounded-xl bg-indigo-500/15 p-3">
                      <FileText className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                    </div>
-                   <label className="text-sm font-semibold text-foreground">Message</label>
+                   <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Message Content</label>
                  </div>
-                 <p className="text-foreground bg-background/50 rounded p-3 border border-border/50 whitespace-pre-wrap max-h-96 overflow-y-auto">
+                 <p className="text-sm text-foreground bg-background/60 rounded-lg p-4 border border-border/40 whitespace-pre-wrap max-h-64 overflow-y-auto leading-relaxed">
                    {selected.message}
                  </p>
                </div>
