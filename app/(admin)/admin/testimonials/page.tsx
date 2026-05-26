@@ -13,7 +13,7 @@ async function getStats() {
 
   const avgRating =
     allRatings.length > 0
-      ? (allRatings.reduce((acc, t) => acc + t.rating, 0) / allRatings.length).toFixed(1)
+      ? (allRatings.reduce((acc: number, t: any) => acc + t.rating, 0) / allRatings.length).toFixed(1)
       : "—";
 
   return { total, active, hidden, avgRating };

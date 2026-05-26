@@ -142,7 +142,7 @@ export default async function AdminDashboardPage() {
             </p>
           ) : (
             <div className="space-y-3">
-              {recentContacts.map((contact) => (
+              {recentContacts.map((contact: any) => (
                 <div
                   key={contact.id}
                   className="flex items-center justify-between rounded-lg border border-border p-3 hover:bg-muted/40 transition-colors"

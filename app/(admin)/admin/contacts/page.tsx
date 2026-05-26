@@ -11,7 +11,7 @@ export default async function AdminContactsPage() {
     orderBy: { createdAt: "desc" },
   });
 
-  const serialized = contacts.map((c) => ({
+  const serialized = contacts.map((c: any) => ({
     id: c.id,
     firstName: c.firstName,
     lastName: c.lastName,
@@ -28,7 +28,7 @@ export default async function AdminContactsPage() {
   }));
 
   const statusCounts = contacts.reduce(
-    (acc, c) => {
+    (acc: Record<string, number>, c: any) => {
       acc[c.status] = (acc[c.status] ?? 0) + 1;
       return acc;
     },
