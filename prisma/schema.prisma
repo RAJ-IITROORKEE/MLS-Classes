@@ -58,6 +58,12 @@ enum ConversationType {
   USER_REPLY
 }
 
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
 // ─────────────────────────────────────────────
 // Book Trial Request
 // ─────────────────────────────────────────────
@@ -298,6 +304,52 @@ model Verification {
   expiresAt  DateTime
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────
+// Blog Category
+// ─────────────────────────────────────────────
+model BlogCategory {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  color       String?  @default("#000000")
+  icon        String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  blogs Blog[]
+}
+
+// ─────────────────────────────────────────────
+// Blog
+// ─────────────────────────────────────────────
+model Blog {
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  slug          String       @unique
+  excerpt       String
+  content       String       // Markdown or HTML
+  author        String?      @default("MLS Classes")
+  categoryId    String       @db.ObjectId
+  imageUrl      String?
+  imagePublicId String?
+  featured      Boolean      @default(false)
+  readingTime   Int?         // minutes
+  views         Int          @default(0)
+  status        BlogStatus   @default(DRAFT)
+  publishedAt   DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  category BlogCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([categoryId])
+  @@index([featured])
+  @@index([publishedAt])
 }
 
 // ─────────────────────────────────────────────
