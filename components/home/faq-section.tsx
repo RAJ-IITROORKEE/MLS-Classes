@@ -1,107 +1,141 @@
-import { prisma } from "@/lib/db";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+"use client";
 
-const DEFAULT_FAQS = [
-  {
-    id: "1",
-    question: "How can I access MLS Classes on the mobile app for Android or iPhone?",
-    answer:
-      "To access MLS Classes on your mobile device, simply install the MLS Classes app on either Android or iOS. Log in using the same email address you provided to us. This way, you can attend live classes on your phone while traveling or when a desktop isn't available. However, we recommend using a desktop for the best experience.",
-  },
-  {
-    id: "2",
-    question: "Does MLS Classes provide tutoring for Test Prep (SAT, ACT, AP, etc.)?",
-    answer:
-      "Yes, MLS Classes offers Test Prep tutoring for SAT, ACT, AP, AMC, and more, using a 3-step process: Diagnostic Test followed by Personalized Tutoring, and finally tips to maximize scores.",
-  },
-  {
-    id: "3",
-    question: "How are weekly classes and schedules managed at MLS Classes?",
-    answer:
-      "At MLS Classes, we understand that every student's availability is unique. We aim to create a mutually convenient schedule for the student and instructor. Once the schedule is set, live 1:1 Zoom classes are conducted on time. Also, recordings are available year-round, and assignments are provided via the portal and worksheets.",
-  },
-  {
-    id: "4",
-    question: "How is homework assigned to students?",
-    answer:
-      "Homework at MLS Classes is assigned in two ways: via our dedicated class portal or through various technologies. On the portal, we upload worksheets, questions, and discussions, enabling direct interaction. Additionally, we use platforms like IXL, DeltaMath, Quizizz, SaveMyExams, Twinkl, and CorbettMaths based on student needs.",
-  },
-  {
-    id: "5",
-    question: "Which subscription plan is best for my child to enroll in multiple subjects?",
-    answer:
-      "It depends on whether you're enrolling your child for multiple subjects or a single subject. For multiple subjects, we recommend a 75-hour or 100-hour subscription. For a single subject, a 25-hour or 50-hour subscription is ideal.",
-  },
-  {
-    id: "6",
-    question: "How many classes are conducted per week for each subject and class timings?",
-    answer:
-      "At MLS Classes, we value your convenience and recognize your busy schedule. Classes can be arranged once, twice, thrice a week, or more, depending on your preference. We are open 24/7, so regardless of your location in the world, classes can be scheduled according to student time zone and availability.",
-  },
-  {
-    id: "7",
-    question: "Can we pause classes for vacations or time off?",
-    answer:
-      "Absolutely! You can pause your classes anytime if you're planning a vacation or taking leave. Our subscriptions are lifetime, meaning they last until you've consumed all your hours, so you won't lose any time. All we ask is that you inform us at least a day in advance, so we can adjust your classes accordingly. And don't worry — there will be no charges during your break!",
-  },
-  {
-    id: "8",
-    question: "How Can I Pay for the Classes?",
-    answer:
-      "No need to worry about payments. First, explore demo classes in multiple subjects to get an idea. Then, choose a subscription (25, 50, 75, or 100 hours) for all subjects. We'll share the bank details, and you can use Xoom or Remitly for payment. Once done, send a screenshot for verification.",
-  },
-];
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
-type FAQItem = { id: string; question: string; answer: string };
+type Faq = {
+  id: string;
+  question: string;
+  answer: string;
+};
 
-async function getFAQs(): Promise<FAQItem[]> {
-  try {
-    const faqs = await prisma.fAQ.findMany({
-      where: { isActive: true },
-      orderBy: { order: "asc" },
-    });
-    return faqs.length > 0 ? faqs : DEFAULT_FAQS;
-  } catch {
-    return DEFAULT_FAQS;
-  }
-}
+export function FAQSection() {
+  const [faqData, setFaqData] = useState<Faq[]>([]);
+  const [activeItem, setActiveItem] = useState<string | null>("0");
+  const [loading, setLoading] = useState(true);
+  const [hasMoreFaqs, setHasMoreFaqs] = useState(false);
 
-export async function FAQSection() {
-  const faqs = await getFAQs();
+  const toggleItem = (index: string) => {
+    setActiveItem(activeItem === index ? null : index);
+  };
+
+  useEffect(() => {
+    const fetchFaqs = async () => {
+      try {
+        const res = await fetch("/api/faq");
+        const json = await res.json();
+        const data: Faq[] = Array.isArray(json) ? json : json.faqs || json.data || [];
+        setHasMoreFaqs(data.length > 5);
+        setFaqData(data.slice(0, 5));
+      } catch (err) {
+        console.error("Failed to fetch FAQs", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFaqs();
+  }, []);
 
   return (
     <section id="faq" className="py-20 px-4 bg-muted/30">
-      <div className="mx-auto max-w-3xl">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Frequently Asked Questions
-          </h2>
-          <p className="mt-3 text-muted-foreground">
-            Everything you need to know about MLS Classes tutoring.
-          </p>
-        </div>
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col gap-10 xl:flex-row xl:items-start xl:justify-between">
+          <div className="flex flex-col items-center gap-4 xl:max-w-[30%] xl:items-start">
+            <span className="inline-flex items-center border-purple-400 border justify-center rounded-full bg-purple-50 dark:bg-transparent px-3 py-1 text-purple-700 dark:text-gray-300 text-sm font-medium">
+              Find Answers to Common Queries
+            </span>
+            <h2 className="text-4xl lg:text-5xl font-bold text-center text-slate-800 dark:text-gray-100 xl:text-left">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-lg text-center text-slate-600 dark:text-gray-200 xl:text-left">
+              Your path to clarity and understanding
+            </p>
 
-        <Accordion type="single" collapsible className="space-y-3">
-          {faqs.map((faq, index) => (
-            <AccordionItem
-              key={faq.id}
-              value={`item-${index}`}
-              className="rounded-xl border border-border bg-card px-5 shadow-sm"
-            >
-              <AccordionTrigger className="text-left font-medium hover:no-underline py-4">
-                {faq.question}
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-4">
-                {faq.answer}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+            {hasMoreFaqs && (
+              <Link
+                href="/faqs"
+                prefetch
+                className="mt-4 inline-flex items-center gap-2 rounded-full border border-cyan-400 px-6 py-2 text-cyan-400 
+                           hover:border-cyan-500 hover:text-cyan-300 hover:shadow-[0_0_15px_rgba(34,211,238,0.7)] 
+                           transition duration-300 ease-in-out"
+              >
+                More FAQs <ArrowRight className="w-4 h-4" />
+              </Link>
+            )}
+          </div>
+
+          <ul className="flex w-full flex-col gap-12 xl:max-w-[70%]">
+            {loading ? (
+              Array.from({ length: 3 }).map((_, idx) => (
+                <li key={idx} className="space-y-4">
+                  <Skeleton className="h-10 w-full rounded-lg" />
+                  <Skeleton className="h-10 w-3/4 rounded-lg" />
+                </li>
+              ))
+            ) : (
+              faqData.map((item, index) => {
+                const itemIndex = `${index}`;
+                const isActive = activeItem === itemIndex;
+
+                return (
+                  <li
+                    key={item.id}
+                    className="rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-transparent shadow-sm dark:shadow-none overflow-hidden"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => toggleItem(itemIndex)}
+                      className={`flex w-full justify-between items-center gap-5 p-6 ${
+                        isActive ? "text-cyan-600 dark:text-cyan-400" : "text-slate-800 dark:text-gray-100"
+                      }`}
+                      aria-expanded={isActive}
+                    >
+                      <p className="flex-1 text-left text-lg font-semibold text-inherit">
+                        {item.question}
+                      </p>
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className={`flex-shrink-0 transition-transform duration-300 ${
+                          isActive
+                            ? "rotate-180 text-primary-400"
+                            : "text-gray-300"
+                        }`}
+                      >
+                        <path
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M14.0608 5.49999L13.5304 6.03032L8.70722 10.8535C8.3167 11.2441 7.68353 11.2441 7.29301 10.8535L2.46978 6.03032L1.93945 5.49999L3.00011 4.43933L3.53044 4.96966L8.00011 9.43933L12.4698 4.96966L13.0001 4.43933L14.0608 5.49999Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </button>
+
+                    <div
+                      className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                        isActive
+                          ? "max-h-96 opacity-100"
+                          : "max-h-0 opacity-0"
+                      }`}
+                    >
+                      <div className="px-6 pb-6">
+                        <p className="text-slate-600 dark:text-gray-300 leading-relaxed">
+                          {item.answer}
+                        </p>
+                      </div>
+                    </div>
+                  </li>
+                );
+              })
+            )}
+          </ul>
+        </div>
       </div>
     </section>
   );
