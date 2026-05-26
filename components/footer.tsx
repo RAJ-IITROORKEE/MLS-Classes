@@ -44,7 +44,7 @@ const REACH_LINKS = [
 
 const RESOURCE_LINKS = [
   { label: "Blogs", href: "/blogs" },
-  { label: "Resources Center", href: "/resources" },
+  { label: "Resource Center", href: "/resource-center" },
   { label: "Affiliates", href: "/affiliates" },
 ];
 
@@ -76,9 +76,9 @@ const SOCIAL_LINKS = [
 ];
 
 const LEGAL_LINKS = [
-  { label: "Terms & Conditions", href: "/terms" },
-  { label: "Privacy Policy", href: "/privacy" },
-  { label: "Cancellation & Refund", href: "/refund" },
+  { label: "Terms & Conditions", href: "/terms-conditions" },
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Cancellation & Refund", href: "/cancellation-refund" },
 ];
 
 export function Footer() {

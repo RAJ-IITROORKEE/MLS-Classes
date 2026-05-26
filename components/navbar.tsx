@@ -260,7 +260,7 @@ function LoginDropdown({ onClose }: { onClose: () => void }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -6 }}
       transition={{ duration: 0.15 }}
-      className="absolute top-full right-0 mt-1 z-50 w-52 rounded-xl border border-border bg-popover shadow-xl overflow-hidden"
+      className="absolute top-full left-0 mt-1 z-50 rounded-xl border border-border bg-popover shadow-xl overflow-hidden"
     >
       {LOGIN_MENU.map((item) => (
         <a
@@ -269,7 +269,7 @@ function LoginDropdown({ onClose }: { onClose: () => void }) {
           target="_blank"
           rel="noopener noreferrer"
           onClick={onClose}
-          className="flex flex-col gap-0.5 px-4 py-3 text-sm font-medium text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+          className="flex flex-col gap-0.5 px-4 py-3 text-sm font-medium text-foreground hover:bg-primary/10 hover:text-primary transition-colors whitespace-nowrap"
         >
           {item.label}
           <span className="text-xs font-normal text-muted-foreground">
@@ -313,44 +313,71 @@ export function Navbar() {
   return (
     <header ref={navRef} className="fixed top-0 left-0 right-0 z-50">
       {/* ── Top utility bar ── */}
-      <div className="hidden lg:flex items-center justify-end gap-3 bg-foreground/5 border-b border-border/50 px-6 py-1.5 text-xs">
-        <a
-          href="https://wa.me/message/XMS5KMWBGQZLG1"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1.5 font-semibold text-green-600 dark:text-green-400 hover:opacity-80 transition-opacity"
-        >
-          <WhatsAppIcon />
-          WhatsApp
-        </a>
-        <span className="w-px h-3 bg-border" />
-        <a
-          href="https://www.facebook.com/mlsclasses?mibextid=ZbWKwL"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-muted-foreground hover:text-[#1877F2] transition-colors"
-          aria-label="Facebook"
-        >
-          <FacebookIcon />
-        </a>
-        <a
-          href="https://www.instagram.com/mlsclasses?utm_source=ig_web_button_share_sheet"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-muted-foreground hover:text-[#E1306C] transition-colors"
-          aria-label="Instagram"
-        >
-          <InstagramIcon />
-        </a>
-        <a
-          href="https://www.youtube.com/@mlsclasses8293?si=KBojcjPosvKjfwjH"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-muted-foreground hover:text-[#FF0000] transition-colors"
-          aria-label="YouTube"
-        >
-          <YoutubeIcon />
-        </a>
+      <div className="hidden lg:flex items-center justify-between gap-3 bg-foreground/5 border-b border-border/50 px-6 py-2 text-xs sticky top-0 z-50">
+        {/* Left side - Contact Info */}
+        <div className="flex items-center gap-6">
+          <a
+            href="mailto:ritik@mlsclasses.com"
+            className="flex items-center gap-1.5 font-semibold text-foreground/70 hover:text-primary transition-colors"
+          >
+            <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+            </svg>
+            ritik@mlsclasses.com
+          </a>
+          <span className="w-px h-3 bg-border" />
+          <a
+            href="tel:+919649549754"
+            className="flex items-center gap-1.5 font-semibold text-foreground/70 hover:text-primary transition-colors"
+          >
+            <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773c.058.3.273.645.478.86.205.215.578.588.95.96.372.372.745.745.96.95.215.205.56.42.86.478l.773-1.548a1 1 0 011.06-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 4 14.18 4 9.5V5a1 1 0 011-1h2.153z" />
+            </svg>
+            (+91) 9649549754
+          </a>
+        </div>
+
+        {/* Right side - Social Icons */}
+        <div className="flex items-center gap-3">
+          <a
+            href="https://wa.me/message/XMS5KMWBGQZLG1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 font-semibold text-green-600 dark:text-green-400 hover:opacity-80 transition-opacity"
+          >
+            <WhatsAppIcon />
+            WhatsApp
+          </a>
+          <span className="w-px h-3 bg-border" />
+          <a
+            href="https://www.facebook.com/mlsclasses?mibextid=ZbWKwL"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-[#1877F2] transition-colors"
+            aria-label="Facebook"
+          >
+            <FacebookIcon />
+          </a>
+          <a
+            href="https://www.instagram.com/mlsclasses?utm_source=ig_web_button_share_sheet"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-[#E1306C] transition-colors"
+            aria-label="Instagram"
+          >
+            <InstagramIcon />
+          </a>
+          <a
+            href="https://www.youtube.com/@mlsclasses8293?si=KBojcjPosvKjfwjH"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-[#FF0000] transition-colors"
+            aria-label="YouTube"
+          >
+            <YoutubeIcon />
+          </a>
+        </div>
       </div>
 
       {/* ── Main nav ── */}
@@ -453,35 +480,63 @@ export function Navbar() {
                Practice Tests
              </Link>
 
-             {/* Student Corner */}
-             <Link
-               href="/student-corner"
-               onClick={() => setActiveDropdown(null)}
-               className="px-3.5 py-2 text-[0.9rem] font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-             >
-               Student Corner
-             </Link>
-           </div>
+              {/* Student Corner */}
+              <Link
+                href="/student-corner"
+                onClick={() => setActiveDropdown(null)}
+                className="px-3.5 py-2 text-[0.9rem] font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
+              >
+                Student Corner
+              </Link>
 
-          {/* Desktop Actions */}
-          <div className="hidden lg:flex items-center gap-3">
-            <SignedOut>
-              <ThemeToggle />
-              <Button asChild size="sm" className="font-bold text-sm px-5 h-9">
-                <Link href="/book-trial" onClick={() => setActiveDropdown(null)}>
-                  Book Trial
-                </Link>
-              </Button>
-              <Button asChild size="sm" variant="outline" className="font-semibold text-sm px-5 h-9">
-                <Link href="/mocks/sign-in" onClick={() => setActiveDropdown(null)}>
-                  Sign In
-                </Link>
-              </Button>
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-          </div>
+              {/* Login Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => toggleDropdown("login")}
+                  className={cn(
+                    "flex items-center gap-1 px-3.5 py-2 text-[0.9rem] font-semibold rounded-md transition-colors",
+                    activeDropdown === "login"
+                      ? "text-primary bg-primary/10"
+                      : "text-foreground hover:text-primary hover:bg-primary/5"
+                  )}
+                >
+                  Login
+                  <ChevronDown
+                    className={cn(
+                      "h-3.5 w-3.5 transition-transform duration-200",
+                      activeDropdown === "login" && "rotate-180"
+                    )}
+                  />
+                </button>
+                <AnimatePresence>
+                  {activeDropdown === "login" && (
+                    <LoginDropdown
+                      onClose={() => setActiveDropdown(null)}
+                    />
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+
+           {/* Desktop Actions */}
+           <div className="hidden lg:flex items-center gap-3">
+             <ThemeToggle />
+             <Button asChild size="sm" className="font-bold text-sm px-5 h-9">
+               <Link href="/book-trial" onClick={() => setActiveDropdown(null)}>
+                 Book Trial
+               </Link>
+             </Button>
+             <SignedOut>
+               <Button asChild size="sm" variant="outline" className="font-semibold text-sm px-5 h-9">
+                 <Link href="/mocks/sign-in" onClick={() => setActiveDropdown(null)}>
+                   Sign In
+                 </Link>
+               </Button>
+             </SignedOut>
+             <SignedIn>
+               <UserButton />
+             </SignedIn>
+           </div>
 
           {/* Mobile Menu Button */}
           <div className="flex lg:hidden items-center gap-2">
@@ -583,59 +638,68 @@ export function Navbar() {
               >
                 Practice Tests
               </Link>
-              <Link
-                href="/student-corner"
-                onClick={() => setIsOpen(false)}
-                className="px-3 py-2.5 text-sm font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-              >
-                Student Corner
-              </Link>
+               <Link
+                 href="/student-corner"
+                 onClick={() => setIsOpen(false)}
+                 className="px-3 py-2.5 text-sm font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
+               >
+                 Student Corner
+               </Link>
 
-              <SignedOut>
-                <div className="my-1 border-t border-border" />
-                <p className="px-3 py-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                  Login
-                </p>
-                {LOGIN_MENU.map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setIsOpen(false)}
-                    className="px-3 py-2.5 text-sm font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-                  >
-                    {item.label}
-                  </a>
-                ))}
-                <div className="mt-2">
-                  <Button asChild className="w-full font-bold" size="default">
-                    <Link href="/mocks/sign-in" onClick={() => setIsOpen(false)}>
-                      Sign In
-                    </Link>
-                  </Button>
-                </div>
-              </SignedOut>
+               <div className="my-1 border-t border-border" />
+               <p className="px-3 py-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                 Login
+               </p>
+               {LOGIN_MENU.map((item) => (
+                 <a
+                   key={item.label}
+                   href={item.href}
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   onClick={() => setIsOpen(false)}
+                   className="px-3 py-2.5 text-sm font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
+                 >
+                   {item.label}
+                 </a>
+               ))}
 
-              {/* Social row */}
-              <div className="flex items-center gap-4 px-3 pt-2">
-                <a href="https://wa.me/message/XMS5KMWBGQZLG1" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400 font-semibold">
-                  <MessageCircle className="h-4 w-4" /> WhatsApp
-                </a>
-                <a href="https://www.facebook.com/mlsclasses?mibextid=ZbWKwL" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><FacebookIcon /></a>
-                <a href="https://www.instagram.com/mlsclasses?utm_source=ig_web_button_share_sheet" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><InstagramIcon /></a>
-                <a href="https://www.youtube.com/@mlsclasses8293?si=KBojcjPosvKjfwjH" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><YoutubeIcon /></a>
-              </div>
+               <SignedOut>
+                 <div className="mt-2">
+                   <Button asChild className="w-full font-bold" size="default">
+                     <Link href="/mocks/sign-in" onClick={() => setIsOpen(false)}>
+                       Sign In
+                     </Link>
+                   </Button>
+                 </div>
+               </SignedOut>
 
-              <SignedOut>
-                <div className="mt-3">
-                  <Button asChild className="w-full font-bold" size="default">
-                    <Link href="/book-trial" onClick={() => setIsOpen(false)}>
-                      Book Free Trial
-                    </Link>
-                  </Button>
-                </div>
-              </SignedOut>
+               {/* Social row */}
+               <div className="flex items-center gap-4 px-3 pt-2">
+                 <a href="https://wa.me/message/XMS5KMWBGQZLG1" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400 font-semibold">
+                   <MessageCircle className="h-4 w-4" /> WhatsApp
+                 </a>
+                 <a href="https://www.facebook.com/mlsclasses?mibextid=ZbWKwL" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><FacebookIcon /></a>
+                 <a href="https://www.instagram.com/mlsclasses?utm_source=ig_web_button_share_sheet" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><InstagramIcon /></a>
+                 <a href="https://www.youtube.com/@mlsclasses8293?si=KBojcjPosvKjfwjH" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><YoutubeIcon /></a>
+               </div>
+
+               <div className="mt-3">
+                 <Button asChild className="w-full font-bold" size="default">
+                   <Link href="/book-trial" onClick={() => setIsOpen(false)}>
+                     Book Free Trial
+                   </Link>
+                 </Button>
+               </div>
+
+               <SignedOut>
+                 <div className="mt-2">
+                   <Button asChild className="w-full font-bold bg-muted text-foreground hover:bg-muted/80" size="default">
+                     <Link href="/mocks/sign-in" onClick={() => setIsOpen(false)}>
+                       Sign In
+                     </Link>
+                   </Button>
+                 </div>
+               </SignedOut>
             </div>
           </motion.div>
         )}
