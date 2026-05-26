@@ -46,6 +46,18 @@ enum MockAccessType {
   ADMIN
 }
 
+enum ContactStatus {
+  PENDING
+  RESOLVED
+  DELETED
+}
+
+enum ConversationType {
+  NEW_INQUIRY
+  ADMIN_REPLY
+  USER_REPLY
+}
+
 // ─────────────────────────────────────────────
 // Book Trial Request
 // ─────────────────────────────────────────────
@@ -286,4 +298,37 @@ model Verification {
   expiresAt  DateTime
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────
+// Contact Us Messages
+// ─────────────────────────────────────────────
+model ContactUs {
+  id      String        @id @default(auto()) @map("_id") @db.ObjectId
+  name    String
+  email   String
+  subject String
+  message String
+  status  ContactStatus @default(PENDING)
+
+  // Thread management for conversations
+  threadId         String? // Groups related messages together
+  parentId         String? @db.ObjectId // Reference to parent message
+  conversationType ConversationType @default(NEW_INQUIRY)
+
+  // Rate limiting
+  dailyMessageCount Int       @default(0)
+  lastMessageDate   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Self-referential relation for threading
+  parent  ContactUs?  @relation("ContactThread", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies ContactUs[] @relation("ContactThread")
+
+  @@index([email])
+  @@index([status])
+  @@index([threadId])
+  @@index([createdAt])
 }
