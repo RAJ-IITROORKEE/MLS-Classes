@@ -593,7 +593,7 @@ export function Navbar() {
               <HoverBorderGradient
                 containerClassName="rounded-md"
                 as="button"
-                className="dark:bg-black bg-primary text-white dark:text-white font-bold text-sm px-5 h-9 flex items-center justify-center"
+                className="dark:bg-primary bg-primary text-white dark:text-white font-bold text-sm px-5 h-9 flex items-center justify-center"
               >
                 <Link href="/book-trial" onClick={() => setActiveDropdown(null)}>
                   Book Trial
