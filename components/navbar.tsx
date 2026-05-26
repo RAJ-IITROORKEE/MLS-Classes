@@ -4,13 +4,39 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronDown, ChevronRight, MessageCircle } from "lucide-react";
+import {
+  Menu,
+  X,
+  ChevronDown,
+  ChevronRight,
+  MessageCircle,
+  BookOpen,
+  BarChart3,
+  Zap,
+  Users,
+  LogIn,
+  LogOut,
+  MessageSquare,
+  Home,
+  MoreHorizontal,
+  GraduationCap,
+  Lightbulb,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 import { SignedIn } from "@/components/auth/signed-in";
 import { SignedOut } from "@/components/auth/signed-out";
 import { UserButton } from "@/components/auth/user-button";
+import {
+  MotionNavigationMenu,
+  MotionNavigationMenuContent,
+  MotionNavigationMenuIndicator,
+  MotionNavigationMenuItem,
+  MotionNavigationMenuLink,
+  MotionNavigationMenuList,
+  MotionNavigationMenuTrigger,
+} from "@/components/unlumen-ui/motion-navigation-menu";
 
 /* ─── Nav Data ─────────────────────────────────────────────────────── */
 
@@ -334,121 +360,231 @@ export function Navbar() {
             />
           </Link>
 
-          {/* Desktop Nav */}
-          <div className="hidden lg:flex items-center gap-0.5">
-            {/* Test Preparation */}
-            <div className="relative">
-              <button
-                onClick={() => toggleDropdown("test-prep")}
-                className={cn(
-                  "flex items-center gap-1 px-3.5 py-2 text-[0.9rem] font-semibold rounded-md transition-colors",
-                  activeDropdown === "test-prep"
-                    ? "text-primary bg-primary/10"
-                    : "text-foreground hover:text-primary hover:bg-primary/5"
-                )}
-              >
-                Test Preparation
-                <ChevronDown
-                  className={cn(
-                    "h-3.5 w-3.5 transition-transform duration-200",
-                    activeDropdown === "test-prep" && "rotate-180"
-                  )}
-                />
-              </button>
-              <AnimatePresence>
-                {activeDropdown === "test-prep" && (
-                  <MegaDropdown
-                    items={TEST_PREP_MENU}
-                    onClose={() => setActiveDropdown(null)}
-                  />
-                )}
-              </AnimatePresence>
-            </div>
+          {/* Desktop Nav - Modern Motion Menu */}
+          <div className="hidden lg:flex items-center gap-2">
+            <MotionNavigationMenu
+              viewportClassName="bg-background/95 backdrop-blur-md border border-border rounded-xl shadow-lg"
+              springStiffness={350}
+              springDamping={32}
+            >
+              <MotionNavigationMenuList highlightClassName="bg-primary/10 rounded-lg">
+                {/* Test Preparation */}
+                <MotionNavigationMenuItem value="test-prep">
+                  <MotionNavigationMenuTrigger className="flex items-center gap-1 px-3.5 py-2 text-[0.9rem] font-semibold text-foreground data-[state=open]:text-primary data-[state=open]:bg-primary/10">
+                    <BarChart3 className="h-4 w-4" />
+                    Test Prep
+                  </MotionNavigationMenuTrigger>
+                  <MotionNavigationMenuContent highlightClassName="bg-primary/10 rounded-lg ring-1 ring-primary/15">
+                    <div className="grid w-[500px] grid-cols-2 gap-1 p-2">
+                      {TEST_PREP_MENU.map((item) => {
+                        const isExternal = item.href.startsWith("http");
+                        return (
+                          <div key={item.label}>
+                            {isExternal ? (
+                              <a
+                                href={item.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group relative flex flex-col gap-1 rounded-lg p-3 hover:bg-primary/5 transition-colors"
+                              >
+                                <span className="text-sm font-semibold group-hover:text-primary transition-colors">
+                                  {item.label}
+                                </span>
+                                {item.sub && (
+                                  <span className="text-xs text-muted-foreground">
+                                    {item.sub.length} options
+                                  </span>
+                                )}
+                              </a>
+                            ) : (
+                              <MotionNavigationMenuLink
+                                href={item.href}
+                                className="group relative flex flex-col gap-1 rounded-lg p-3 hover:bg-primary/5 transition-colors"
+                              >
+                                <span className="text-sm font-semibold group-hover:text-primary transition-colors">
+                                  {item.label}
+                                </span>
+                                {item.sub && (
+                                  <span className="text-xs text-muted-foreground">
+                                    {item.sub.length} options
+                                  </span>
+                                )}
+                              </MotionNavigationMenuLink>
+                            )}
+                            {item.sub && (
+                              <div className="ml-2 space-y-1 border-l border-border/50 pl-2">
+                                {item.sub.map((sub) => {
+                                  const subIsExternal = sub.href.startsWith("http");
+                                  return subIsExternal ? (
+                                    <a
+                                      key={sub.label}
+                                      href={sub.href}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-xs text-muted-foreground hover:text-primary transition-colors block py-1"
+                                    >
+                                      {sub.label}
+                                    </a>
+                                  ) : (
+                                    <MotionNavigationMenuLink
+                                      key={sub.label}
+                                      href={sub.href}
+                                      className="text-xs text-muted-foreground hover:text-primary transition-colors block py-1"
+                                    >
+                                      {sub.label}
+                                    </MotionNavigationMenuLink>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </MotionNavigationMenuContent>
+                </MotionNavigationMenuItem>
 
-            {/* Academic Tutoring */}
-            <div className="relative">
-              <button
-                onClick={() => toggleDropdown("academic")}
-                className={cn(
-                  "flex items-center gap-1 px-3.5 py-2 text-[0.9rem] font-semibold rounded-md transition-colors",
-                  activeDropdown === "academic"
-                    ? "text-primary bg-primary/10"
-                    : "text-foreground hover:text-primary hover:bg-primary/5"
-                )}
-              >
-                Academic Tutoring
-                <ChevronDown
-                  className={cn(
-                    "h-3.5 w-3.5 transition-transform duration-200",
-                    activeDropdown === "academic" && "rotate-180"
-                  )}
-                />
-              </button>
-              <AnimatePresence>
-                {activeDropdown === "academic" && (
-                  <MegaDropdown
-                    items={ACADEMIC_MENU}
-                    onClose={() => setActiveDropdown(null)}
-                  />
-                )}
-              </AnimatePresence>
-            </div>
+                {/* Academic Tutoring */}
+                <MotionNavigationMenuItem value="academic">
+                  <MotionNavigationMenuTrigger className="flex items-center gap-1 px-3.5 py-2 text-[0.9rem] font-semibold text-foreground data-[state=open]:text-primary data-[state=open]:bg-primary/10">
+                    <BookOpen className="h-4 w-4" />
+                    Academic
+                  </MotionNavigationMenuTrigger>
+                  <MotionNavigationMenuContent highlightClassName="bg-primary/10 rounded-lg ring-1 ring-primary/15">
+                    <div className="grid w-[500px] grid-cols-2 gap-1 p-2">
+                      {ACADEMIC_MENU.map((item) => {
+                        const isExternal = item.href.startsWith("http");
+                        return (
+                          <div key={item.label}>
+                            {isExternal ? (
+                              <a
+                                href={item.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group relative flex flex-col gap-1 rounded-lg p-3 hover:bg-primary/5 transition-colors"
+                              >
+                                <span className="text-sm font-semibold group-hover:text-primary transition-colors">
+                                  {item.label}
+                                </span>
+                                {item.sub && (
+                                  <span className="text-xs text-muted-foreground">
+                                    {item.sub.length} options
+                                  </span>
+                                )}
+                              </a>
+                            ) : (
+                              <MotionNavigationMenuLink
+                                href={item.href}
+                                className="group relative flex flex-col gap-1 rounded-lg p-3 hover:bg-primary/5 transition-colors"
+                              >
+                                <span className="text-sm font-semibold group-hover:text-primary transition-colors">
+                                  {item.label}
+                                </span>
+                                {item.sub && (
+                                  <span className="text-xs text-muted-foreground">
+                                    {item.sub.length} options
+                                  </span>
+                                )}
+                              </MotionNavigationMenuLink>
+                            )}
+                            {item.sub && (
+                              <div className="ml-2 space-y-1 border-l border-border/50 pl-2">
+                                {item.sub.map((sub) => {
+                                  const subIsExternal = sub.href.startsWith("http");
+                                  return subIsExternal ? (
+                                    <a
+                                      key={sub.label}
+                                      href={sub.href}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-xs text-muted-foreground hover:text-primary transition-colors block py-1"
+                                    >
+                                      {sub.label}
+                                    </a>
+                                  ) : (
+                                    <MotionNavigationMenuLink
+                                      key={sub.label}
+                                      href={sub.href}
+                                      className="text-xs text-muted-foreground hover:text-primary transition-colors block py-1"
+                                    >
+                                      {sub.label}
+                                    </MotionNavigationMenuLink>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </MotionNavigationMenuContent>
+                </MotionNavigationMenuItem>
 
-             {/* About Us */}
-             <Link
-               href="/about"
-               onClick={() => setActiveDropdown(null)}
-               className="px-3.5 py-2 text-[0.9rem] font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-             >
-               About Us
-             </Link>
+                <MotionNavigationMenuIndicator />
 
-             {/* Practice Tests */}
-             <Link
-               href="/mocks"
-               onClick={() => setActiveDropdown(null)}
-               className="px-3.5 py-2 text-[0.9rem] font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-             >
-               Practice Tests
-             </Link>
+                {/* About Us */}
+                <MotionNavigationMenuItem>
+                  <MotionNavigationMenuLink
+                    href="/about"
+                    className="px-3.5 py-2 text-[0.9rem] font-semibold text-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors flex items-center gap-1"
+                  >
+                    <Users className="h-4 w-4" />
+                    About
+                  </MotionNavigationMenuLink>
+                </MotionNavigationMenuItem>
 
-              {/* Student Corner */}
-              <Link
-                href="/student-corner"
-                onClick={() => setActiveDropdown(null)}
-                className="px-3.5 py-2 text-[0.9rem] font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-              >
-                Student Corner
-              </Link>
+                {/* Practice Tests */}
+                <MotionNavigationMenuItem>
+                  <MotionNavigationMenuLink
+                    href="/mocks"
+                    className="px-3.5 py-2 text-[0.9rem] font-semibold text-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors flex items-center gap-1"
+                  >
+                    <Zap className="h-4 w-4" />
+                    Practice
+                  </MotionNavigationMenuLink>
+                </MotionNavigationMenuItem>
 
-              {/* Login Dropdown */}
-              <div className="relative">
-                <button
-                  onClick={() => toggleDropdown("login")}
-                  className={cn(
-                    "flex items-center gap-1 px-3.5 py-2 text-[0.9rem] font-semibold rounded-md transition-colors",
-                    activeDropdown === "login"
-                      ? "text-primary bg-primary/10"
-                      : "text-foreground hover:text-primary hover:bg-primary/5"
-                  )}
-                >
-                  Login
-                  <ChevronDown
-                    className={cn(
-                      "h-3.5 w-3.5 transition-transform duration-200",
-                      activeDropdown === "login" && "rotate-180"
-                    )}
-                  />
-                </button>
-                <AnimatePresence>
-                  {activeDropdown === "login" && (
-                    <LoginDropdown
-                      onClose={() => setActiveDropdown(null)}
-                    />
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
+                {/* Student Corner */}
+                <MotionNavigationMenuItem>
+                  <MotionNavigationMenuLink
+                    href="/student-corner"
+                    className="px-3.5 py-2 text-[0.9rem] font-semibold text-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors flex items-center gap-1"
+                  >
+                    <GraduationCap className="h-4 w-4" />
+                    Corner
+                  </MotionNavigationMenuLink>
+                </MotionNavigationMenuItem>
+
+                {/* Login */}
+                <MotionNavigationMenuItem value="login">
+                  <MotionNavigationMenuTrigger className="flex items-center gap-1 px-3.5 py-2 text-[0.9rem] font-semibold text-foreground data-[state=open]:text-primary data-[state=open]:bg-primary/10">
+                    <LogIn className="h-4 w-4" />
+                    Access
+                  </MotionNavigationMenuTrigger>
+                  <MotionNavigationMenuContent highlightClassName="bg-primary/10 rounded-lg ring-1 ring-primary/15">
+                    <div className="w-[300px] p-2 space-y-1">
+                      {LOGIN_MENU.map((item) => (
+                        <a
+                          key={item.label}
+                          href={item.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex flex-col gap-1 rounded-lg p-3 hover:bg-primary/5 transition-colors cursor-pointer"
+                        >
+                          <span className="text-sm font-semibold text-foreground">
+                            {item.label}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {item.description}
+                          </span>
+                        </a>
+                      ))}
+                    </div>
+                  </MotionNavigationMenuContent>
+                </MotionNavigationMenuItem>
+              </MotionNavigationMenuList>
+            </MotionNavigationMenu>
+          </div>
 
            {/* Desktop Actions */}
            <div className="hidden lg:flex items-center gap-3">

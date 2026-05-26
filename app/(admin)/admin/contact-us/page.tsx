@@ -32,6 +32,14 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -52,6 +60,10 @@ import {
   RefreshCw,
   CheckCircle,
   Search,
+  MoreHorizontal,
+  Clock,
+  FileText,
+  Reply,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -237,33 +249,46 @@ export default function AdminContactPage() {
         </div>
       ),
     },
-    {
-      id: "actions",
-      cell: ({ row }) => (
-        <div className="flex gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              setSelected(row.original);
-              setViewOpen(true);
-            }}
-          >
-            <Eye className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              setSelected(row.original);
-              setDeleteOpen(true);
-            }}
-          >
-            <Trash2 className="h-4 w-4 text-red-500" />
-          </Button>
-        </div>
-      ),
-    },
+     {
+       id: "actions",
+       cell: ({ row }) => (
+         <DropdownMenu>
+           <DropdownMenuTrigger asChild>
+             <Button variant="ghost" size="icon" className="h-8 w-8">
+               <MoreHorizontal className="h-4 w-4" />
+             </Button>
+           </DropdownMenuTrigger>
+           <DropdownMenuContent align="end">
+             <DropdownMenuLabel>Actions</DropdownMenuLabel>
+             <DropdownMenuSeparator />
+             <DropdownMenuItem
+               onClick={() => {
+                 setSelected(row.original);
+                 setViewOpen(true);
+               }}
+             >
+               <Eye className="h-4 w-4 mr-2" />
+               View Details
+             </DropdownMenuItem>
+             <DropdownMenuItem disabled title="Coming soon">
+               <Reply className="h-4 w-4 mr-2" />
+               Reply (Coming Soon)
+             </DropdownMenuItem>
+             <DropdownMenuSeparator />
+             <DropdownMenuItem
+               onClick={() => {
+                 setSelected(row.original);
+                 setDeleteOpen(true);
+               }}
+               className="text-red-600 dark:text-red-400"
+             >
+               <Trash2 className="h-4 w-4 mr-2" />
+               Delete
+             </DropdownMenuItem>
+           </DropdownMenuContent>
+         </DropdownMenu>
+       ),
+     },
   ];
 
   const table = useReactTable({
@@ -408,62 +433,138 @@ export default function AdminContactPage() {
         )}
       </div>
 
-      {/* View Dialog */}
-      <Dialog open={viewOpen} onOpenChange={setViewOpen}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <MessageSquare className="h-5 w-5" />
-              Message Details
-            </DialogTitle>
-          </DialogHeader>
+       {/* View Dialog */}
+       <Dialog open={viewOpen} onOpenChange={setViewOpen}>
+         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+           <DialogHeader>
+             <DialogTitle className="flex items-center gap-2">
+               <MessageSquare className="h-5 w-5 text-primary" />
+               Contact Message Details
+             </DialogTitle>
+             {selected && (
+               <DialogDescription>
+                 Message ID: {selected.id.slice(0, 8)}...
+               </DialogDescription>
+             )}
+           </DialogHeader>
 
-          {selected && (
-            <div className="space-y-6">
-              {/* Contact Info */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-semibold text-muted-foreground">Name</label>
-                  <p className="text-foreground mt-1">{selected.name}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-semibold text-muted-foreground">Email</label>
-                  <a
-                    href={`mailto:${selected.email}`}
-                    className="text-primary hover:underline mt-1 block"
-                  >
-                    {selected.email}
-                  </a>
-                </div>
-                <div>
-                  <label className="text-sm font-semibold text-muted-foreground">Status</label>
-                  <p className="text-foreground mt-1">
-                    <Badge>{selected.status}</Badge>
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-semibold text-muted-foreground">Date</label>
-                  <p className="text-foreground mt-1">
-                    {new Date(selected.createdAt).toLocaleString()}
-                  </p>
-                </div>
+           {selected && (
+             <div className="space-y-6">
+               {/* Contact Info - 3 Column Layout */}
+               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-muted/30 rounded-lg p-4 border border-border">
+                 {/* Name */}
+                 <div className="flex items-start gap-3">
+                   <div className="rounded-lg bg-primary/10 p-2">
+                     <User className="h-5 w-5 text-primary" />
+                   </div>
+                   <div className="min-w-0 flex-1">
+                     <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                       Name
+                     </label>
+                     <p className="text-foreground font-medium mt-1 break-words">{selected.name}</p>
+                   </div>
+                 </div>
+
+                 {/* Email */}
+                 <div className="flex items-start gap-3">
+                   <div className="rounded-lg bg-blue-500/10 p-2">
+                     <Mail className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                   </div>
+                   <div className="min-w-0 flex-1">
+                     <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                       Email
+                     </label>
+                     <a
+                       href={`mailto:${selected.email}`}
+                       className="text-primary hover:underline mt-1 block break-all text-sm font-medium"
+                     >
+                       {selected.email}
+                     </a>
+                   </div>
+                 </div>
+
+                 {/* Status */}
+                 <div className="flex items-start gap-3">
+                   <div className="rounded-lg bg-amber-500/10 p-2">
+                     <CheckCircle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                   </div>
+                   <div className="min-w-0 flex-1">
+                     <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                       Status
+                     </label>
+                     <div className="mt-1">
+                       <Badge>{selected.status}</Badge>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+
+               {/* Date and Time */}
+               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-muted/30 rounded-lg p-4 border border-border">
+                 {/* Created Date */}
+                 <div className="flex items-start gap-3">
+                   <div className="rounded-lg bg-green-500/10 p-2">
+                     <Calendar className="h-5 w-5 text-green-600 dark:text-green-400" />
+                   </div>
+                   <div className="min-w-0 flex-1">
+                     <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                       Date Submitted
+                     </label>
+                     <p className="text-foreground font-medium mt-1">
+                       {new Date(selected.createdAt).toLocaleDateString("en-US", {
+                         year: "numeric",
+                         month: "long",
+                         day: "numeric",
+                       })}
+                     </p>
+                   </div>
+                 </div>
+
+                 {/* Time */}
+                 <div className="flex items-start gap-3">
+                   <div className="rounded-lg bg-purple-500/10 p-2">
+                     <Clock className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                   </div>
+                   <div className="min-w-0 flex-1">
+                     <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                       Time
+                     </label>
+                     <p className="text-foreground font-medium mt-1">
+                       {new Date(selected.createdAt).toLocaleTimeString("en-US", {
+                         hour: "2-digit",
+                         minute: "2-digit",
+                         second: "2-digit",
+                       })}
+                     </p>
+                   </div>
+                 </div>
               </div>
 
-              {/* Subject */}
-              <div>
-                <label className="text-sm font-semibold text-muted-foreground">Subject</label>
-                <p className="text-foreground mt-2 bg-muted/50 rounded p-3">
-                  {selected.subject}
-                </p>
-              </div>
+               {/* Subject */}
+               <div className="bg-muted/30 rounded-lg p-4 border border-border">
+                 <div className="flex items-center gap-2 mb-3">
+                   <div className="rounded-lg bg-orange-500/10 p-2">
+                     <Tag className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                   </div>
+                   <label className="text-sm font-semibold text-foreground">Subject</label>
+                 </div>
+                 <p className="text-foreground bg-background/50 rounded p-3 border border-border/50">
+                   {selected.subject}
+                 </p>
+               </div>
 
-              {/* Message */}
-              <div>
-                <label className="text-sm font-semibold text-muted-foreground">Message</label>
-                <p className="text-foreground mt-2 bg-muted/50 rounded p-3 whitespace-pre-wrap">
-                  {selected.message}
-                </p>
-              </div>
+               {/* Message */}
+               <div className="bg-muted/30 rounded-lg p-4 border border-border">
+                 <div className="flex items-center gap-2 mb-3">
+                   <div className="rounded-lg bg-indigo-500/10 p-2">
+                     <FileText className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                   </div>
+                   <label className="text-sm font-semibold text-foreground">Message</label>
+                 </div>
+                 <p className="text-foreground bg-background/50 rounded p-3 border border-border/50 whitespace-pre-wrap max-h-96 overflow-y-auto">
+                   {selected.message}
+                 </p>
+               </div>
 
               {/* Action Buttons */}
               <div className="flex gap-3 border-t border-border pt-4">
