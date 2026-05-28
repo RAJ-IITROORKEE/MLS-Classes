@@ -8,6 +8,10 @@ import TextAlign from '@tiptap/extension-text-align';
 import { TextStyle } from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import Highlight from '@tiptap/extension-highlight';
+import Table from '@tiptap/extension-table';
+import TableRow from '@tiptap/extension-table-row';
+import TableHeader from '@tiptap/extension-table-header';
+import TableCell from '@tiptap/extension-table-cell';
 import {
   Bold,
   Italic,
@@ -27,6 +31,12 @@ import {
   Palette,
   Highlighter,
   Loader2,
+  Table2,
+  Rows3,
+  Columns3,
+  Plus,
+  Minus,
+  Trash2,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -127,6 +137,17 @@ function FormattingToolbar({
 
         <ToolbarButton icon={LinkIcon} onClick={() => setShowLinkInput((prev) => !prev)} isActive={editor.isActive('link')} title="Link" />
         <ToolbarButton icon={ImageIcon} onClick={onPickImage} title="Upload image" disabled={uploading} />
+        <ToolbarButton
+          icon={Table2}
+          onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
+          isActive={editor.isActive('table')}
+          title="Insert table"
+        />
+        <ToolbarButton icon={Rows3} onClick={() => editor.chain().focus().addRowAfter().run()} title="Add row" disabled={!editor.isActive('table')} />
+        <ToolbarButton icon={Columns3} onClick={() => editor.chain().focus().addColumnAfter().run()} title="Add column" disabled={!editor.isActive('table')} />
+        <ToolbarButton icon={Plus} onClick={() => editor.chain().focus().toggleHeaderRow().run()} title="Toggle header row" disabled={!editor.isActive('table')} />
+        <ToolbarButton icon={Minus} onClick={() => editor.chain().focus().deleteRow().run()} title="Delete row" disabled={!editor.isActive('table')} />
+        <ToolbarButton icon={Trash2} onClick={() => editor.chain().focus().deleteTable().run()} title="Delete table" disabled={!editor.isActive('table')} />
 
         <Button
           type="button"
@@ -286,6 +307,10 @@ export default function RichTextEditor({
       TextStyle,
       Color,
       Highlight.configure({ multicolor: true }),
+      Table.configure({ resizable: true }),
+      TableRow,
+      TableHeader,
+      TableCell,
     ],
     content: isEditorJson(value)
       ? value
@@ -307,6 +332,9 @@ export default function RichTextEditor({
           'prose prose-slate max-w-none p-6 dark:prose-invert focus:outline-none',
           'prose-headings:font-semibold prose-h1:text-3xl prose-h2:text-2xl',
           'prose-p:leading-8 prose-img:rounded-xl prose-img:shadow-md',
+          'prose-table:my-8 prose-table:w-full prose-table:border-collapse',
+          'prose-th:border prose-th:border-slate-300 prose-th:bg-slate-100 prose-th:px-3 prose-th:py-2 prose-th:text-left dark:prose-th:border-slate-700 dark:prose-th:bg-slate-900',
+          'prose-td:border prose-td:border-slate-200 prose-td:px-3 prose-td:py-2 dark:prose-td:border-slate-800',
           'prose-blockquote:border-l-4 prose-blockquote:border-slate-300 dark:prose-blockquote:border-slate-700',
           'prose-code:rounded prose-code:bg-slate-100 prose-code:px-1 prose-code:py-0.5 dark:prose-code:bg-slate-800',
           minHeight

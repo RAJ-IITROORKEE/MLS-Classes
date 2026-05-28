@@ -85,6 +85,14 @@ function tipTapToHtml(content: unknown): string {
         return `<blockquote>${children}</blockquote>`;
       case 'codeBlock':
         return `<pre><code>${children}</code></pre>`;
+      case 'table':
+        return `<table>${children}</table>`;
+      case 'tableRow':
+        return `<tr>${children}</tr>`;
+      case 'tableHeader':
+        return `<th>${children}</th>`;
+      case 'tableCell':
+        return `<td>${children}</td>`;
       case 'image': {
         const src = String(typedNode.attrs?.src || '');
         const alt = String(typedNode.attrs?.alt || '');
@@ -96,6 +104,7 @@ function tipTapToHtml(content: unknown): string {
           if (mark.type === 'bold') text = `<strong>${text}</strong>`;
           if (mark.type === 'italic') text = `<em>${text}</em>`;
           if (mark.type === 'underline') text = `<u>${text}</u>`;
+          if (mark.type === 'strike') text = `<s>${text}</s>`;
           if (mark.type === 'code') text = `<code>${text}</code>`;
           if (mark.type === 'highlight') {
             const color = String(mark.attrs?.color || '#fef08a');
@@ -185,6 +194,9 @@ export default function BlogDetailClient({ blog, relatedBlogs = [] }: BlogDetail
               'prose prose-slate mx-auto max-w-4xl dark:prose-invert',
               'prose-headings:font-semibold prose-h2:text-3xl prose-h3:text-2xl',
               'prose-p:leading-8 prose-a:text-slate-900 dark:prose-a:text-slate-100',
+              'prose-table:my-8 prose-table:w-full prose-table:border-collapse',
+              'prose-th:border prose-th:border-slate-300 prose-th:bg-slate-100 prose-th:px-3 prose-th:py-2 prose-th:text-left dark:prose-th:border-slate-700 dark:prose-th:bg-slate-900',
+              'prose-td:border prose-td:border-slate-200 prose-td:px-3 prose-td:py-2 dark:prose-td:border-slate-800',
               'prose-img:rounded-xl prose-img:shadow-md prose-pre:rounded-xl',
               activeHeading ? 'scroll-smooth' : ''
             )}
