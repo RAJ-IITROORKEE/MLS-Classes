@@ -1,8 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BlogCategory } from "@/lib/blog-data";
 import { cn } from "@/lib/utils";
+
+interface BlogCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  color?: string | null;
+  icon?: string | null;
+  order?: number;
+}
 
 interface CategorySidebarProps {
   categories: BlogCategory[];

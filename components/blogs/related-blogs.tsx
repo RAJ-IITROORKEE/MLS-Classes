@@ -2,8 +2,14 @@
 
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { BlogPost } from "@/lib/blog-data";
 import { cn } from "@/lib/utils";
+
+interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  readingTime?: number | null;
+}
 
 interface RelatedBlogsProps {
   blogs: BlogPost[];
@@ -35,15 +41,15 @@ export default function RelatedBlogs({ blogs }: RelatedBlogsProps) {
               "group block p-3 rounded-lg",
               "bg-white dark:bg-slate-800",
               "border border-slate-200 dark:border-slate-700",
-              "hover:border-blue-500 dark:hover:border-blue-400",
+              "hover:border-slate-500 dark:hover:border-slate-400",
               "hover:shadow-md transition-all"
             )}
           >
-            <p className="text-sm font-medium text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+            <p className="text-sm font-medium text-slate-900 dark:text-white group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors line-clamp-2">
               {blog.title}
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
-              {blog.readingTime} min read
+              {blog.readingTime || 1} min read
             </p>
           </Link>
         ))}
@@ -53,7 +59,7 @@ export default function RelatedBlogs({ blogs }: RelatedBlogsProps) {
         href="/blogs"
         className={cn(
           "flex items-center gap-2 mt-4 pt-4 border-t border-slate-200 dark:border-slate-700",
-          "text-sm font-medium text-blue-600 dark:text-blue-400",
+          "text-sm font-medium text-slate-700 dark:text-slate-300",
           "hover:gap-3 transition-all"
         )}
       >

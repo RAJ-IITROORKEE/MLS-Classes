@@ -1,123 +1,157 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Plus, Search, Filter } from "lucide-react";
-import BlogsTable from "./blogs-table";
-import BlogFormModal from "./blog-form-modal";
-import { BlogPost } from "@/lib/blog-data";
+import { useEffect, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Plus, AlertCircle, X } from 'lucide-react';
+import { toast } from 'sonner';
+import BlogsTable from './blogs-table';
+import DeleteBlogDialog from './blog-delete-dialog';
 
-interface AdminBlogsClientProps {
-  initialBlogs: BlogPost[];
+export interface BlogData {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: unknown;
+  contentHtml?: string;
+  author?: string;
+  category: { id: string; name: string; slug: string };
+  categoryId: string;
+  imageUrl?: string;
+  imagePublicId?: string;
+  featured: boolean;
+  readingTime?: number;
+  views: number;
+  status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export default function AdminBlogsClient({ initialBlogs }: AdminBlogsClientProps) {
-  const [blogs, setBlogs] = useState<BlogPost[]>(initialBlogs);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedBlog, setSelectedBlog] = useState<BlogPost | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"ALL" | "DRAFT" | "PUBLISHED" | "ARCHIVED">(
-    "ALL"
-  );
+export default function AdminBlogsClient() {
+  const router = useRouter();
+  const [blogs, setBlogs] = useState<BlogData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [deletingBlogId, setDeletingBlogId] = useState<string | null>(null);
+  const [actionLoading, setActionLoading] = useState(false);
 
-  const filteredBlogs = blogs.filter((blog) => {
-    const matchesSearch =
-      blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      blog.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-
-    const matchesStatus =
-      statusFilter === "ALL" || blog.status === statusFilter;
-
-    return matchesSearch && matchesStatus;
-  });
-
-  const handleCreateBlog = () => {
-    setSelectedBlog(null);
-    setIsModalOpen(true);
-  };
-
-  const handleEditBlog = (blog: BlogPost) => {
-    setSelectedBlog(blog);
-    setIsModalOpen(true);
-  };
-
-  const handleSaveBlog = (blog: BlogPost) => {
-    if (selectedBlog) {
-      // Update existing
-      setBlogs(blogs.map((b) => (b.id === blog.id ? blog : b)));
-    } else {
-      // Create new
-      setBlogs([...blogs, { ...blog, id: String(Date.now()) }]);
+  // Fetch all blogs
+  const fetchBlogs = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch('/api/admin/blogs');
+      if (!response.ok) throw new Error('Failed to fetch blogs');
+      const data = await response.json();
+      // API returns { blogs, pagination }, extract blogs array
+      setBlogs(data.blogs || data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setLoading(false);
     }
-    setIsModalOpen(false);
+  }, []);
+
+  // Initial fetch
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      void fetchBlogs();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [fetchBlogs]);
+
+  // Handle delete
+  const handleDelete = async (id: string) => {
+    try {
+      setActionLoading(true);
+      const response = await fetch(`/api/admin/blogs/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete blog');
+      setBlogs(blogs.filter((b) => b.id !== id));
+      setDeletingBlogId(null);
+      toast.success('Blog deleted successfully');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to delete blog';
+      setError(message);
+      toast.error(message);
+    } finally {
+      setActionLoading(false);
+    }
   };
 
-  const handleDeleteBlog = (blogId: string) => {
-    if (confirm("Are you sure you want to delete this blog?")) {
-      setBlogs(blogs.filter((b) => b.id !== blogId));
-    }
+  // Handle edit - navigate to edit page
+  const handleEditBlog = (blog: BlogData) => {
+    router.push(`/admin/blogs/${blog.id}`);
   };
 
   return (
     <div className="space-y-6">
-      {/* Controls */}
-      <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-        <div className="flex gap-4 w-full md:w-auto">
-          {/* Search */}
-          <div className="flex-1 md:flex-none relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Search blogs..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          {/* Status Filter */}
-          <select
-            value={statusFilter}
-            onChange={(e) =>
-              setStatusFilter(
-                e.target.value as "ALL" | "DRAFT" | "PUBLISHED" | "ARCHIVED"
-              )
-            }
-            className="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="ALL">All Status</option>
-            <option value="DRAFT">Draft</option>
-            <option value="PUBLISHED">Published</option>
-            <option value="ARCHIVED">Archived</option>
-          </select>
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Blog Management</h1>
+          <p className="text-muted-foreground mt-2">
+            Create, edit, and manage blog posts
+          </p>
         </div>
-
-        {/* Create Button */}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handleCreateBlog}
-          className="flex items-center gap-2 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors whitespace-nowrap"
+        <Button
+          onClick={() => router.push('/admin/blogs/create')}
+          disabled={actionLoading}
+          className="gap-2"
         >
-          <Plus className="w-5 h-5" />
+          <Plus className="w-4 h-4" />
           Create Blog
-        </motion.button>
+        </Button>
       </div>
 
-      {/* Table */}
-      <BlogsTable
-        blogs={filteredBlogs}
-        onEdit={handleEditBlog}
-        onDelete={handleDeleteBlog}
-      />
+      {/* Error Banner */}
+      {error && (
+        <div className="flex items-center justify-between p-4 rounded-lg border border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-900/20">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
+            <p className="text-sm font-medium text-red-800 dark:text-red-200">{error}</p>
+          </div>
+          <button
+            onClick={() => setError(null)}
+            className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
-      {/* Form Modal */}
-      <BlogFormModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        blog={selectedBlog}
-        onSave={handleSaveBlog}
-      />
+      {/* Blogs Table */}
+      {loading ? (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">Loading blogs...</p>
+        </div>
+      ) : blogs.length === 0 ? (
+        <div className="text-center py-12 border rounded-lg">
+          <p className="text-muted-foreground mb-4">No blogs yet</p>
+          <Button onClick={() => router.push('/admin/blogs/create')}>
+            Create First Blog
+          </Button>
+        </div>
+      ) : (
+        <BlogsTable
+          blogs={blogs}
+          onEdit={handleEditBlog}
+          onDelete={(id) => setDeletingBlogId(id)}
+        />
+      )}
+
+      {/* Delete Dialog */}
+      {deletingBlogId && (
+        <DeleteBlogDialog
+          onConfirm={() => handleDelete(deletingBlogId)}
+          onCancel={() => setDeletingBlogId(null)}
+          loading={actionLoading}
+        />
+      )}
     </div>
   );
 }

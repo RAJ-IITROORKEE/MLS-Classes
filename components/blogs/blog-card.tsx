@@ -4,15 +4,27 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Clock, CalendarDays, Eye } from "lucide-react";
-import { BlogPost } from "@/lib/blog-data";
 import { cn } from "@/lib/utils";
 
 interface BlogCardProps {
-  blog: BlogPost;
+  blog: {
+    id: string;
+    title: string;
+    slug: string;
+    excerpt: string;
+    author?: string | null;
+    category: { name: string; slug: string };
+    imageUrl?: string | null;
+    readingTime?: number | null;
+    views: number;
+    publishedAt?: string | Date | null;
+    createdAt?: string | Date;
+  };
 }
 
 export default function BlogCard({ blog }: BlogCardProps) {
-  const publishDate = new Date(blog.publishedAt).toLocaleDateString("en-US", {
+  const dateSource = blog.publishedAt || blog.createdAt || new Date().toISOString();
+  const publishDate = new Date(dateSource).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -45,7 +57,7 @@ export default function BlogCard({ blog }: BlogCardProps) {
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+              <div className="w-full h-full bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center">
                 <span className="text-white/50 text-center px-4">
                   {blog.category.name}
                 </span>
@@ -96,13 +108,13 @@ export default function BlogCard({ blog }: BlogCardProps) {
               </div>
               <div className="flex items-center gap-1">
                 <Clock className="w-4 h-4" />
-                <span>{blog.readingTime} min read</span>
+                <span>{blog.readingTime || 1} min read</span>
               </div>
             </div>
 
             {/* Author */}
             <p className="text-xs text-slate-500 dark:text-slate-500 mt-3">
-              By {blog.author}
+              By {blog.author || "MLS Classes"}
             </p>
           </div>
         </div>

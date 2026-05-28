@@ -5,11 +5,20 @@ import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Clock, CalendarDays } from "lucide-react";
-import { BlogPost } from "@/lib/blog-data";
 import { cn } from "@/lib/utils";
 
 interface FeaturedCarouselProps {
-  blogs: BlogPost[];
+  blogs: Array<{
+    id: string;
+    slug: string;
+    title: string;
+    excerpt: string;
+    imageUrl?: string | null;
+    readingTime?: number | null;
+    publishedAt?: string | Date | null;
+    createdAt?: string | Date;
+    category: { name: string; slug: string };
+  }>;
 }
 
 export default function FeaturedCarousel({ blogs }: FeaturedCarouselProps) {
@@ -44,7 +53,7 @@ export default function FeaturedCarousel({ blogs }: FeaturedCarouselProps) {
     );
   };
 
-  const publishDate = new Date(currentBlog.publishedAt).toLocaleDateString(
+  const publishDate = new Date(currentBlog.publishedAt || currentBlog.createdAt || new Date()).toLocaleDateString(
     "en-US",
     {
       year: "numeric",
@@ -93,7 +102,7 @@ export default function FeaturedCarousel({ blogs }: FeaturedCarouselProps) {
                     <span
                       className={cn(
                         "px-4 py-2 rounded-full text-sm font-semibold",
-                        "bg-blue-600/80 text-white backdrop-blur-sm"
+                        "bg-slate-800/85 text-white backdrop-blur-sm"
                       )}
                     >
                       {currentBlog.category.name}
@@ -101,7 +110,7 @@ export default function FeaturedCarousel({ blogs }: FeaturedCarouselProps) {
                   </div>
 
                   {/* Title */}
-                  <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight group-hover:text-blue-300 transition-colors max-w-2xl">
+                  <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight group-hover:text-slate-200 transition-colors max-w-2xl">
                     {currentBlog.title}
                   </h2>
 
@@ -118,13 +127,13 @@ export default function FeaturedCarousel({ blogs }: FeaturedCarouselProps) {
                     </div>
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4" />
-                      <span>{currentBlog.readingTime} min read</span>
+                      <span>{currentBlog.readingTime || 1} min read</span>
                     </div>
                   </div>
 
                   {/* Read More Link */}
                   <div className="pt-2">
-                    <span className="inline-flex items-center text-blue-300 group-hover:text-blue-200 transition-colors font-semibold">
+                    <span className="inline-flex items-center text-slate-200 group-hover:text-white transition-colors font-semibold">
                       Read Article
                       <ChevronRight className="w-4 h-4 ml-2" />
                     </span>

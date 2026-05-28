@@ -1,15 +1,30 @@
-import { getPublishedBlogs, blogCategories, getFeaturedBlogs } from "@/lib/blog-data";
+import { prisma } from "@/lib/prisma";
 import BlogsListingClient from "@/components/blogs/blogs-listing-client";
 
 export const metadata = {
   title: "Blogs | MLS Classes - Insights & Resources",
   description:
-    "Discover expert tips, study strategies, and student success stories. Read our latest blog posts on exam prep, college guidance, and academics.",
+    "Discover expert tips, study strategies, and success stories. Read our latest blog posts on exam prep, college guidance, and academics.",
 };
 
-export default function BlogsPage() {
-  const allBlogs = getPublishedBlogs();
-  const featuredBlogs = getFeaturedBlogs();
+export default async function BlogsPage() {
+  // Fetch published blogs
+  const [allBlogs, featuredBlogs, categories] = await Promise.all([
+    prisma.blog.findMany({
+      where: { status: 'PUBLISHED' },
+      include: { category: true },
+      orderBy: { publishedAt: 'desc' },
+    }),
+    prisma.blog.findMany({
+      where: { status: 'PUBLISHED', featured: true },
+      include: { category: true },
+      orderBy: { publishedAt: 'desc' },
+      take: 3,
+    }),
+    prisma.blogCategory.findMany({
+      orderBy: { order: 'asc', name: 'asc' },
+    }),
+  ]);
 
   return (
     <main className="min-h-screen bg-white dark:bg-slate-950 pt-20">
@@ -28,11 +43,13 @@ export default function BlogsPage() {
       </section>
 
       {/* Main Content */}
-      <BlogsListingClient
-        initialBlogs={allBlogs}
-        featuredBlogs={featuredBlogs}
-        categories={blogCategories}
-      />
+      <div className="py-12 md:py-16">
+        <BlogsListingClient
+          initialBlogs={allBlogs}
+          featuredBlogs={featuredBlogs}
+          categories={categories}
+        />
+      </div>
     </main>
   );
 }

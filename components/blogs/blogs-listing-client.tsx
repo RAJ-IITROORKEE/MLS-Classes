@@ -1,13 +1,40 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Search, X } from "lucide-react";
 import BlogCard from "./blog-card";
 import FeaturedCarousel from "./featured-carousel";
 import CategorySidebar from "./category-sidebar";
-import { BlogPost, BlogCategory } from "@/lib/blog-data";
 import { cn } from "@/lib/utils";
+
+interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  author?: string | null;
+  category: { id?: string; name: string; slug: string };
+  imageUrl?: string | null;
+  featured: boolean;
+  readingTime?: number | null;
+  views: number;
+  status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+  publishedAt?: string | Date | null;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
+}
+
+interface BlogCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  color?: string | null;
+  icon?: string | null;
+  order?: number;
+}
 
 interface BlogsListingClientProps {
   initialBlogs: BlogPost[];
@@ -230,12 +257,12 @@ export default function BlogsListingClient({
           <p className="text-slate-300 mb-8 max-w-2xl mx-auto">
             Start practicing with our comprehensive mock tests and personalized study plans.
           </p>
-          <a
+          <Link
             href="/mocks"
             className="inline-block px-6 py-3 bg-white dark:bg-white text-slate-900 font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-100 transition-colors"
           >
             Start Practicing
-          </a>
+          </Link>
         </div>
       </section>
     </div>

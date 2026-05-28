@@ -1,43 +1,25 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Edit2, Trash2, Eye, Lock, CheckCircle } from "lucide-react";
-import { BlogPost, blogCategories } from "@/lib/blog-data";
-import { cn } from "@/lib/utils";
+import { Edit2, Trash2, Eye } from "lucide-react";
+import type { BlogData } from "./admin-blogs-client";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 interface BlogsTableProps {
-  blogs: BlogPost[];
-  onEdit: (blog: BlogPost) => void;
+  blogs: BlogData[];
+  onEdit: (blog: BlogData) => void;
   onDelete: (blogId: string) => void;
 }
 
+const statusVariants = {
+  DRAFT: "secondary",
+  PUBLISHED: "default",
+  ARCHIVED: "outline",
+} as const;
+
 export default function BlogsTable({ blogs, onEdit, onDelete }: BlogsTableProps) {
-  const getStatusBadgeColor = (status: string) => {
-    switch (status) {
-      case "PUBLISHED":
-        return "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300";
-      case "DRAFT":
-        return "bg-slate-100 dark:bg-slate-900/30 text-slate-700 dark:text-slate-300";
-      case "ARCHIVED":
-        return "bg-slate-100 dark:bg-slate-900/30 text-slate-500 dark:text-slate-400";
-      default:
-        return "";
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "PUBLISHED":
-        return <CheckCircle className="w-4 h-4" />;
-      case "DRAFT":
-        return <Lock className="w-4 h-4" />;
-      case "ARCHIVED":
-        return <Eye className="w-4 h-4" />;
-      default:
-        return null;
-    }
-  };
-
   if (blogs.length === 0) {
     return (
       <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-8 text-center">
@@ -62,10 +44,13 @@ export default function BlogsTable({ blogs, onEdit, onDelete }: BlogsTableProps)
                 Status
               </th>
               <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900 dark:text-white">
+                Featured
+              </th>
+              <th className="px-6 py-3 text-right text-sm font-semibold text-slate-900 dark:text-white">
                 Views
               </th>
               <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900 dark:text-white">
-                Date
+                Published
               </th>
               <th className="px-6 py-3 text-right text-sm font-semibold text-slate-900 dark:text-white">
                 Actions
@@ -82,7 +67,7 @@ export default function BlogsTable({ blogs, onEdit, onDelete }: BlogsTableProps)
                 className="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors"
               >
                 <td className="px-6 py-4">
-                  <p className="font-medium text-slate-900 dark:text-white line-clamp-1">
+                  <p className="font-medium text-slate-900 dark:text-white line-clamp-1 max-w-xs">
                     {blog.title}
                   </p>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -91,52 +76,60 @@ export default function BlogsTable({ blogs, onEdit, onDelete }: BlogsTableProps)
                 </td>
                 <td className="px-6 py-4">
                   <span className="text-sm text-slate-600 dark:text-slate-400">
-                    {blog.category.name}
+                    {blog.category?.name || "-"}
                   </span>
                 </td>
                 <td className="px-6 py-4">
-                  <div
-                    className={cn(
-                      "inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium",
-                      getStatusBadgeColor(blog.status)
-                    )}
-                  >
-                    {getStatusIcon(blog.status)}
+                  <Badge variant={statusVariants[blog.status]}>
                     {blog.status}
-                  </div>
+                  </Badge>
+                </td>
+                <td className="px-6 py-4">
+                  {blog.featured ? (
+                    <Badge variant="outline">Featured</Badge>
+                  ) : (
+                    <span className="text-slate-400 text-sm">-</span>
+                  )}
+                </td>
+                <td className="px-6 py-4 text-right">
+                  <span className="text-sm text-slate-600 dark:text-slate-400">
+                    {blog.views || 0}
+                  </span>
                 </td>
                 <td className="px-6 py-4">
                   <span className="text-sm text-slate-600 dark:text-slate-400">
-                    {blog.views}
+                    {blog.publishedAt
+                      ? new Date(blog.publishedAt).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })
+                      : "-"}
                   </span>
-                </td>
-                <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
-                  {new Date(blog.publishedAt).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end gap-2">
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
+                    <Link href={`/blogs/${blog.slug}`} target="_blank">
+                      <Button variant="ghost" size="sm" title="View">
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                    </Link>
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       onClick={() => onEdit(blog)}
-                      className="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                       title="Edit"
                     >
                       <Edit2 className="w-4 h-4" />
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       onClick={() => onDelete(blog.id)}
-                      className="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors"
                       title="Delete"
                     >
-                      <Trash2 className="w-4 h-4" />
-                    </motion.button>
+                      <Trash2 className="w-4 h-4 text-destructive" />
+                    </Button>
                   </div>
                 </td>
               </motion.tr>
