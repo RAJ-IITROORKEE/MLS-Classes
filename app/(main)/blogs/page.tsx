@@ -22,7 +22,7 @@ export default async function BlogsPage() {
       take: 3,
     }),
     prisma.blogCategory.findMany({
-      orderBy: { order: 'asc', name: 'asc' },
+      orderBy: [{ order: 'asc' }, { name: 'asc' }],
     }),
   ]);
 
