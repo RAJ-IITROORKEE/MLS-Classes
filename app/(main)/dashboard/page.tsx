@@ -15,7 +15,7 @@ export default async function DashboardPage() {
   })
 
   if (!session?.user) {
-    redirect("/mocks/sign-in")
+    redirect("/sign-in")
   }
 
   const [user, mockAttempts, totalMocks, recentTestimonials] = await Promise.all([

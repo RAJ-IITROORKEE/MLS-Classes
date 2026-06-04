@@ -20,7 +20,7 @@ export default async function MockResultPage({ params, searchParams }: PageProps
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session?.user) {
-    redirect("/mocks/sign-in");
+    redirect("/sign-in");
   }
 
   const attempt = await prisma.mockAttempt.findFirst({

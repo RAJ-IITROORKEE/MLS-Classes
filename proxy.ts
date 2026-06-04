@@ -5,16 +5,18 @@ export async function proxy(req: NextRequest) {
   const session = getSessionCookie(req)
   const { pathname } = req.nextUrl
 
+  const isAdminSignInRoute = pathname.startsWith("/admin/sign-in")
+
   const isProtectedRoute =
     pathname.startsWith("/admin") ||
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/profile")
 
   const isAuthRoute =
-    pathname.startsWith("/sign-in") || pathname.startsWith("/sign-up")
+    pathname.startsWith("/sign-in") || pathname.startsWith("/sign-up") || isAdminSignInRoute
 
-  if (isProtectedRoute && !session) {
-    return NextResponse.redirect(new URL("/sign-in", req.url))
+  if (isProtectedRoute && !isAdminSignInRoute && !session) {
+    return NextResponse.redirect(new URL("/admin/sign-in", req.url))
   }
 
   if (isAuthRoute && session) {

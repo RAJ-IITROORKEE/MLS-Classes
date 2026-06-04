@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { FolderOpen } from "lucide-react";
 import { ComingSoonPage } from "@/components/admin/coming-soon-page";
 
 export const metadata: Metadata = { title: "Resources | MLS Classes Admin" };
@@ -9,7 +8,7 @@ export default function AdminResourcesPage() {
     <ComingSoonPage
       title="Resources"
       description="Upload and manage downloadable study materials and resources."
-      icon={FolderOpen}
+      icon="folderOpen"
     />
   );
 }

@@ -330,6 +330,7 @@ export function Navbar() {
               width={130}
               height={52}
               className="h-14 w-auto object-contain"
+              style={{ width: "auto" }}
               priority
             />
           </Link>
@@ -460,7 +461,7 @@ export function Navbar() {
              </Button>
              <SignedOut>
                <Button asChild size="sm" variant="outline" className="font-semibold text-sm px-5 h-9">
-                 <Link href="/mocks/sign-in" onClick={() => setActiveDropdown(null)}>
+                  <Link href="/sign-in" onClick={() => setActiveDropdown(null)}>
                    Sign In
                  </Link>
                </Button>
@@ -598,7 +599,7 @@ export function Navbar() {
                <SignedOut>
                  <div className="mt-2">
                    <Button asChild className="w-full font-bold" size="default">
-                     <Link href="/mocks/sign-in" onClick={() => setIsOpen(false)}>
+                      <Link href="/sign-in" onClick={() => setIsOpen(false)}>
                        Sign In
                      </Link>
                    </Button>
@@ -626,7 +627,7 @@ export function Navbar() {
                <SignedOut>
                  <div className="mt-2">
                    <Button asChild className="w-full font-bold bg-muted text-foreground hover:bg-muted/80" size="default">
-                     <Link href="/mocks/sign-in" onClick={() => setIsOpen(false)}>
+                      <Link href="/sign-in" onClick={() => setIsOpen(false)}>
                        Sign In
                      </Link>
                    </Button>

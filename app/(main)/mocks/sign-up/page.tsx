@@ -230,7 +230,7 @@ export default function MockSignUpPage() {
           </Button>
           <p className="text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link className="font-semibold text-foreground hover:text-primary" href="/mocks/sign-in">
+            <Link className="font-semibold text-foreground hover:text-primary" href="/sign-in">
               Sign in
             </Link>
           </p>

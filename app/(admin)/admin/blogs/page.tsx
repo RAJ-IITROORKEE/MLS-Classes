@@ -14,7 +14,7 @@ export default async function AdminBlogsPage() {
   });
 
   if (!session?.user) {
-    redirect("/sign-in");
+    redirect("/admin/sign-in");
   }
 
   if (session.user.role !== "ADMIN") {

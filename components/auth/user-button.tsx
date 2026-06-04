@@ -46,7 +46,7 @@ export function UserButton() {
   if (!session) {
     return (
       <Button variant="outline" size="sm" asChild>
-        <Link href="/mocks/sign-in">Sign In</Link>
+        <Link href="/sign-in">Sign In</Link>
       </Button>
     )
   }

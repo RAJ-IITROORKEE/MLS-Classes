@@ -15,7 +15,7 @@ export default async function PerformancePage() {
   })
 
   if (!session?.user) {
-    redirect("/mocks/sign-in")
+    redirect("/sign-in")
   }
 
   const [allAttempts, totalMocks] = await Promise.all([

@@ -18,7 +18,7 @@ export default async function MockStartPage({ params }: PageProps) {
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session?.user) {
-    redirect("/mocks/sign-in");
+    redirect("/sign-in");
   }
 
   const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/mock/${id}`, {

@@ -15,7 +15,7 @@ export default async function CreateBlogPage() {
   });
 
   if (!session?.user || session.user.role !== "ADMIN") {
-    redirect("/sign-in");
+    redirect("/admin/sign-in");
   }
 
   const categories = await prisma.blogCategory.findMany({

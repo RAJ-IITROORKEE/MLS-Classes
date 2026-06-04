@@ -25,7 +25,7 @@ export default async function MocksPage({ searchParams }: PageProps) {
   });
 
   if (!session?.user) {
-    redirect("/mocks/sign-in");
+    redirect("/sign-in");
   }
 
   const [mocks, bundles, mockAccess] = await Promise.all([

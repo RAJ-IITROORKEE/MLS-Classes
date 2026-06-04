@@ -1,17 +1,30 @@
-import { Construction } from "lucide-react";
+"use client";
+
+import { BarChart3, BookOpen, Construction, FileText, FolderOpen, GraduationCap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+
+const ICONS = {
+  bookOpen: BookOpen,
+  barChart3: BarChart3,
+  construction: Construction,
+  fileText: FileText,
+  folderOpen: FolderOpen,
+  graduationCap: GraduationCap,
+};
 
 interface ComingSoonPageProps {
   title: string;
   description?: string;
-  icon?: React.ElementType;
+  icon?: keyof typeof ICONS;
 }
 
 export function ComingSoonPage({
   title,
   description,
-  icon: Icon = Construction,
+  icon = "construction",
 }: ComingSoonPageProps) {
+  const Icon = ICONS[icon];
+
   return (
     <div className="space-y-6">
       <div>

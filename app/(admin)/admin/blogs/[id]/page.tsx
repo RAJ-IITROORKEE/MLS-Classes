@@ -19,7 +19,7 @@ export default async function EditBlogPage({
   });
 
   if (!session?.user || session.user.role !== "ADMIN") {
-    redirect("/sign-in");
+    redirect("/admin/sign-in");
   }
 
   const { id } = await params;

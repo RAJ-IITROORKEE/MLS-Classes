@@ -141,6 +141,7 @@ export function AdminAppSidebar({ ...props }: React.ComponentProps<typeof Sideba
                   width={140}
                   height={56}
                   className="h-14 w-auto object-contain"
+                  style={{ width: "auto" }}
                 />
               </Link>
             </SidebarMenuButton>

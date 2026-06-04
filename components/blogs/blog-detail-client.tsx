@@ -180,7 +180,14 @@ export default function BlogDetailClient({ blog, relatedBlogs = [] }: BlogDetail
       {blog.imageUrl && (
         <section className="border-b border-slate-200 dark:border-slate-800">
           <div className="relative h-80 w-full md:h-[480px]">
-            <Image src={blog.imageUrl} alt={blog.title} fill priority className="object-cover" />
+            <Image
+              src={blog.imageUrl}
+              alt={blog.title}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
           </div>
         </section>
       )}

@@ -21,7 +21,7 @@ export default function AdminLayout({
 
   useEffect(() => {
     if (!isPending && !session) {
-      router.replace("/sign-in");
+      router.replace("/admin/sign-in");
     }
   }, [isPending, session, router]);
 

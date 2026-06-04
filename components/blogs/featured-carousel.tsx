@@ -86,6 +86,7 @@ export default function FeaturedCarousel({ blogs }: FeaturedCarouselProps) {
                 src={currentBlog.imageUrl}
                 alt={currentBlog.title}
                 fill
+                sizes="100vw"
                 className="object-cover brightness-50 dark:brightness-40"
               />
             )}

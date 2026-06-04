@@ -1,6 +1,5 @@
-import { BookTrialForm } from "@/components/book-trial-form";
-import { CheckCircle2, Clock4, UserCheck, GraduationCap } from "lucide-react";
 import type { Metadata } from "next";
+import { BookTrialForm } from "@/components/book-trial-form";
 
 export const metadata: Metadata = {
   title: "Book a Free Trial | MLS Classes",
@@ -10,22 +9,22 @@ export const metadata: Metadata = {
 
 const BENEFITS = [
   {
-    icon: CheckCircle2,
+    icon: "OK",
     title: "100% Free",
     desc: "No credit card or commitment needed",
   },
   {
-    icon: Clock4,
+    icon: "24",
     title: "Any Timezone",
     desc: "Classes scheduled 24/7 globally",
   },
   {
-    icon: UserCheck,
+    icon: "1:1",
     title: "Best Tutor Match",
     desc: "Matched by subject & learning style",
   },
   {
-    icon: GraduationCap,
+    icon: "K12",
     title: "K-12 Coverage",
     desc: "All grades, all subjects covered",
   },
@@ -63,7 +62,7 @@ export default function BookTrialPage() {
                 key={b.title}
                 className="flex flex-col items-center gap-2 rounded-xl border border-white/15 bg-white/8 px-4 py-4 backdrop-blur-sm"
               >
-                <b.icon className="h-6 w-6 text-white/80" />
+                <span className="flex h-6 items-center text-sm font-semibold text-white/80">{b.icon}</span>
                 <p className="text-sm font-bold text-white">{b.title}</p>
                 <p className="text-xs text-white/60 leading-snug text-center">{b.desc}</p>
               </div>
