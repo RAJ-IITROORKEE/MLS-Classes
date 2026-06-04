@@ -1,3 +1,5 @@
+"use client";
+
 import type { ReactNode } from "react";
 import { Check, Sparkles } from "lucide-react";
 
