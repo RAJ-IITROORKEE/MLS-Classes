@@ -63,6 +63,21 @@ type SortDir = "asc" | "desc";
 
 const PAGE_SIZE = 10;
 
+function SortIcon({
+  col,
+  sortKey,
+  sortDir,
+}: {
+  col: SortKey;
+  sortKey: SortKey;
+  sortDir: SortDir;
+}) {
+  if (sortKey !== col) return <ChevronsUpDown className="h-3.5 w-3.5 ml-1 inline opacity-40" />;
+  return sortDir === "asc"
+    ? <ChevronUp className="h-3.5 w-3.5 ml-1 inline" />
+    : <ChevronDown className="h-3.5 w-3.5 ml-1 inline" />;
+}
+
 // ── Component ─────────────────────────────────────────────────────────────────
 export function TestimonialsTable({ initialData }: { initialData: Testimonial[] }) {
   const [items, setItems] = useState<Testimonial[]>(initialData);
@@ -112,13 +127,6 @@ export function TestimonialsTable({ initialData }: { initialData: Testimonial[] 
     if (sortKey === key) { setSortDir((d) => (d === "asc" ? "desc" : "asc")); }
     else { setSortKey(key); setSortDir("asc"); }
     setPage(1);
-  }
-
-  function SortIcon({ col }: { col: SortKey }) {
-    if (sortKey !== col) return <ChevronsUpDown className="h-3.5 w-3.5 ml-1 inline opacity-40" />;
-    return sortDir === "asc"
-      ? <ChevronUp className="h-3.5 w-3.5 ml-1 inline" />
-      : <ChevronDown className="h-3.5 w-3.5 ml-1 inline" />;
   }
 
   // ── Dialog helpers ───────────────────────────────────────────────────────────
@@ -231,18 +239,18 @@ export function TestimonialsTable({ initialData }: { initialData: Testimonial[] 
                 <tr>
                   <th className="text-left px-4 py-3 font-medium text-muted-foreground w-12"></th>
                   <th className="text-left px-4 py-3 font-medium text-muted-foreground cursor-pointer select-none" onClick={() => toggleSort("name")}>
-                    Name <SortIcon col="name" />
+                    Name <SortIcon col="name" sortKey={sortKey} sortDir={sortDir} />
                   </th>
                   <th className="text-left px-4 py-3 font-medium text-muted-foreground cursor-pointer select-none hidden sm:table-cell" onClick={() => toggleSort("role")}>
-                    Role <SortIcon col="role" />
+                    Role <SortIcon col="role" sortKey={sortKey} sortDir={sortDir} />
                   </th>
                   <th className="text-left px-4 py-3 font-medium text-muted-foreground cursor-pointer select-none hidden md:table-cell" onClick={() => toggleSort("rating")}>
-                    Rating <SortIcon col="rating" />
+                    Rating <SortIcon col="rating" sortKey={sortKey} sortDir={sortDir} />
                   </th>
                   <th className="text-left px-4 py-3 font-medium text-muted-foreground hidden lg:table-cell">Program</th>
                   <th className="text-left px-4 py-3 font-medium text-muted-foreground hidden sm:table-cell">Status</th>
                   <th className="text-left px-4 py-3 font-medium text-muted-foreground cursor-pointer select-none hidden md:table-cell" onClick={() => toggleSort("order")}>
-                    Order <SortIcon col="order" />
+                    Order <SortIcon col="order" sortKey={sortKey} sortDir={sortDir} />
                   </th>
                   <th className="text-right px-4 py-3 font-medium text-muted-foreground">Actions</th>
                 </tr>
