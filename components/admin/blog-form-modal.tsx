@@ -145,7 +145,7 @@ export default function BlogFormModal({
                   onChange={handleTitleChange}
                   placeholder="Enter blog title"
                   className={cn(
-                    "w-full px-4 py-2 rounded-lg border bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500",
+                    "w-full px-4 py-2 rounded-lg border bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary",
                     errors.title
                       ? "border-red-500"
                       : "border-slate-200 dark:border-slate-700"
@@ -167,7 +167,7 @@ export default function BlogFormModal({
                   value={formData.slug}
                   onChange={handleChange}
                   placeholder="auto-generated-slug"
-                  className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
@@ -183,7 +183,7 @@ export default function BlogFormModal({
                   placeholder="Brief description of the blog"
                   rows={3}
                   className={cn(
-                    "w-full px-4 py-2 rounded-lg border bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none",
+                    "w-full px-4 py-2 rounded-lg border bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary resize-none",
                     errors.excerpt
                       ? "border-red-500"
                       : "border-slate-200 dark:border-slate-700"
@@ -214,7 +214,7 @@ export default function BlogFormModal({
                         }));
                       }
                     }}
-                    className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                   >
                     {blogCategories.map((cat) => (
                       <option key={cat.slug} value={cat.slug}>
@@ -234,7 +234,7 @@ export default function BlogFormModal({
                     value={formData.author || ""}
                     onChange={handleChange}
                     placeholder="Author name"
-                    className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
               </div>
@@ -251,7 +251,7 @@ export default function BlogFormModal({
                     value={formData.imageUrl || ""}
                     onChange={handleChange}
                     placeholder="https://..."
-                    className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
 
@@ -265,7 +265,7 @@ export default function BlogFormModal({
                     value={formData.readingTime}
                     onChange={handleChange}
                     min="1"
-                    className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
               </div>
@@ -282,7 +282,7 @@ export default function BlogFormModal({
                   placeholder="Write your blog content here..."
                   rows={10}
                   className={cn(
-                    "w-full px-4 py-2 rounded-lg border bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none font-mono text-sm",
+                    "w-full px-4 py-2 rounded-lg border bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary resize-none font-mono text-sm",
                     errors.content
                       ? "border-red-500"
                       : "border-slate-200 dark:border-slate-700"
@@ -303,7 +303,7 @@ export default function BlogFormModal({
                     name="status"
                     value={formData.status}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
                   >
                     <option value="DRAFT">Draft</option>
                     <option value="PUBLISHED">Published</option>
@@ -318,7 +318,7 @@ export default function BlogFormModal({
                       name="featured"
                       checked={formData.featured}
                       onChange={handleChange}
-                      className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                      className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary"
                     />
                     <span className="text-sm font-medium text-slate-900 dark:text-white">
                       Featured
@@ -341,7 +341,7 @@ export default function BlogFormModal({
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   type="submit"
-                  className="flex items-center gap-2 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                  className="flex items-center gap-2 px-6 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-colors"
                 >
                   <Save className="w-4 h-4" />
                   {blog ? "Update Blog" : "Create Blog"}

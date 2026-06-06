@@ -108,7 +108,7 @@ export default function FAQsPage() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col items-center gap-6 xl:flex-row xl:items-center xl:justify-between mb-10">
             <div className="flex flex-col items-center gap-4 xl:items-start">
-              <span className="inline-flex items-center border-cyan-400 border justify-center rounded-full bg-cyan-50 dark:bg-transparent px-3 py-1 text-cyan-700 dark:text-gray-300 text-sm font-medium">
+              <span className="inline-flex items-center border-primary/40 border justify-center rounded-full bg-primary/10 dark:bg-transparent px-3 py-1 text-primary dark:text-gray-300 text-sm font-medium">
                 Find Answers to Common Queries
               </span>
               <h1 className="text-4xl lg:text-5xl font-bold text-center text-slate-900 dark:text-gray-100 xl:text-left">
@@ -150,7 +150,7 @@ export default function FAQsPage() {
                         type="button"
                         onClick={() => toggleItem(itemIndex)}
                         className={`flex w-full justify-between items-center gap-5 p-6 ${
-                          isActive ? "text-cyan-600 dark:text-cyan-400" : "text-slate-800 dark:text-gray-100"
+                          isActive ? "text-primary" : "text-slate-800 dark:text-gray-100"
                         }`}
                         aria-expanded={isActive}
                       >
@@ -165,7 +165,7 @@ export default function FAQsPage() {
                           xmlns="http://www.w3.org/2000/svg"
                           className={`flex-shrink-0 transition-transform duration-300 ${
                             isActive
-                              ? "rotate-180 text-cyan-600 dark:text-primary-400"
+                              ? "rotate-180 text-primary"
                               : "text-slate-400 dark:text-gray-400"
                           }`}
                         >

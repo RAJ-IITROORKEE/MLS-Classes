@@ -44,7 +44,7 @@ export function FAQSection() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col gap-10 xl:flex-row xl:items-start xl:justify-between">
           <div className="flex flex-col items-center gap-4 xl:max-w-[30%] xl:items-start">
-            <span className="inline-flex items-center border-purple-400 border justify-center rounded-full bg-purple-50 dark:bg-transparent px-3 py-1 text-purple-700 dark:text-gray-300 text-sm font-medium">
+            <span className="inline-flex items-center border-primary/40 border justify-center rounded-full bg-primary/10 dark:bg-transparent px-3 py-1 text-primary dark:text-gray-300 text-sm font-medium">
               Find Answers to Common Queries
             </span>
             <h2 className="text-4xl lg:text-5xl font-bold text-center text-slate-800 dark:text-gray-100 xl:text-left">
@@ -58,9 +58,7 @@ export function FAQSection() {
               <Link
                 href="/faqs"
                 prefetch
-                className="mt-4 inline-flex items-center gap-2 rounded-full border border-cyan-400 px-6 py-2 text-cyan-400 
-                           hover:border-cyan-500 hover:text-cyan-300 hover:shadow-[0_0_15px_rgba(34,211,238,0.7)] 
-                           transition duration-300 ease-in-out"
+                className="mt-4 inline-flex items-center gap-2 rounded-full border border-primary px-6 py-2 text-primary transition duration-300 ease-in-out hover:border-primary/80 hover:text-primary/80 hover:shadow-[0_0_15px_color-mix(in_srgb,var(--theme-color)_45%,transparent)]"
               >
                 More FAQs <ArrowRight className="w-4 h-4" />
               </Link>
@@ -89,7 +87,7 @@ export function FAQSection() {
                       type="button"
                       onClick={() => toggleItem(itemIndex)}
                       className={`flex w-full justify-between items-center gap-5 p-6 ${
-                        isActive ? "text-cyan-600 dark:text-cyan-400" : "text-slate-800 dark:text-gray-100"
+                        isActive ? "text-primary" : "text-slate-800 dark:text-gray-100"
                       }`}
                       aria-expanded={isActive}
                     >
@@ -104,7 +102,7 @@ export function FAQSection() {
                         xmlns="http://www.w3.org/2000/svg"
                         className={`flex-shrink-0 transition-transform duration-300 ${
                           isActive
-                            ? "rotate-180 text-primary-400"
+                            ? "rotate-180 text-primary"
                             : "text-gray-300"
                         }`}
                       >

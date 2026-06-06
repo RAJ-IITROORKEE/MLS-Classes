@@ -11,7 +11,7 @@ const STATS = [
 
 export function AboutStats() {
   return (
-    <section className="py-16 px-4" style={{ background: "#5496b6" }}>
+    <section className="py-16 px-4" style={{ background: "var(--theme-color)" }}>
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
           {STATS.map((stat, index) => (

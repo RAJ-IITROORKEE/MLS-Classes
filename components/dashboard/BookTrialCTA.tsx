@@ -7,7 +7,7 @@ import Link from "next/link"
 
 export function BookTrialCTA() {
   return (
-    <Card className="overflow-hidden border-primary/20 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 dark:from-indigo-950/30 dark:via-purple-950/30 dark:to-pink-950/30">
+    <Card className="overflow-hidden border-primary/20 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 dark:from-primary/20 dark:via-primary/10 dark:to-primary/20">
       <CardContent className="p-6 md:p-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-start gap-4">
@@ -28,15 +28,15 @@ export function BookTrialCTA() {
               </p>
               <div className="flex flex-wrap gap-3 pt-2">
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="h-2 w-2 rounded-full bg-green-500" />
+                  <div className="h-2 w-2 rounded-full bg-primary" />
                   <span>Expert Instructors</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="h-2 w-2 rounded-full bg-blue-500" />
+                  <div className="h-2 w-2 rounded-full bg-primary" />
                   <span>Personalized Attention</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="h-2 w-2 rounded-full bg-purple-500" />
+                  <div className="h-2 w-2 rounded-full bg-primary" />
                   <span>No Commitment</span>
                 </div>
               </div>

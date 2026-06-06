@@ -7,11 +7,11 @@ import { cn } from "@/lib/utils";
 import type { ProgramData } from "@/lib/program-data";
 
 const COLOR_BADGE: Record<string, string> = {
-  blue: "bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300",
-  purple: "bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300",
-  teal: "bg-teal-100 text-teal-700 dark:bg-teal-950/60 dark:text-teal-300",
-  green: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300",
-  orange: "bg-orange-100 text-orange-700 dark:bg-orange-950/60 dark:text-orange-300",
+  blue: "bg-primary/10 text-primary dark:bg-primary/20",
+  purple: "bg-primary/10 text-primary dark:bg-primary/20",
+  teal: "bg-primary/10 text-primary dark:bg-primary/20",
+  green: "bg-primary/10 text-primary dark:bg-primary/20",
+  orange: "bg-primary/10 text-primary dark:bg-primary/20",
 };
 
 interface ProgramHeroProps {

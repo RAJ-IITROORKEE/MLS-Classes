@@ -20,7 +20,7 @@ interface MockPerformanceProps {
   }
 }
 
-const COLORS = ["#0088FE", "#00C49F"]
+const COLORS = ["var(--theme-color)", "color-mix(in srgb, var(--theme-color) 25%, transparent)"]
 
 export function MockPerformance({ stats }: MockPerformanceProps) {
   const chartData = [
@@ -91,8 +91,8 @@ export function MockPerformance({ stats }: MockPerformanceProps) {
         <div className="flex items-center justify-between w-full mt-2 px-2">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5 bg-secondary/10 px-3 py-1 rounded-full">
-              <CheckCircle className="w-4 h-4 text-blue-500" />
-              <span className="text-sm font-medium text-blue-500">
+              <CheckCircle className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-primary">
                 {attemptedText}
               </span>
             </div>

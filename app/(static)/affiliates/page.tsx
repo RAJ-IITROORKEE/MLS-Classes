@@ -12,9 +12,9 @@ export default function AffiliatesPage() {
       title: "Partner with Us",
       description:
         "Join us in our mission to empower students. Partner with MLS Classes and contribute to a supportive learning environment that helps students reach their full potential.",
-      color: "from-blue-500/20 to-blue-500/5",
-      borderColor: "border-blue-500/20",
-      iconColor: "text-blue-600 dark:text-blue-400",
+      color: "from-primary/20 to-primary/5",
+      borderColor: "border-primary/20",
+      iconColor: "text-primary",
     },
     {
       icon: Users,
@@ -165,7 +165,7 @@ export default function AffiliatesPage() {
               className="flex gap-4 rounded-xl border border-border/50 bg-background/50 backdrop-blur-sm p-5 hover:bg-background/80 transition-all"
             >
               <div className="mt-1">
-                <div className="h-2.5 w-2.5 rounded-full bg-gradient-to-br from-primary to-blue-600 flex-shrink-0" />
+                <div className="h-2.5 w-2.5 rounded-full bg-gradient-to-br from-primary to-primary/70 flex-shrink-0" />
               </div>
               <div>
                 <h4 className="font-semibold text-foreground text-sm mb-1">

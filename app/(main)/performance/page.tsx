@@ -130,7 +130,7 @@ export default async function PerformancePage() {
   const answerDistribution = [
     { name: "Correct", value: totalCorrect, color: "#10b981" },
     { name: "Incorrect", value: totalIncorrect, color: "#ef4444" },
-    { name: "Unanswered", value: totalUnanswered, color: "#3b82f6" },
+    { name: "Unanswered", value: totalUnanswered, color: "var(--theme-color)" },
   ]
 
   return (

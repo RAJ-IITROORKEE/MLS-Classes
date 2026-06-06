@@ -6,11 +6,7 @@ import { useCallback, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const SLIDES = [
-  { image: "https://www.mlsclasses.com/static/slider1.jpg", alt: "MLS Classes tutoring session" },
-  { image: "https://www.mlsclasses.com/static/slider4.jpg", alt: "Digital SAT preparation" },
-  { image: "https://www.mlsclasses.com/static/slider5.jpg", alt: "Math and science tutoring" },
-  { image: "https://www.mlsclasses.com/static/slider2.jpg", alt: "US curriculum tutoring" },
-  { image: "https://www.mlsclasses.com/static/slider6.png", alt: "AP exam preparation" },
+  { image: "/carousal.webp", alt: "MLS Classes online tutoring" },
 ];
 
 export function HeroCarousel() {

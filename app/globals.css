@@ -51,11 +51,13 @@
 }
 
 /* MLS Brand Colors */
-/* Primary Blue: #5496b6 */
+/* Update this one value to change the site theme color. */
+/* Primary Blue: #0f58ab */
 /* Accent Yellow: #ffe006 */
 
 :root {
-  --brand: oklch(0.621 0.089 226.6);
+  --theme-color: #0f58ab;
+  --brand: var(--theme-color);
   --brand-yellow: oklch(0.928 0.193 97.8);
 
   --background: oklch(1 0 0);
@@ -66,12 +68,12 @@
   --popover-foreground: oklch(0.13 0.01 240);
 
   /* Primary = MLS Blue */
-  --primary: oklch(0.621 0.089 226.6);
+  --primary: var(--theme-color);
   --primary-foreground: oklch(0.985 0 0);
 
   /* Secondary = light blue tint */
-  --secondary: oklch(0.94 0.018 226.6);
-  --secondary-foreground: oklch(0.35 0.06 226.6);
+  --secondary: color-mix(in oklch, var(--theme-color) 10%, white);
+  --secondary-foreground: color-mix(in oklch, var(--theme-color) 78%, black);
 
   --muted: oklch(0.96 0.005 240);
   --muted-foreground: oklch(0.52 0.02 240);
@@ -83,24 +85,24 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.91 0.01 240);
   --input: oklch(0.91 0.01 240);
-  --ring: oklch(0.621 0.089 226.6);
+  --ring: var(--theme-color);
 
-  --chart-1: oklch(0.621 0.089 226.6);
+  --chart-1: var(--theme-color);
   --chart-2: oklch(0.928 0.193 97.8);
-  --chart-3: oklch(0.72 0.07 226.6);
-  --chart-4: oklch(0.82 0.04 226.6);
-  --chart-5: oklch(0.45 0.11 226.6);
+  --chart-3: color-mix(in oklch, var(--theme-color) 65%, white);
+  --chart-4: color-mix(in oklch, var(--theme-color) 35%, white);
+  --chart-5: color-mix(in oklch, var(--theme-color) 80%, black);
 
   --radius: 0.625rem;
 
   --sidebar: oklch(0.98 0.004 240);
   --sidebar-foreground: oklch(0.13 0.01 240);
-  --sidebar-primary: oklch(0.621 0.089 226.6);
+  --sidebar-primary: var(--theme-color);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.94 0.018 226.6);
-  --sidebar-accent-foreground: oklch(0.35 0.06 226.6);
+  --sidebar-accent: color-mix(in oklch, var(--theme-color) 10%, white);
+  --sidebar-accent-foreground: color-mix(in oklch, var(--theme-color) 78%, black);
   --sidebar-border: oklch(0.91 0.01 240);
-  --sidebar-ring: oklch(0.621 0.089 226.6);
+  --sidebar-ring: var(--theme-color);
 }
 
 .dark {
@@ -111,9 +113,9 @@
   --popover: oklch(0.16 0.012 240);
   --popover-foreground: oklch(0.97 0.005 240);
 
-  /* Primary = brighter MLS Blue in dark mode */
-  --primary: oklch(0.68 0.1 226.6);
-  --primary-foreground: oklch(0.13 0.01 240);
+  /* Primary = MLS Blue */
+  --primary: var(--theme-color);
+  --primary-foreground: oklch(0.985 0 0);
 
   --secondary: oklch(0.22 0.018 240);
   --secondary-foreground: oklch(0.97 0.005 240);
@@ -128,22 +130,22 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.68 0.1 226.6);
+  --ring: var(--theme-color);
 
-  --chart-1: oklch(0.68 0.1 226.6);
+  --chart-1: var(--theme-color);
   --chart-2: oklch(0.928 0.193 97.8);
-  --chart-3: oklch(0.75 0.07 226.6);
-  --chart-4: oklch(0.55 0.08 226.6);
-  --chart-5: oklch(0.38 0.06 226.6);
+  --chart-3: color-mix(in oklch, var(--theme-color) 60%, white);
+  --chart-4: color-mix(in oklch, var(--theme-color) 75%, black);
+  --chart-5: color-mix(in oklch, var(--theme-color) 55%, black);
 
   --sidebar: oklch(0.16 0.012 240);
   --sidebar-foreground: oklch(0.97 0.005 240);
-  --sidebar-primary: oklch(0.68 0.1 226.6);
-  --sidebar-primary-foreground: oklch(0.13 0.01 240);
+  --sidebar-primary: var(--theme-color);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.22 0.018 240);
   --sidebar-accent-foreground: oklch(0.97 0.005 240);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.68 0.1 226.6);
+  --sidebar-ring: var(--theme-color);
 }
 
 @layer base {
@@ -177,11 +179,11 @@ html {
   top: 0;
   left: 0;
   height: 3px;
-  background: linear-gradient(90deg, oklch(0.621 0.089 226.6), oklch(0.928 0.193 97.8));
+  background: linear-gradient(90deg, var(--theme-color), oklch(0.928 0.193 97.8));
   z-index: 9999;
   transition: width 0.3s ease;
   border-radius: 0 2px 2px 0;
-  box-shadow: 0 0 8px oklch(0.621 0.089 226.6 / 60%);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--theme-color) 60%, transparent);
 }
 
 /* Sonner toast close button — visible in both light and dark modes */

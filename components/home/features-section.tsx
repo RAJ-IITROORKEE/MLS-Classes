@@ -5,42 +5,42 @@ import Image from "next/image";
 
 const FEATURES = [
   {
-    image: "https://www.mlsclasses.com/static/fea1.jpg",
+    image: "/features/dedicated-classes.webp",
     alt: "dedicated-classes",
     title: "1:1 Dedicated Classes",
   },
   {
-    image: "https://www.mlsclasses.com/static/fea2.jpg",
+    image: "/features/lowest-cost.webp",
     alt: "lowest-cost",
     title: "Lowest Cost $ per class",
   },
   {
-    image: "https://www.mlsclasses.com/static/fea3.jpg",
+    image: "/features/master-teachers.webp",
     alt: "expert-teachers",
     title: "Master Teachers",
   },
   {
-    image: "https://www.mlsclasses.com/static/1gradeahead.jpg",
+    image: "/features/one-grade-ahead.webp",
     alt: "grade",
     title: "1 grade ahead",
   },
   {
-    image: "https://www.mlsclasses.com/static/Regulartestseries.jpg",
+    image: "/features/regular-test-series.webp",
     alt: "test-series",
     title: "Regular test series",
   },
   {
-    image: "https://www.mlsclasses.com/static/Recordedclass.jpg",
+    image: "/features/recording-access.webp",
     alt: "recording-access",
     title: "Recording access",
   },
   {
-    image: "https://www.mlsclasses.com/static/PTM.jpg",
+    image: "/features/ptm.webp",
     alt: "ptm",
     title: "PTM (Parents Teacher Meeting)",
   },
   {
-    image: "https://www.mlsclasses.com/static/homworkhelp.jpg",
+    image: "/features/homework-help.webp",
     alt: "homework-help",
     title: "School homework help",
   },
@@ -71,19 +71,22 @@ export function FeaturesSection() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: index * 0.06 }}
-              className="group rounded-xl overflow-hidden border border-border bg-card shadow-sm hover:shadow-md transition-shadow"
+              className="group relative overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_18px_45px_color-mix(in_srgb,var(--theme-color)_18%,transparent)] dark:hover:border-primary/50 dark:hover:shadow-[0_18px_45px_color-mix(in_srgb,var(--theme-color)_28%,transparent)]"
             >
+              <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <div className="absolute -inset-px rounded-xl bg-gradient-to-br from-primary/20 via-transparent to-primary/10" />
+              </div>
               <div className="relative aspect-video overflow-hidden">
                 <Image
                   src={feature.image}
                   alt={feature.alt ?? feature.title}
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
                 />
               </div>
-              <div className="p-3 text-center">
-                <p className="text-sm font-medium text-foreground">{feature.title}</p>
+              <div className="relative p-3 text-center">
+                <p className="text-sm font-medium text-foreground transition-colors duration-300 group-hover:text-primary">{feature.title}</p>
               </div>
             </motion.div>
           ))}

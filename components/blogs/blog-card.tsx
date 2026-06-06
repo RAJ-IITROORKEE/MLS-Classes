@@ -92,7 +92,7 @@ export default function BlogCard({ blog }: BlogCardProps) {
           {/* Content */}
           <div className="p-4 md:p-6 flex-1 flex flex-col">
             {/* Title */}
-            <h3 className="text-lg md:text-xl font-semibold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+            <h3 className="text-lg md:text-xl font-semibold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-primary transition-colors">
               {blog.title}
             </h3>
 

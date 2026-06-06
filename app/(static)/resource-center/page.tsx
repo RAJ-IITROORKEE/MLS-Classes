@@ -11,9 +11,9 @@ export default function ResourceCenterPage() {
       icon: BookOpen,
       title: "Study Guides",
       description: "Access a wide range of study materials, guides, and resources that support academic success across different subjects and grade levels.",
-      color: "from-blue-500/20 to-blue-500/5",
-      borderColor: "border-blue-500/20",
-      iconColor: "text-blue-600 dark:text-blue-400",
+      color: "from-primary/20 to-primary/5",
+      borderColor: "border-primary/20",
+      iconColor: "text-primary",
     },
     {
       icon: Zap,
@@ -45,7 +45,7 @@ export default function ResourceCenterPage() {
       label: "Book Free Trial",
       href: "/book-trial",
       icon: Zap,
-      color: "bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600",
+      color: "bg-primary hover:bg-primary/90",
       textColor: "text-white",
     },
     {

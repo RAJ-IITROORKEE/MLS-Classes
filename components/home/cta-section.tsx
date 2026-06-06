@@ -22,7 +22,7 @@ export function CTASection() {
           transition={{ duration: 0.5 }}
           className="relative overflow-hidden rounded-3xl"
           style={{
-            background: "linear-gradient(135deg, #5496b6 0%, #3a7a9b 60%, #2a5a7a 100%)",
+            background: "linear-gradient(135deg, var(--theme-color) 0%, color-mix(in srgb, var(--theme-color) 82%, black) 60%, color-mix(in srgb, var(--theme-color) 68%, black) 100%)",
           }}
         >
           <div className="absolute inset-0 bg-grid-white/[0.05]" />
@@ -51,7 +51,7 @@ export function CTASection() {
               <Button
                 asChild
                 size="lg"
-                className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold shadow-lg"
+                className="!bg-white !text-primary shadow-lg shadow-black/10 ring-1 ring-white/40 transition-all duration-300 hover:-translate-y-0.5 hover:!bg-white hover:!text-primary hover:shadow-xl hover:shadow-black/20 focus-visible:ring-2 focus-visible:ring-white/80 dark:!bg-white dark:!text-primary dark:hover:!bg-white"
               >
                 <Link href="/book-trial" className="flex items-center gap-2">
                   Book Free Trial Now <ArrowRight className="h-4 w-4" />
@@ -61,7 +61,7 @@ export function CTASection() {
                 asChild
                 size="lg"
                 variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 bg-transparent"
+                className="border-white/45 bg-white/5 text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-white hover:bg-white hover:text-primary hover:shadow-xl hover:shadow-black/20 focus-visible:ring-2 focus-visible:ring-white/80 dark:border-white/35 dark:bg-white/10 dark:text-white dark:hover:bg-white dark:hover:text-primary"
               >
                 <Link href="/contact-us">Contact Us</Link>
               </Button>

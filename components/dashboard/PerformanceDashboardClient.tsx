@@ -148,7 +148,7 @@ export function PerformanceDashboardClient({
       {/* Header */}
       <div className="border-b bg-muted/30">
         <div className="mx-auto max-w-7xl px-6 py-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-center bg-gradient-to-r from-indigo-800 via-purple-700 to-pink-800 bg-clip-text text-transparent drop-shadow-lg">
+          <h1 className="text-3xl md:text-4xl font-bold text-center bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent drop-shadow-lg">
             Performance Analytics
           </h1>
           <p className="text-center text-muted-foreground mt-2">
@@ -163,8 +163,8 @@ export function PerformanceDashboardClient({
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
-                  <Trophy className="h-5 w-5 text-blue-600" />
+                <div className="p-2 rounded-lg bg-primary/10 dark:bg-primary/20">
+                  <Trophy className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Total Attempts</p>
@@ -177,8 +177,8 @@ export function PerformanceDashboardClient({
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30">
-                  <TrendingUp className="h-5 w-5 text-green-600" />
+                <div className="p-2 rounded-lg bg-primary/10 dark:bg-primary/20">
+                  <TrendingUp className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Average Score</p>
@@ -191,8 +191,8 @@ export function PerformanceDashboardClient({
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/30">
-                  <Clock className="h-5 w-5 text-purple-600" />
+                <div className="p-2 rounded-lg bg-primary/10 dark:bg-primary/20">
+                  <Clock className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Time Spent</p>
@@ -266,10 +266,10 @@ export function PerformanceDashboardClient({
                     {overall.totalIncorrect}
                   </p>
                 </div>
-                <div className="text-center p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20">
-                  <MinusCircle className="h-4 w-4 mx-auto mb-1 text-blue-600" />
+                <div className="text-center p-3 rounded-lg bg-primary/10 dark:bg-primary/20">
+                  <MinusCircle className="h-4 w-4 mx-auto mb-1 text-primary" />
                   <p className="text-xs text-muted-foreground">Unanswered</p>
-                  <p className="text-lg font-bold text-blue-700 dark:text-blue-400">
+                  <p className="text-lg font-bold text-primary">
                     {overall.totalUnanswered}
                   </p>
                 </div>
@@ -305,7 +305,7 @@ export function PerformanceDashboardClient({
                       yAxisId="left"
                       type="monotone"
                       dataKey="percentage"
-                      stroke="#8b5cf6"
+                      stroke="var(--theme-color)"
                       strokeWidth={2}
                       name="Score %"
                       dot={{ r: 4 }}
@@ -314,7 +314,7 @@ export function PerformanceDashboardClient({
                       yAxisId="right"
                       type="monotone"
                       dataKey="time"
-                      stroke="#06b6d4"
+                      stroke="color-mix(in srgb, var(--theme-color) 70%, white)"
                       strokeWidth={2}
                       name="Time (min)"
                       dot={{ r: 3 }}
@@ -350,7 +350,7 @@ export function PerformanceDashboardClient({
                       }}
                     />
                     <Legend />
-                    <Bar dataKey="bestPercentage" fill="#8b5cf6" name="Best Score %" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="bestPercentage" fill="var(--theme-color)" name="Best Score %" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

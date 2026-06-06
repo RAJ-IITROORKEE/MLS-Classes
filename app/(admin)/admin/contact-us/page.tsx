@@ -469,8 +469,8 @@ export default function AdminContactPage() {
 
                  {/* Email */}
                  <div className="flex items-start gap-4 group">
-                   <div className="rounded-xl bg-blue-500/15 p-3 group-hover:bg-blue-500/25 transition-colors">
-                     <Mail className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                    <div className="rounded-xl bg-primary/15 p-3 group-hover:bg-primary/25 transition-colors">
+                      <Mail className="h-5 w-5 text-primary" />
                    </div>
                    <div className="min-w-0 flex-1">
                      <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">

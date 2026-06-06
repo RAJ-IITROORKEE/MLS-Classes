@@ -53,25 +53,25 @@ const SOCIAL_LINKS = [
     label: "Facebook",
     href: "https://www.facebook.com/mlsclasses?mibextid=ZbWKwL",
     icon: FacebookIcon,
-    hoverColor: "hover:text-[#1877F2]",
+    hoverColor: "hover:text-primary",
   },
   {
     label: "Instagram",
     href: "https://www.instagram.com/mlsclasses?utm_source=ig_web_button_share_sheet",
     icon: InstagramIcon,
-    hoverColor: "hover:text-[#E1306C]",
+    hoverColor: "hover:text-primary",
   },
   {
     label: "LinkedIn",
     href: "https://www.linkedin.com/company/online-tutor-usa/",
     icon: LinkedinIcon,
-    hoverColor: "hover:text-[#0A66C2]",
+    hoverColor: "hover:text-primary",
   },
   {
     label: "YouTube",
     href: "https://www.youtube.com/@mlsclasses8293?si=KBojcjPosvKjfwjH",
     icon: YoutubeIcon,
-    hoverColor: "hover:text-[#FF0000]",
+    hoverColor: "hover:text-primary",
   },
 ];
 

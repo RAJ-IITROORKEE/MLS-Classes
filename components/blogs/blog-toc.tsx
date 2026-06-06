@@ -56,7 +56,7 @@ export default function BlogTOC({ headings, activeHeading }: BlogTOCProps) {
                 "hover:bg-slate-200 dark:hover:bg-slate-800",
                 "hover:text-slate-900 dark:hover:text-white",
                 activeHeading === heading.id
-                  ? "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium"
+                  ? "bg-primary/10 dark:bg-primary/20 text-primary font-medium"
                   : ""
               )}
             >

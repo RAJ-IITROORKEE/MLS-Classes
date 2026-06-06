@@ -17,28 +17,28 @@ const ACTIONS = [
     href: "/mocks",
     icon: ClipboardList,
     description: "Take mock tests to prepare",
-    color: "text-blue-500",
+    color: "text-primary",
   },
   {
     label: "My Performance",
     href: "/performance",
     icon: TrendingUp,
     description: "View detailed analytics",
-    color: "text-green-500",
+    color: "text-primary",
   },
   {
     label: "Book Free Trial",
     href: "/book-trial",
     icon: Calendar,
     description: "Schedule a demo class",
-    color: "text-purple-500",
+    color: "text-primary",
   },
   {
     label: "Student Corner",
     href: "/student-corner",
     icon: MessageCircle,
     description: "Resources and community",
-    color: "text-orange-500",
+    color: "text-primary",
   },
 ]
 

@@ -49,7 +49,7 @@ export default async function AdminContactsPage() {
         {[
           { label: "Total", value: contacts.length, color: "text-foreground" },
           { label: "Pending", value: statusCounts["PENDING"] ?? 0, color: "text-yellow-600 dark:text-yellow-400" },
-          { label: "Contacted", value: statusCounts["CONTACTED"] ?? 0, color: "text-blue-600 dark:text-blue-400" },
+          { label: "Contacted", value: statusCounts["CONTACTED"] ?? 0, color: "text-primary" },
           { label: "Scheduled", value: statusCounts["SCHEDULED"] ?? 0, color: "text-purple-600 dark:text-purple-400" },
           { label: "Completed", value: statusCounts["COMPLETED"] ?? 0, color: "text-green-600 dark:text-green-400" },
         ].map(({ label, value, color }) => (

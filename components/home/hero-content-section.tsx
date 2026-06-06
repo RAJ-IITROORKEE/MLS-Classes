@@ -22,7 +22,7 @@ export function HeroContentSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
           className="flex flex-wrap justify-evenly gap-6 rounded-xl px-6 py-5 mb-14 text-white"
-          style={{ background: "#5496b6" }}
+          style={{ background: "var(--theme-color)" }}
         >
           {STATS.map((stat) => (
             <div key={stat.label} className="flex flex-col items-center gap-0.5 min-w-[100px]">

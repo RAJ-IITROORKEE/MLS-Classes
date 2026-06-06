@@ -106,7 +106,7 @@ const typeConfig = {
   MCQ: {
     label: "MCQ",
     desc: "Single Correct",
-    color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+    color: "bg-primary/10 text-primary dark:bg-primary/20",
     icon: List,
   },
   MSQ: {
@@ -124,7 +124,7 @@ const typeConfig = {
   DESCRIPTIVE: {
     label: "DESC",
     desc: "Descriptive",
-    color: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400",
+    color: "bg-primary/10 text-primary dark:bg-primary/20",
     icon: AlignLeft,
   },
 }

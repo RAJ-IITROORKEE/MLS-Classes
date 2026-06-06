@@ -481,7 +481,7 @@ export function Navbar() {
             </SignedIn>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="rounded-md p-2 text-muted-foreground hover:text-foreground hover:bg-accent/20 transition-colors"
+              className="rounded-md p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
               aria-label="Toggle menu"
             >
               {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -608,7 +608,7 @@ export function Navbar() {
 
                {/* Social row */}
                <div className="flex items-center gap-4 px-3 pt-2">
-                 <a href="https://wa.me/message/XMS5KMWBGQZLG1" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400 font-semibold">
+                  <a href="https://wa.me/message/XMS5KMWBGQZLG1" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-primary font-semibold">
                    <MessageCircle className="h-4 w-4" /> WhatsApp
                  </a>
                  <a href="https://www.facebook.com/mlsclasses?mibextid=ZbWKwL" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><FacebookIcon /></a>
@@ -626,7 +626,7 @@ export function Navbar() {
 
                <SignedOut>
                  <div className="mt-2">
-                   <Button asChild className="w-full font-bold bg-muted text-foreground hover:bg-muted/80" size="default">
+                    <Button asChild className="w-full font-bold" size="default">
                       <Link href="/sign-in" onClick={() => setIsOpen(false)}>
                        Sign In
                      </Link>

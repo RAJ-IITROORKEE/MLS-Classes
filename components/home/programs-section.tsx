@@ -106,24 +106,24 @@ const PROGRAMS = [
 
 const BADGE_COLORS: Record<string, string> = {
   "Test Prep":
-    "bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300",
+    "bg-primary/10 text-primary dark:bg-primary/20",
   "UK Curriculum":
-    "bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300",
+    "bg-primary/10 text-primary dark:bg-primary/20",
   International:
-    "bg-violet-100 text-violet-700 dark:bg-violet-950/60 dark:text-violet-300",
+    "bg-primary/10 text-primary dark:bg-primary/20",
   "AU Curriculum":
-    "bg-teal-100 text-teal-700 dark:bg-teal-950/60 dark:text-teal-300",
+    "bg-primary/10 text-primary dark:bg-primary/20",
   "Core Subject":
-    "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300",
+    "bg-primary/10 text-primary dark:bg-primary/20",
   "IT Courses":
-    "bg-orange-100 text-orange-700 dark:bg-orange-950/60 dark:text-orange-300",
+    "bg-primary/10 text-primary dark:bg-primary/20",
 };
 
 const BORDER_HOVER: Record<string, string> = {
-  blue: "hover:border-blue-400/70 hover:shadow-blue-200/30 dark:hover:shadow-blue-900/30",
-  purple: "hover:border-purple-400/70 hover:shadow-purple-200/30 dark:hover:shadow-purple-900/30",
-  green: "hover:border-emerald-400/70 hover:shadow-emerald-200/30 dark:hover:shadow-emerald-900/30",
-  orange: "hover:border-orange-400/70 hover:shadow-orange-200/30 dark:hover:shadow-orange-900/30",
+  blue: "hover:border-primary/70 hover:shadow-primary/20 dark:hover:shadow-primary/20",
+  purple: "hover:border-primary/70 hover:shadow-primary/20 dark:hover:shadow-primary/20",
+  green: "hover:border-primary/70 hover:shadow-primary/20 dark:hover:shadow-primary/20",
+  orange: "hover:border-primary/70 hover:shadow-primary/20 dark:hover:shadow-primary/20",
 };
 
 export function ProgramsSection() {

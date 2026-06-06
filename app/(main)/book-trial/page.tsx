@@ -36,12 +36,12 @@ export default function BookTrialPage() {
       {/* ── Hero Banner ── */}
       <section className="relative overflow-hidden py-24 px-4"
         style={{
-          background: "linear-gradient(135deg, oklch(0.25 0.08 240) 0%, oklch(0.18 0.12 260) 50%, oklch(0.15 0.09 280) 100%)",
+          background: "linear-gradient(135deg, var(--theme-color) 0%, color-mix(in srgb, var(--theme-color) 78%, black) 50%, color-mix(in srgb, var(--theme-color) 58%, black) 100%)",
         }}
       >
         {/* Decorative blobs */}
         <div className="pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full bg-primary/20 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-20 right-10 h-72 w-72 rounded-full bg-violet-500/15 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-20 right-10 h-72 w-72 rounded-full bg-primary/15 blur-3xl" />
 
         <div className="relative mx-auto max-w-3xl text-center">
           <span className="mb-5 inline-block rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm font-medium text-white/85 backdrop-blur-sm">
