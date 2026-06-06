@@ -19,29 +19,57 @@ const TEST_PREP_MENU = [
     label: "Digital SAT",
     href: "/test-prep/digital-sat",
     sub: [
-      { label: "Digital SAT Math", href: "/test-prep/digital-sat" },
-      { label: "Digital SAT Reading & Writing", href: "/test-prep/digital-sat" },
+      { label: "Digital SAT Math", href: "/test-prep/digital-sat/sat-math" },
+      { label: "Digital SAT Reading & Writing", href: "/test-prep/digital-sat/sat-read-write" },
     ],
   },
   {
     label: "ACT",
     href: "/test-prep/act",
+    sub: [
+      { label: "ACT Math", href: "/test-prep/act/act-math" },
+      { label: "ACT English", href: "/test-prep/act/act-english" },
+      { label: "ACT Science", href: "/test-prep/act/act-science" },
+      { label: "ACT Reading & Writing", href: "/test-prep/act/act-read-write" },
+    ],
   },
   {
     label: "AP",
     href: "/test-prep/ap-test",
+    sub: [
+      { label: "AP Precalculus", href: "/ap-courses/ap-precalculus" },
+      { label: "AP Calculus AB", href: "/ap-courses/ap-calculus-ab" },
+      { label: "AP Calculus BC", href: "/ap-courses/ap-calculus-bc" },
+      { label: "AP Statistics", href: "/ap-courses/ap-statistics" },
+      { label: "AP Physics 1 & 2", href: "/ap-courses/ap-physics-1-2" },
+      { label: "AP Physics C: E&M", href: "/ap-courses/ap-physics-c-electricity-magnetism" },
+      { label: "AP Physics C: Mechanics", href: "/ap-courses/ap-physics-c-mechanics" },
+      { label: "AP Chemistry", href: "/ap-courses/ap-chemistry" },
+      { label: "AP Biology", href: "/ap-courses/ap-biology" },
+      { label: "AP Environmental Science", href: "/ap-courses/ap-environmental-science" },
+      { label: "AP Computer Science A", href: "/ap-courses/ap-computer-science-a" },
+      { label: "AP English Literature", href: "/ap-courses/ap-english-literature-composition" },
+      { label: "AP Microeconomics", href: "/ap-courses/ap-microeconomics" },
+      { label: "AP Macroeconomics", href: "/ap-courses/ap-macroeconomics" },
+    ],
   },
   {
     label: "PSAT",
-    href: "https://www.mlsclasses.com/test-prep/psat",
+    href: "/test-prep/psat",
+    sub: [
+      { label: "PSAT 8/9", href: "/test-prep/psat/psat-8-9" },
+      { label: "PSAT 10", href: "/test-prep/psat/psat-10" },
+      { label: "PSAT/NMSQT", href: "/test-prep/psat/psat-nmsqt" },
+    ],
   },
   {
     label: "Other Test Prep",
     href: "/test-prep/amc-8",
     sub: [
-      { label: "AMC", href: "/test-prep/amc-8" },
+      { label: "AMC 8", href: "/test-prep/amc-8" },
+      { label: "AMC 10/12", href: "/test-prep/amc-10" },
       { label: "MATHCOUNTS", href: "/test-prep/mathcounts" },
-      { label: "STAAR", href: "https://www.mlsclasses.com/test-prep/staar" },
+      { label: "STAAR", href: "/test-prep/staar" },
     ],
   },
 ];
@@ -49,25 +77,31 @@ const TEST_PREP_MENU = [
 const ACADEMIC_MENU = [
   {
     label: "US Curriculum",
-    href: "https://www.mlsclasses.com/academic-tutoring/us-curriculum",
+    href: "/academic-tutoring/us-curriculum",
     sub: [
-      { label: "Elementary", href: "https://www.mlsclasses.com/academic-tutoring/us-curriculum" },
-      { label: "Middle School", href: "https://www.mlsclasses.com/academic-tutoring/us-curriculum" },
-      { label: "High School", href: "https://www.mlsclasses.com/academic-tutoring/us-curriculum" },
+      { label: "Elementary School", href: "/academic-tutoring/us-curriculum/elementary-school" },
+      { label: "Middle School", href: "/academic-tutoring/us-curriculum/middle-school" },
+      { label: "High School", href: "/academic-tutoring/us-curriculum/high-school" },
     ],
   },
   {
     label: "UK Curriculum",
-    href: "/academic-tutoring/igcse-curriculum",
+    href: "/academic-tutoring/uk-curriculum",
     sub: [
-      { label: "GCSE", href: "/academic-tutoring/igcse-curriculum" },
-      { label: "A-levels", href: "/academic-tutoring/as-a-level-curriculum" },
+      { label: "Key Stage 1", href: "/academic-tutoring/uk-curriculum/key-stage-1" },
+      { label: "Key Stage 2", href: "/academic-tutoring/uk-curriculum/key-stage-2" },
+      { label: "Key Stage 3", href: "/academic-tutoring/uk-curriculum/key-stage-3" },
+      { label: "Key Stage 4", href: "/academic-tutoring/uk-curriculum/key-stage-4" },
+      { label: "Key Stage 5", href: "/academic-tutoring/uk-curriculum/key-stage-5" },
     ],
   },
   {
     label: "AU Curriculum",
-    href: "/academic-tutoring/au-curriculum/naplan",
+    href: "/academic-tutoring/au-curriculum",
     sub: [
+      { label: "Primary 2-6", href: "/academic-tutoring/au-curriculum/primary" },
+      { label: "Secondary 7-10", href: "/academic-tutoring/au-curriculum/secondary" },
+      { label: "Senior 11-12", href: "/academic-tutoring/au-curriculum/senior" },
       { label: "NAPLAN", href: "/academic-tutoring/au-curriculum/naplan" },
     ],
   },
@@ -85,8 +119,9 @@ const ACADEMIC_MENU = [
   },
   {
     label: "College Courses",
-    href: "/college-courses/college-biology",
+    href: "/college-courses/college-math",
     sub: [
+      { label: "College Math", href: "/college-courses/college-math" },
       { label: "College Biology", href: "/college-courses/college-biology" },
       { label: "College English", href: "/college-courses/college-english" },
     ],
@@ -95,8 +130,11 @@ const ACADEMIC_MENU = [
     label: "IT Courses",
     href: "/it-courses/html-web-development",
     sub: [
+      { label: "C# Programming", href: "/it-courses/csharp-programming" },
+      { label: "C++ Programming", href: "/it-courses/cplusplus-programming" },
       { label: "HTML & Web Dev", href: "/it-courses/html-web-development" },
-      { label: "Python", href: "https://www.mlsclasses.com/it-courses" },
+      { label: "Java", href: "/it-courses/java" },
+      { label: "Python", href: "/it-courses/python" },
     ],
   },
 ];
