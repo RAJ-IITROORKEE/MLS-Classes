@@ -331,7 +331,8 @@ model Blog {
   title         String
   slug          String       @unique
   excerpt       String
-  content       String       // Markdown or HTML
+  content       Json         // TipTap JSON format for rich content
+  contentHtml   String?      // HTML version for preview/rendering
   author        String?      @default("MLS Classes")
   categoryId    String       @db.ObjectId
   imageUrl      String?
