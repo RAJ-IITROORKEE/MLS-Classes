@@ -4,6 +4,13 @@ import cloudinary from "@/lib/cloudinary";
 // Allow larger bodies for file uploads
 export const maxDuration = 60;
 
+const MB = 1024 * 1024;
+
+function formatFileSize(bytes: number) {
+  if (bytes >= MB) return `${(bytes / MB).toFixed(bytes % MB === 0 ? 0 : 1)} MB`;
+  return `${Math.round(bytes / 1024)} KB`;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
@@ -14,23 +21,35 @@ export async function POST(req: NextRequest) {
         | "image"
         | "raw"
         | "auto";
+    const requestedMaxSizeMb = Number(formData.get("maxSizeMb"));
 
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
+    }
+
+    if (requestedResourceType === "image" && !file.type.startsWith("image/")) {
+      return NextResponse.json(
+        { error: "Only image files are allowed for this upload." },
+        { status: 400 }
+      );
     }
 
     const isPdf =
       file.type === "application/pdf" ||
       file.name.toLowerCase().endsWith(".pdf");
 
-    const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10 MB
-    const MAX_PDF_SIZE = 20 * 1024 * 1024; // 20 MB
-    const maxSize = isPdf ? MAX_PDF_SIZE : MAX_IMAGE_SIZE;
+    const MAX_IMAGE_SIZE = 10 * MB;
+    const MAX_PDF_SIZE = 20 * MB;
+    const defaultMaxSize = isPdf ? MAX_PDF_SIZE : MAX_IMAGE_SIZE;
+    const requestedMaxSize = Number.isFinite(requestedMaxSizeMb) && requestedMaxSizeMb > 0
+      ? requestedMaxSizeMb * MB
+      : undefined;
+    const maxSize = requestedMaxSize ? Math.min(requestedMaxSize, defaultMaxSize) : defaultMaxSize;
 
     if (file.size > maxSize) {
       return NextResponse.json(
         {
-          error: `File too large. Maximum size is ${isPdf ? "20 MB" : "10 MB"}. Your file is ${(file.size / 1024 / 1024).toFixed(1)} MB.`,
+          error: `File too large. Maximum size is ${formatFileSize(maxSize)}. Your file is ${formatFileSize(file.size)}.`,
         },
         { status: 413 }
       );

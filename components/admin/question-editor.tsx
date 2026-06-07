@@ -32,7 +32,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -84,6 +83,7 @@ import { nanoid } from "nanoid"
 import { cn } from "@/lib/utils"
 
 const optionLabels = ["A", "B", "C", "D", "E", "F"]
+const MAX_QUESTION_IMAGE_SIZE = 1024 * 1024
 
 const questionSchema = z.object({
   question: z.string().min(1, "Question text is required"),
@@ -181,9 +181,10 @@ export default function QuestionEditor({ mockId }: QuestionEditorProps) {
   const [csvUploading, setCsvUploading] = useState(false)
   const [csvErrors, setCsvErrors] = useState<string[]>([])
   const [csvSuccess, setCsvSuccess] = useState<number | null>(null)
+  const [questionImageUploading, setQuestionImageUploading] = useState(false)
 
   const form = useForm<QuestionFormValues>({
-    resolver: zodResolver(questionSchema) as any,
+    resolver: zodResolver(questionSchema),
     defaultValues: {
       question: "",
       type: "MCQ",
@@ -217,7 +218,9 @@ export default function QuestionEditor({ mockId }: QuestionEditorProps) {
   }, [mockId])
 
   useEffect(() => {
-    fetchMock()
+    queueMicrotask(() => {
+      void fetchMock()
+    })
   }, [fetchMock])
 
   const saveQuestions = async (newQuestions: MockQuestion[]) => {
@@ -344,6 +347,49 @@ export default function QuestionEditor({ mockId }: QuestionEditorProps) {
       form.setValue("msqAnswers", current.filter((a) => a !== optionText))
     } else {
       form.setValue("msqAnswers", [...current, optionText])
+    }
+  }
+
+  const handleQuestionImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    e.target.value = ""
+
+    if (!file) return
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload an image file")
+      return
+    }
+
+    if (file.size > MAX_QUESTION_IMAGE_SIZE) {
+      toast.error("Question image must be 1 MB or smaller")
+      return
+    }
+
+    setQuestionImageUploading(true)
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append("folder", "mock-questions")
+      formData.append("resourceType", "image")
+      formData.append("maxSizeMb", "1")
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      })
+      const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string }
+
+      if (!res.ok || !data.url) {
+        throw new Error(data.error ?? "Failed to upload image")
+      }
+
+      form.setValue("imageUrl", data.url, { shouldDirty: true, shouldValidate: true })
+      toast.success("Question image uploaded")
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to upload image")
+    } finally {
+      setQuestionImageUploading(false)
     }
   }
 
@@ -651,8 +697,8 @@ export default function QuestionEditor({ mockId }: QuestionEditorProps) {
 
         {/* ─── Question Form Modal ─────────────────────────────────────────────── */}
         <Dialog open={modalOpen} onOpenChange={(v) => !v && setModalOpen(false)}>
-          <DialogContent className="max-w-4xl max-h-[95vh] overflow-y-auto">
-            <DialogHeader>
+          <DialogContent className="flex max-h-[92vh] w-[calc(100vw-1.5rem)] flex-col overflow-hidden p-0 sm:max-w-5xl lg:max-w-6xl">
+            <DialogHeader className="border-b bg-muted/30 px-5 py-4 sm:px-6">
               <DialogTitle className="text-xl font-semibold">
                 {editingIndex !== null ? "Edit Question" : "Add New Question"}
               </DialogTitle>
@@ -662,331 +708,408 @@ export default function QuestionEditor({ mockId }: QuestionEditorProps) {
             </DialogHeader>
 
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-4">
-                {/* Question Type — full width */}
-                <FormField
-                  control={form.control}
-                  name="type"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-base font-semibold">Question Type *</FormLabel>
-                      <div className="grid grid-cols-4 gap-3">
-                        {(["MCQ", "MSQ", "NAT", "DESCRIPTIVE"] as const).map((t) => {
-                          const cfg = typeConfig[t]
-                          const Icon = cfg.icon
-                          return (
-                            <button
-                              key={t}
-                              type="button"
-                              onClick={() => handleTypeChange(t)}
-                              className={cn(
-                                "flex flex-col items-center gap-2 rounded-xl border-2 p-4 text-sm transition-all hover:shadow-md",
-                                field.value === t
-                                  ? "border-primary bg-primary/5 shadow-sm"
-                                  : "border-muted hover:border-muted-foreground/40"
-                              )}
-                            >
-                              <Icon className={cn("h-5 w-5", field.value === t ? "text-primary" : "text-muted-foreground")} />
-                              <span className="font-semibold">{cfg.label}</span>
-                              <span className="text-xs text-muted-foreground">{cfg.desc}</span>
-                            </button>
-                          )
-                        })}
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <form onSubmit={form.handleSubmit(onSubmit)} className="flex min-h-0 flex-1 flex-col">
+                <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-6">
+                  <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
+                    <div className="space-y-5">
+                      <Card className="border-border/70 shadow-sm">
+                        <CardContent className="space-y-5 p-4 sm:p-5">
+                          <div>
+                            <h3 className="text-sm font-semibold">Question Details</h3>
+                            <p className="text-xs text-muted-foreground">Write the question text and attach an optional image.</p>
+                          </div>
 
-                {/* Question Text — full width */}
-                <FormField
-                  control={form.control}
-                  name="question"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-base font-semibold">Question Text *</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Enter the question text here..."
-                          rows={5}
-                          className="resize-y text-base"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Image URL — full width */}
-                <FormField
-                  control={form.control}
-                  name="imageUrl"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-base font-semibold flex items-center gap-2">
-                        <ImageIcon className="h-4 w-4" />
-                        Question Image URL
-                        <span className="text-xs text-muted-foreground font-normal">(optional)</span>
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://res.cloudinary.com/..." {...field} className="text-base" />
-                      </FormControl>
-                      <FormDescription>Paste a Cloudinary or direct image URL.</FormDescription>
-                      {field.value && (
-                        <div className="mt-2 relative inline-block">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={field.value}
-                            alt="Question preview"
-                            className="max-h-40 rounded-lg border object-contain shadow-sm"
-                            onError={(e) => { (e.target as HTMLImageElement).style.display = "none" }}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => field.onChange("")}
-                            className="absolute -top-2 -right-2 rounded-full bg-destructive text-destructive-foreground h-6 w-6 flex items-center justify-center shadow-md hover:bg-destructive/90"
-                          >
-                            <X className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      )}
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <Separator />
-
-                {/* MCQ / MSQ Options */}
-                {(questionType === "MCQ" || questionType === "MSQ") && (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <FormLabel className="text-base font-semibold">Answer Options *</FormLabel>
-                      {options.length < 6 && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="gap-1.5 h-8"
-                          onClick={() => form.setValue("options", [...options, ""])}
-                        >
-                          <Plus className="h-4 w-4" />
-                          Add Option
-                        </Button>
-                      )}
-                    </div>
-
-                    {questionType === "MSQ" && (
-                      <div className="rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 px-4 py-2 text-sm text-purple-700 dark:text-purple-300 flex items-center gap-2">
-                        <CheckSquare className="h-4 w-4" />
-                        Check boxes next to all correct answers.
-                      </div>
-                    )}
-
-                    <div className="space-y-2.5">
-                      {options.map((_, idx) => (
-                        <div key={idx} className="flex items-center gap-3">
-                          {questionType === "MSQ" ? (
-                            <Checkbox
-                              checked={msqAnswers.includes(options[idx]?.trim())}
-                              onCheckedChange={() => {
-                                const opt = options[idx]?.trim()
-                                if (opt) toggleMsqAnswer(opt)
-                              }}
-                              disabled={!options[idx]?.trim()}
-                              className="h-5 w-5"
-                            />
-                          ) : null}
-                          <span className="text-base font-semibold text-muted-foreground w-6 shrink-0 text-center">
-                            {optionLabels[idx]}.
-                          </span>
                           <FormField
                             control={form.control}
-                            name={`options.${idx}`}
+                            name="question"
                             render={({ field }) => (
-                              <FormItem className="flex-1 m-0">
+                              <FormItem>
+                                <FormLabel className="text-base font-semibold">Question Text *</FormLabel>
                                 <FormControl>
-                                  <Input
-                                    placeholder={`Option ${optionLabels[idx]}`}
+                                  <Textarea
+                                    placeholder="Enter the question text here..."
+                                    rows={7}
+                                    className="min-h-36 resize-y text-base leading-relaxed"
                                     {...field}
-                                    className={cn(
-                                      "h-10 text-base",
-                                      questionType === "MSQ" && msqAnswers.includes(field.value?.trim())
-                                        ? "border-purple-400 bg-purple-50 dark:bg-purple-900/20"
-                                        : ""
-                                    )}
                                   />
                                 </FormControl>
+                                <FormMessage />
                               </FormItem>
                             )}
                           />
-                          {options.length > 2 && (
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              className="h-10 w-10 shrink-0 hover:text-destructive"
-                              onClick={() => {
-                                const newOpts = options.filter((_, i) => i !== idx)
-                                form.setValue("options", newOpts)
-                                if (questionType === "MSQ") {
-                                  form.setValue(
-                                    "msqAnswers",
-                                    msqAnswers.filter((a) => a !== options[idx]?.trim())
-                                  )
-                                }
-                              }}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+
+                          <FormField
+                            control={form.control}
+                            name="imageUrl"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="flex items-center gap-2 text-base font-semibold">
+                                  <ImageIcon className="h-4 w-4" />
+                                  Question Image
+                                  <span className="text-xs font-normal text-muted-foreground">(optional)</span>
+                                </FormLabel>
+                                <div className="space-y-3">
+                                  {field.value ? (
+                                    <div className="rounded-2xl border bg-muted/20 p-3">
+                                      <div className="flex items-start justify-between gap-3">
+                                        <div>
+                                          <p className="text-sm font-medium">Uploaded image</p>
+                                          <p className="break-all text-xs text-muted-foreground">{field.value}</p>
+                                        </div>
+                                        <Button
+                                          type="button"
+                                          variant="ghost"
+                                          size="icon"
+                                          className="h-8 w-8 shrink-0 hover:text-destructive"
+                                          onClick={() => field.onChange("")}
+                                        >
+                                          <X className="h-4 w-4" />
+                                        </Button>
+                                      </div>
+                                      <div className="relative mt-3 inline-block rounded-xl border bg-background p-2">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img
+                                          src={field.value}
+                                          alt="Question preview"
+                                          className="max-h-48 rounded-lg object-contain shadow-sm"
+                                          onError={(e) => { (e.target as HTMLImageElement).style.display = "none" }}
+                                        />
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <FormControl>
+                                      <label className="block cursor-pointer rounded-2xl border-2 border-dashed border-muted-foreground/20 bg-muted/20 p-6 text-center transition-colors hover:border-muted-foreground/40 hover:bg-muted/40">
+                                        <span className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-background shadow-sm ring-1 ring-border">
+                                          {questionImageUploading ? (
+                                            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                                          ) : (
+                                            <Upload className="h-6 w-6 text-muted-foreground" />
+                                          )}
+                                        </span>
+                                        <span className="block text-sm font-semibold">
+                                          {questionImageUploading ? "Uploading image..." : "Click to upload question image"}
+                                        </span>
+                                        <span className="mt-1 block text-xs text-muted-foreground">
+                                          PNG, JPG, or WEBP. Maximum size 1 MB.
+                                        </span>
+                                        <input
+                                          type="file"
+                                          accept="image/*"
+                                          className="hidden"
+                                          disabled={questionImageUploading}
+                                          onChange={handleQuestionImageUpload}
+                                        />
+                                      </label>
+                                    </FormControl>
+                                  )}
+                                </div>
+                                <FormDescription>Images are uploaded to Cloudinary and saved with the question.</FormDescription>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </CardContent>
+                      </Card>
+
+                      {(questionType === "MCQ" || questionType === "MSQ") && (
+                        <Card className="border-border/70 shadow-sm">
+                          <CardContent className="space-y-4 p-4 sm:p-5">
+                            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                              <div>
+                                <FormLabel className="text-base font-semibold">Answer Options *</FormLabel>
+                                <p className="text-xs text-muted-foreground">Add two to six options. For MSQ, select every correct option.</p>
+                              </div>
+                              {options.length < 6 && (
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  className="h-9 gap-1.5"
+                                  onClick={() => form.setValue("options", [...options, ""])}
+                                >
+                                  <Plus className="h-4 w-4" />
+                                  Add Option
+                                </Button>
+                              )}
+                            </div>
+
+                            {questionType === "MSQ" && (
+                              <div className="flex items-center gap-2 rounded-lg border border-purple-200 bg-purple-50 px-4 py-2 text-sm text-purple-700 dark:border-purple-800 dark:bg-purple-900/20 dark:text-purple-300">
+                                <CheckSquare className="h-4 w-4" />
+                                Check boxes next to all correct answers.
+                              </div>
+                            )}
+
+                            <div className="grid gap-3 md:grid-cols-2">
+                              {options.map((_, idx) => (
+                                <div key={idx} className="flex items-center gap-3 rounded-xl border bg-background p-3">
+                                  {questionType === "MSQ" ? (
+                                    <Checkbox
+                                      checked={msqAnswers.includes(options[idx]?.trim())}
+                                      onCheckedChange={() => {
+                                        const opt = options[idx]?.trim()
+                                        if (opt) toggleMsqAnswer(opt)
+                                      }}
+                                      disabled={!options[idx]?.trim()}
+                                      className="h-5 w-5"
+                                    />
+                                  ) : null}
+                                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold text-muted-foreground">
+                                    {optionLabels[idx]}
+                                  </span>
+                                  <FormField
+                                    control={form.control}
+                                    name={`options.${idx}`}
+                                    render={({ field }) => (
+                                      <FormItem className="m-0 flex-1">
+                                        <FormControl>
+                                          <Input
+                                            placeholder={`Option ${optionLabels[idx]}`}
+                                            {...field}
+                                            className={cn(
+                                              "h-10 text-base",
+                                              questionType === "MSQ" && msqAnswers.includes(field.value?.trim())
+                                                ? "border-purple-400 bg-purple-50 dark:bg-purple-900/20"
+                                                : ""
+                                            )}
+                                          />
+                                        </FormControl>
+                                      </FormItem>
+                                    )}
+                                  />
+                                  {options.length > 2 && (
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-10 w-10 shrink-0 hover:text-destructive"
+                                      onClick={() => {
+                                        const newOpts = options.filter((_, i) => i !== idx)
+                                        form.setValue("options", newOpts)
+                                        if (questionType === "MSQ") {
+                                          form.setValue(
+                                            "msqAnswers",
+                                            msqAnswers.filter((a) => a !== options[idx]?.trim())
+                                          )
+                                        }
+                                      }}
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+
+                            {questionType === "MSQ" && msqAnswers.length > 0 && (
+                              <div className="flex items-center gap-2 rounded-lg bg-purple-50 px-3 py-2 text-sm text-purple-700 dark:bg-purple-900/20 dark:text-purple-300">
+                                <CheckCircle2 className="h-4 w-4" />
+                                <span className="font-medium">Selected: </span>
+                                <span className="font-mono">{msqAnswers.join("; ")}</span>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      <Card className="border-border/70 shadow-sm">
+                        <CardContent className="space-y-5 p-4 sm:p-5">
+                          <div>
+                            <h3 className="text-sm font-semibold">Answer & Explanation</h3>
+                            <p className="text-xs text-muted-foreground">Set the correct answer and optional explanation shown after submission.</p>
+                          </div>
+
+                          {questionType === "MCQ" && (
+                            <FormField
+                              control={form.control}
+                              name="answer"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-base font-semibold">Correct Answer *</FormLabel>
+                                  <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl>
+                                      <SelectTrigger className="h-10">
+                                        <SelectValue placeholder="Select the correct option..." />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {options.map((opt, idx) =>
+                                        opt.trim() ? (
+                                          <SelectItem key={idx} value={opt.trim()}>
+                                            {optionLabels[idx]}. {opt.trim()}
+                                          </SelectItem>
+                                        ) : null
+                                      )}
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
                           )}
-                        </div>
-                      ))}
+
+                          {questionType === "MSQ" && (
+                            <FormField
+                              control={form.control}
+                              name="answer"
+                              render={() => (
+                                <FormItem>
+                                  <FormLabel className="text-base font-semibold">Correct Answers</FormLabel>
+                                  <div className="rounded-lg border bg-muted/50 px-4 py-3 text-base">
+                                    {msqAnswers.length > 0 ? (
+                                      <span className="font-mono text-purple-700 dark:text-purple-300">
+                                        {msqAnswers.join("; ")}
+                                      </span>
+                                    ) : (
+                                      <span className="text-muted-foreground italic">Check boxes above to select correct answers</span>
+                                    )}
+                                  </div>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          )}
+
+                          {questionType === "NAT" && (
+                            <FormField
+                              control={form.control}
+                              name="answer"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-base font-semibold">Correct Answer (Numerical) *</FormLabel>
+                                  <FormControl>
+                                    <Input type="number" step="any" placeholder="e.g. 42 or 3.14" className="h-10 max-w-xs text-base" {...field} />
+                                  </FormControl>
+                                  <FormDescription>Decimal values accepted.</FormDescription>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          )}
+
+                          {questionType === "DESCRIPTIVE" && (
+                            <FormField
+                              control={form.control}
+                              name="answer"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-base font-semibold">Model Answer / Key Points *</FormLabel>
+                                  <FormControl>
+                                    <Textarea
+                                      placeholder="Enter the expected answer or key points..."
+                                      rows={4}
+                                      className="resize-y text-base"
+                                      {...field}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          )}
+
+                          <Separator />
+
+                          <FormField
+                            control={form.control}
+                            name="explanation"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-base font-semibold">
+                                  Explanation
+                                  <span className="ml-1 text-xs font-normal text-muted-foreground">(shown after submission)</span>
+                                </FormLabel>
+                                <FormControl>
+                                  <Textarea
+                                    placeholder="Explain why this is the correct answer..."
+                                    rows={4}
+                                    className="resize-y text-base"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </CardContent>
+                      </Card>
                     </div>
 
-                    {questionType === "MSQ" && msqAnswers.length > 0 && (
-                      <div className="flex items-center gap-2 text-sm text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900/20 px-3 py-2 rounded-lg">
-                        <CheckCircle2 className="h-4 w-4" />
-                        <span className="font-medium">Selected: </span>
-                        <span className="font-mono">{msqAnswers.join("; ")}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
+                    <aside className="space-y-5 lg:sticky lg:top-0 lg:self-start">
+                      <Card className="border-border/70 shadow-sm">
+                        <CardContent className="space-y-5 p-4 sm:p-5">
+                          <div>
+                            <h3 className="text-sm font-semibold">Question Type</h3>
+                            <p className="text-xs text-muted-foreground">Choose the format before entering answers.</p>
+                          </div>
 
-                {/* MCQ Answer Dropdown */}
-                {questionType === "MCQ" && (
-                  <FormField
-                    control={form.control}
-                    name="answer"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base font-semibold">Correct Answer *</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger className="h-10">
-                              <SelectValue placeholder="Select the correct option..." />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {options.map((opt, idx) =>
-                              opt.trim() ? (
-                                <SelectItem key={idx} value={opt.trim()}>
-                                  {optionLabels[idx]}. {opt.trim()}
-                                </SelectItem>
-                              ) : null
+                          <FormField
+                            control={form.control}
+                            name="type"
+                            render={({ field }) => (
+                              <FormItem>
+                                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                                  {(["MCQ", "MSQ", "NAT", "DESCRIPTIVE"] as const).map((t) => {
+                                    const cfg = typeConfig[t]
+                                    const Icon = cfg.icon
+                                    return (
+                                      <button
+                                        key={t}
+                                        type="button"
+                                        onClick={() => handleTypeChange(t)}
+                                        className={cn(
+                                          "flex items-start gap-3 rounded-xl border p-4 text-left text-sm transition-all hover:border-foreground/30 hover:bg-muted/40",
+                                          field.value === t
+                                            ? "border-primary bg-primary/5 shadow-sm ring-1 ring-primary/20"
+                                            : "border-border"
+                                        )}
+                                      >
+                                        <span className={cn(
+                                          "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground",
+                                          field.value === t ? "bg-primary text-primary-foreground" : ""
+                                        )}>
+                                          <Icon className="h-4 w-4" />
+                                        </span>
+                                        <span>
+                                          <span className="block font-semibold">{cfg.label}</span>
+                                          <span className="text-xs text-muted-foreground">{cfg.desc}</span>
+                                        </span>
+                                      </button>
+                                    )
+                                  })}
+                                </div>
+                                <FormMessage />
+                              </FormItem>
                             )}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
-
-                {/* MSQ answer display */}
-                {questionType === "MSQ" && (
-                  <FormField
-                    control={form.control}
-                    name="answer"
-                    render={() => (
-                      <FormItem>
-                        <FormLabel className="text-base font-semibold">Correct Answers</FormLabel>
-                        <div className="rounded-lg border bg-muted/50 px-4 py-3 text-base">
-                          {msqAnswers.length > 0 ? (
-                            <span className="font-mono text-purple-700 dark:text-purple-300">
-                              {msqAnswers.join("; ")}
-                            </span>
-                          ) : (
-                            <span className="text-muted-foreground italic">Check boxes above to select correct answers</span>
-                          )}
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
-
-                {/* NAT Answer */}
-                {questionType === "NAT" && (
-                  <FormField
-                    control={form.control}
-                    name="answer"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base font-semibold">Correct Answer (Numerical) *</FormLabel>
-                        <FormControl>
-                          <Input type="number" step="any" placeholder="e.g. 42 or 3.14" className="h-10 text-base w-48" {...field} />
-                        </FormControl>
-                        <FormDescription>Decimal values accepted.</FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
-
-                {/* DESCRIPTIVE Answer */}
-                {questionType === "DESCRIPTIVE" && (
-                  <FormField
-                    control={form.control}
-                    name="answer"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base font-semibold">Model Answer / Key Points *</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Enter the expected answer or key points..."
-                            rows={4}
-                            className="resize-y text-base"
-                            {...field}
                           />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
+                        </CardContent>
+                      </Card>
 
-                {/* Explanation */}
-                <FormField
-                  control={form.control}
-                  name="explanation"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-base font-semibold">
-                        Explanation
-                        <span className="text-xs text-muted-foreground font-normal ml-1">(shown after submission)</span>
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Explain why this is the correct answer..."
-                          rows={4}
-                          className="resize-y text-base"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                      <Card className="border-border/70 shadow-sm">
+                        <CardContent className="space-y-4 p-4 sm:p-5">
+                          <FormField
+                            control={form.control}
+                            name="marks"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-base font-semibold">Marks</FormLabel>
+                                <FormControl>
+                                  <Input type="number" min={0} step={0.5} className="h-10 text-base" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <div className="rounded-lg bg-muted/50 p-3 text-xs text-muted-foreground">
+                            This score is used when calculating the mock result.
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </aside>
+                  </div>
+                </div>
 
-                {/* Marks */}
-                <FormField
-                  control={form.control}
-                  name="marks"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-base font-semibold">Marks</FormLabel>
-                      <FormControl>
-                        <Input type="number" min={0} step={0.5} className="w-32 h-10 text-base" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <DialogFooter className="gap-2 pt-4 border-t">
+                <DialogFooter className="mx-0 mb-0 gap-2 rounded-none border-t bg-background/95 px-5 py-4 sm:px-6">
                   <Button type="button" variant="outline" onClick={() => setModalOpen(false)} className="h-10 px-6">
                     Cancel
                   </Button>
@@ -1002,19 +1125,33 @@ export default function QuestionEditor({ mockId }: QuestionEditorProps) {
 
         {/* ─── CSV Import Modal ────────────────────────────────────────────────── */}
         <Dialog open={csvModalOpen} onOpenChange={(v) => { if (!v) { setCsvModalOpen(false); setCsvFile(null); setCsvErrors([]); setCsvSuccess(null) } }}>
-          <DialogContent className="max-w-4xl">
-            <DialogHeader>
-              <DialogTitle className="text-lg">Import Questions from CSV</DialogTitle>
+          <DialogContent className="flex max-h-[92vh] w-[calc(100vw-1.5rem)] flex-col overflow-hidden p-0 sm:max-w-4xl lg:max-w-5xl">
+            <DialogHeader className="border-b bg-muted/30 px-5 py-4 sm:px-6">
+              <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
+                <Upload className="h-5 w-5" />
+                Import Questions from CSV
+              </DialogTitle>
               <DialogDescription>
                 Upload a properly formatted CSV file to bulk-add questions to this mock test.
               </DialogDescription>
             </DialogHeader>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-6">
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
               {/* ── Left: Format guide ── */}
-              <div className="space-y-3">
-                <p className="text-sm font-semibold">Required CSV Format</p>
-                <pre className="bg-muted rounded-md p-3 text-xs font-mono overflow-x-auto border leading-relaxed">
+              <Card className="border-border/70 shadow-sm">
+                <CardContent className="space-y-4 p-4 sm:p-5">
+                <div className="flex items-start gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+                    <FileText className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold">Required CSV Format</p>
+                    <p className="text-xs text-muted-foreground">Use these column names exactly. Keep multiple options separated by semicolons.</p>
+                  </div>
+                </div>
+
+                <pre className="overflow-x-auto rounded-xl border bg-muted/70 p-4 font-mono text-xs leading-relaxed">
 {`question,type,answer,options,marks
 "What is 2+2?",MCQ,4,"4;5;6;7",1
 "Select primes",MSQ,"2;3;5","1;2;3;5",1
@@ -1022,50 +1159,57 @@ export default function QuestionEditor({ mockId }: QuestionEditorProps) {
 "Describe X",DESCRIPTIVE,"Answer",,2`}
                 </pre>
 
-                <div className="space-y-2 text-xs text-muted-foreground">
-                  <div>
-                    <p className="font-semibold text-foreground mb-1">Required columns</p>
-                    <div className="space-y-1">
-                      <p><code className="bg-muted px-1 rounded">question</code> — Question text</p>
-                      <p><code className="bg-muted px-1 rounded">type</code> — MCQ / MSQ / NAT / DESCRIPTIVE</p>
-                      <p><code className="bg-muted px-1 rounded">answer</code> — Correct answer</p>
+                <div className="grid gap-3 text-xs text-muted-foreground sm:grid-cols-2">
+                  <div className="rounded-xl border bg-background p-3">
+                    <p className="mb-2 font-semibold text-foreground">Required columns</p>
+                    <div className="space-y-1.5">
+                      <p><code className="rounded bg-muted px-1.5 py-0.5">question</code> Question text</p>
+                      <p><code className="rounded bg-muted px-1.5 py-0.5">type</code> MCQ / MSQ / NAT / DESCRIPTIVE</p>
+                      <p><code className="rounded bg-muted px-1.5 py-0.5">answer</code> Correct answer</p>
                     </div>
                   </div>
-                  <div>
-                    <p className="font-semibold text-foreground mb-1">Optional columns</p>
-                    <div className="space-y-1">
-                      <p><code className="bg-muted px-1 rounded">options</code> — Semicolon-separated (MCQ/MSQ)</p>
-                      <p><code className="bg-muted px-1 rounded">explanation</code> — Shown after submit</p>
-                      <p><code className="bg-muted px-1 rounded">marks</code> — Points per question</p>
+                  <div className="rounded-xl border bg-background p-3">
+                    <p className="mb-2 font-semibold text-foreground">Optional columns</p>
+                    <div className="space-y-1.5">
+                      <p><code className="rounded bg-muted px-1.5 py-0.5">options</code> Semicolon-separated</p>
+                      <p><code className="rounded bg-muted px-1.5 py-0.5">explanation</code> Shown after submit</p>
+                      <p><code className="rounded bg-muted px-1.5 py-0.5">marks</code> Points per question</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="rounded-md bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 px-3 py-2 text-xs text-amber-700 dark:text-amber-300 flex gap-2">
-                  <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                <div className="flex gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-300">
+                  <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
                   <span>MSQ: separate multiple correct answers with <code className="font-mono">;</code> (e.g. <code className="font-mono">2;3;5</code>). Options also semicolon-separated.</span>
                 </div>
-              </div>
+                </CardContent>
+              </Card>
 
               {/* ── Right: Upload + status ── */}
-              <div className="space-y-3 flex flex-col">
-                <p className="text-sm font-semibold">Select CSV File</p>
+              <Card className="border-border/70 shadow-sm">
+                <CardContent className="flex h-full flex-col space-y-4 p-4 sm:p-5">
+                <div>
+                  <p className="text-sm font-semibold">Select CSV File</p>
+                  <p className="text-xs text-muted-foreground">Choose a `.csv` file, review validation messages, then import.</p>
+                </div>
 
                 <label className="flex-1">
                   <div className={cn(
-                    "border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors h-full min-h-[160px] flex flex-col items-center justify-center",
-                    csvFile ? "border-primary/50 bg-primary/5" : "border-muted-foreground/20 hover:border-muted-foreground/40"
+                    "flex h-full min-h-[220px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-8 text-center transition-colors",
+                    csvFile ? "border-primary/60 bg-primary/5" : "border-muted-foreground/20 bg-muted/20 hover:border-muted-foreground/40 hover:bg-muted/40"
                   )}>
-                    <Upload className="h-8 w-8 mb-2 text-muted-foreground" />
+                    <span className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-background shadow-sm ring-1 ring-border">
+                      <Upload className="h-7 w-7 text-muted-foreground" />
+                    </span>
                     {csvFile ? (
                       <div>
-                        <p className="text-sm font-medium text-primary">{csvFile.name}</p>
-                        <p className="text-xs text-muted-foreground mt-1">{(csvFile.size / 1024).toFixed(1)} KB — ready to import</p>
+                        <p className="break-all text-sm font-semibold text-primary">{csvFile.name}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">{(csvFile.size / 1024).toFixed(1)} KB - ready to import</p>
                       </div>
                     ) : (
                       <div>
-                        <p className="text-sm font-medium">Click to select CSV file</p>
-                        <p className="text-xs text-muted-foreground mt-1">Only .csv files accepted</p>
+                        <p className="text-sm font-semibold">Click to select CSV file</p>
+                        <p className="mt-1 text-xs text-muted-foreground">Only .csv files accepted</p>
                       </div>
                     )}
                     <input type="file" accept=".csv" className="hidden" onChange={handleCsvFileSelect} />
@@ -1074,14 +1218,14 @@ export default function QuestionEditor({ mockId }: QuestionEditorProps) {
 
                 {/* Errors */}
                 {csvErrors.length > 0 && (
-                  <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-3 space-y-1">
+                  <div className="space-y-1 rounded-xl border border-destructive/40 bg-destructive/5 p-3">
                     <div className="flex items-center gap-2 text-sm font-semibold text-destructive">
                       <AlertTriangle className="h-4 w-4" />
                       {csvErrors.length} error{csvErrors.length > 1 ? "s" : ""} found
                     </div>
                     <div className="max-h-32 overflow-y-auto space-y-0.5">
                       {csvErrors.map((err, i) => (
-                        <p key={i} className="text-xs text-destructive/80 pl-6">• {err}</p>
+                        <p key={i} className="pl-6 text-xs text-destructive/80">• {err}</p>
                       ))}
                     </div>
                   </div>
@@ -1089,24 +1233,27 @@ export default function QuestionEditor({ mockId }: QuestionEditorProps) {
 
                 {/* Success */}
                 {csvSuccess !== null && (
-                  <div className="rounded-lg border border-green-400/40 bg-green-50 dark:bg-green-900/20 p-3 flex items-center gap-2">
+                  <div className="flex items-center gap-2 rounded-xl border border-green-400/40 bg-green-50 p-3 dark:bg-green-900/20">
                     <CheckCircle2 className="h-4 w-4 text-green-600" />
-                    <p className="text-sm text-green-700 dark:text-green-300 font-medium">
+                    <p className="text-sm font-medium text-green-700 dark:text-green-300">
                       Successfully imported {csvSuccess} questions!
                     </p>
                   </div>
                 )}
-              </div>
+                </CardContent>
+              </Card>
+            </div>
             </div>
 
-            <DialogFooter className="gap-2">
+            <DialogFooter className="mx-0 mb-0 gap-2 rounded-none border-t bg-background/95 px-5 py-4 sm:px-6">
               <Button
                 variant="outline"
+                className="h-10 px-6"
                 onClick={() => { setCsvModalOpen(false); setCsvFile(null); setCsvErrors([]); setCsvSuccess(null) }}
               >
                 Cancel
               </Button>
-              <Button onClick={handleCsvUpload} disabled={!csvFile || csvUploading}>
+              <Button onClick={handleCsvUpload} disabled={!csvFile || csvUploading} className="h-10 px-6">
                 {csvUploading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                 <Upload className="h-4 w-4 mr-2" />
                 Import Questions
