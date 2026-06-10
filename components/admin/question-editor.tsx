@@ -81,6 +81,7 @@ import Link from "next/link"
 import type { MockQuestion } from "@/types/mock"
 import { nanoid } from "nanoid"
 import { cn } from "@/lib/utils"
+import { parseMockQuestionCsv } from "@/lib/mock-question-csv"
 
 const optionLabels = ["A", "B", "C", "D", "E", "F"]
 const MAX_QUESTION_IMAGE_SIZE = 1024 * 1024
@@ -127,42 +128,6 @@ const typeConfig = {
     color: "bg-primary/10 text-primary dark:bg-primary/20",
     icon: AlignLeft,
   },
-}
-
-// ─── CSV Parser ────────────────────────────────────────────────────────────────
-function parseCSV(text: string): string[][] {
-  const rows: string[][] = []
-  let current = ""
-  let inQuotes = false
-  const row: string[] = []
-
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i]
-    const next = text[i + 1]
-
-    if (char === '"' && inQuotes && next === '"') {
-      current += '"'
-      i++
-    } else if (char === '"') {
-      inQuotes = !inQuotes
-    } else if (char === ',' && !inQuotes) {
-      row.push(current.trim())
-      current = ""
-    } else if ((char === '\n' || char === '\r') && !inQuotes) {
-      if (char === '\r' && next === '\n') i++
-      row.push(current.trim())
-      rows.push([...row])
-      row.length = 0
-      current = ""
-    } else {
-      current += char
-    }
-  }
-  if (current || row.length > 0) {
-    row.push(current.trim())
-    rows.push([...row])
-  }
-  return rows
 }
 
 export default function QuestionEditor({ mockId }: QuestionEditorProps) {
@@ -413,86 +378,18 @@ export default function QuestionEditor({ mockId }: QuestionEditorProps) {
     reader.onload = async (event) => {
       try {
         const text = event.target?.result as string
-        const rows = parseCSV(text)
-        if (rows.length < 2) {
-          setCsvErrors(["CSV file appears empty or has only headers."])
+        const result = parseMockQuestionCsv(text, () => nanoid())
+
+        if (result.errors.length > 0) {
+          setCsvErrors(result.errors)
           setCsvUploading(false)
           return
         }
 
-        const headers = rows[0].map((h) => h.toLowerCase().trim())
-        const qIdx = headers.indexOf("question")
-        const tIdx = headers.indexOf("type")
-        const aIdx = headers.indexOf("answer")
-        const optIdx = headers.indexOf("options")
-        const expIdx = headers.indexOf("explanation")
-        const marksIdx = headers.indexOf("marks")
-
-        const errs: string[] = []
-        if (qIdx === -1) errs.push("Missing required column: 'question'")
-        if (tIdx === -1) errs.push("Missing required column: 'type'")
-        if (aIdx === -1) errs.push("Missing required column: 'answer'")
-        if (errs.length > 0) {
-          setCsvErrors(errs)
-          setCsvUploading(false)
-          return
-        }
-
-        const newQuestions: MockQuestion[] = []
-        for (let i = 1; i < rows.length; i++) {
-          const row = rows[i]
-          if (row.every((c) => !c)) continue
-
-          const questionText = row[qIdx] ?? ""
-          const typeRaw = (row[tIdx] ?? "MCQ").toUpperCase().trim()
-          const answer = row[aIdx] ?? ""
-          const optionsRaw = optIdx !== -1 ? (row[optIdx] ?? "") : ""
-          const explanation = expIdx !== -1 ? (row[expIdx] ?? "") : ""
-          const marks = marksIdx !== -1 ? parseInt(row[marksIdx] ?? "1") || 1 : 1
-
-          if (!questionText) continue
-
-          const validTypes = ["MCQ", "MSQ", "NAT", "DESCRIPTIVE"]
-          if (!validTypes.includes(typeRaw)) {
-            errs.push(`Row ${i + 1}: Invalid type '${typeRaw}'. Use MCQ/MSQ/NAT/DESCRIPTIVE.`)
-            continue
-          }
-
-          const parsedOptions = optionsRaw
-            ? optionsRaw.split(";").map((o) => o.trim()).filter(Boolean)
-            : []
-
-          if ((typeRaw === "MCQ" || typeRaw === "MSQ") && parsedOptions.length < 2) {
-            errs.push(`Row ${i + 1}: MCQ/MSQ requires at least 2 options separated by semicolons.`)
-            continue
-          }
-
-          if (typeRaw === "NAT" && isNaN(parseFloat(answer))) {
-            errs.push(`Row ${i + 1}: NAT answer must be a number.`)
-            continue
-          }
-
-          newQuestions.push({
-            id: nanoid(),
-            question: questionText,
-            type: typeRaw as MockQuestion["type"],
-            options: parsedOptions,
-            answer,
-            explanation: explanation || undefined,
-            marks,
-          })
-        }
-
-        if (errs.length > 0) {
-          setCsvErrors(errs)
-          setCsvUploading(false)
-          return
-        }
-
-        await saveQuestions([...questions, ...newQuestions])
-        setCsvSuccess(newQuestions.length)
+        await saveQuestions([...questions, ...result.questions])
+        setCsvSuccess(result.questions.length)
         setCsvFile(null)
-        toast.success(`Imported ${newQuestions.length} questions`)
+        toast.success(`Imported ${result.questions.length} questions`)
       } catch {
         setCsvErrors(["Failed to parse CSV. Check the file format."])
       } finally {
@@ -1152,11 +1049,11 @@ export default function QuestionEditor({ mockId }: QuestionEditorProps) {
                 </div>
 
                 <pre className="overflow-x-auto rounded-xl border bg-muted/70 p-4 font-mono text-xs leading-relaxed">
-{`question,type,answer,options,marks
-"What is 2+2?",MCQ,4,"4;5;6;7",1
-"Select primes",MSQ,"2;3;5","1;2;3;5",1
-"Solve 2x=10",NAT,5,,1
-"Describe X",DESCRIPTIVE,"Answer",,2`}
+{`question,type,answer,options,explanation,marks
+"What is 2+2?",MCQ,4,"4;5;6;7","2 plus 2 equals 4.",1
+"Select primes",MSQ,"2;3;5","1;2;3;5","2, 3, and 5 are prime numbers.",1
+"Solve 2x=10",NAT,5,,"Divide both sides by 2.",1
+"Describe X",DESCRIPTIVE,"Answer",,"Add the expected explanation here.",2`}
                 </pre>
 
                 <div className="grid gap-3 text-xs text-muted-foreground sm:grid-cols-2">
