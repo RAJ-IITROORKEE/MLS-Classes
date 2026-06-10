@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 const STATS = [
-  { value: "15k+", label: "Applications" },
-  { value: "100%", label: "on Time Delivery" },
-  { value: "5 yrs", label: "Experience" },
-  { value: "⭐⭐⭐⭐⭐", label: "Education" },
+  { value: "2500+", label: "Students Taught" },
+  { value: "100%", label: "On Time delivery" },
+  { value: "7 yrs", label: "Experience" },
+  { value: "⭐⭐⭐⭐⭐", label: "1:1 Tutoring & HW Help" },
 ];
 
 export function HeroContentSection() {
