@@ -312,7 +312,7 @@ export default function BlogEditor({
       {/* Content */}
       <div className="space-y-2">
         <Label>Content *</Label>
-        <div className="border rounded-lg overflow-hidden">
+        <div>
           <Controller
             name="content"
             control={control}

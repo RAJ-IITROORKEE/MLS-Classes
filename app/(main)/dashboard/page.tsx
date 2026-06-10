@@ -106,7 +106,7 @@ export default async function DashboardPage() {
     <DashboardClient
       user={safeUser}
       stats={{
-        averagePercentage: Math.round(averagePercentage) || 0,
+        averagePercentage: averagePercentage || 0,
         attemptedMocks,
         totalMocks,
         lastAttemptDate: lastAttemptDate?.toISOString() ?? null,

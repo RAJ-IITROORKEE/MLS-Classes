@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ExternalLink } from "lucide-react";
 
 // Social icons as simple SVG components (lucide-react v1.x doesn't include brand icons)
 function FacebookIcon({ className }: { className?: string }) {
@@ -84,21 +83,21 @@ const LEGAL_LINKS = [
 export function Footer() {
   return (
     <footer className="bg-zinc-950 text-zinc-300">
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+        <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-5 lg:gap-10">
           {/* Brand */}
-          <div className="lg:col-span-2 space-y-4">
-            <Link href="/" className="flex items-center">
+          <div className="space-y-4 text-center sm:text-left lg:col-span-2">
+            <Link href="/" className="flex items-center justify-center sm:justify-start">
               <Image
-                src="/mls-logo.webp"
+                src="/logo.png"
                 alt="MLS Classes"
                 width={160}
                 height={64}
-                className="h-16 w-auto object-contain"
+                className="h-14 w-auto object-contain sm:h-16"
                 style={{ width: "auto" }}
               />
             </Link>
-            <p className="text-sm leading-relaxed text-zinc-400 max-w-sm">
+            <p className="mx-auto max-w-md text-sm leading-relaxed text-zinc-400 sm:mx-0 sm:max-w-sm">
               MLS Classes offers Live, Online 1-1 Personalized Tutoring of Math,
               English (ELA), Science, Coding and SAT, ACT, AP, Digital SSAT,
               STAAR, AMC, GCSE, A-level, IGCSE, IB and NAPLAN Classes for
@@ -107,19 +106,19 @@ export function Footer() {
           </div>
 
           {/* Company */}
-          <div className="space-y-4">
+          <div className="border-t border-zinc-800 pt-5 sm:border-0 sm:pt-0">
             <h3 className="font-semibold text-white text-sm uppercase tracking-wider">
               Company
             </h3>
-            <ul className="space-y-2">
+            <ul className="mt-3 space-y-1.5">
               {COMPANY_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5 group"
+                    className="group flex items-center justify-center gap-2 py-1.5 text-sm text-zinc-400 transition-colors hover:text-white sm:justify-start"
                   >
                     <span className="text-primary opacity-60 group-hover:opacity-100">›</span>
-                    {link.label}
+                    <span>{link.label}</span>
                   </Link>
                 </li>
               ))}
@@ -127,19 +126,19 @@ export function Footer() {
           </div>
 
           {/* Reach Us */}
-          <div className="space-y-4">
+          <div className="border-t border-zinc-800 pt-5 sm:border-0 sm:pt-0">
             <h3 className="font-semibold text-white text-sm uppercase tracking-wider">
               Reach us
             </h3>
-            <ul className="space-y-2">
+            <ul className="mt-3 space-y-1.5">
               {REACH_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5 group"
+                    className="group flex min-w-0 items-center justify-center gap-2 py-1.5 text-sm text-zinc-400 transition-colors hover:text-white sm:justify-start"
                   >
                     <span className="text-primary opacity-60 group-hover:opacity-100">›</span>
-                    {link.label}
+                    <span className="min-w-0 break-words">{link.label}</span>
                   </Link>
                 </li>
               ))}
@@ -147,19 +146,19 @@ export function Footer() {
           </div>
 
           {/* Other Resources */}
-          <div className="space-y-4">
+          <div className="border-t border-zinc-800 pt-5 sm:border-0 sm:pt-0">
             <h3 className="font-semibold text-white text-sm uppercase tracking-wider">
               Other Resources
             </h3>
-            <ul className="space-y-2">
+            <ul className="mt-3 space-y-1.5">
               {RESOURCE_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5 group"
+                    className="group flex items-center justify-center gap-2 py-1.5 text-sm text-zinc-400 transition-colors hover:text-white sm:justify-start"
                   >
                     <span className="text-primary opacity-60 group-hover:opacity-100">›</span>
-                    {link.label}
+                    <span>{link.label}</span>
                   </Link>
                 </li>
               ))}
@@ -168,10 +167,10 @@ export function Footer() {
         </div>
 
         {/* Follow Us */}
-        <div className="mt-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <p className="text-sm font-semibold text-white mb-3">Follow us</p>
-            <div className="flex items-center gap-3">
+        <div className="mt-7 border-t border-zinc-800 pt-6 sm:mt-8 sm:flex sm:items-center sm:justify-between lg:px-0">
+          <div className="text-center sm:text-left">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-white sm:normal-case sm:tracking-normal">Follow us</p>
+            <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start">
               {SOCIAL_LINKS.map((social) => (
                 <a
                   key={social.href}
@@ -179,7 +178,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
-                  className={`flex h-9 w-9 items-center justify-center rounded-full bg-zinc-800 text-zinc-400 transition-all duration-200 hover:bg-zinc-700 hover:scale-110 ${social.hoverColor}`}
+                  className={`flex h-10 w-10 items-center justify-center rounded-full bg-zinc-800 text-zinc-400 transition-all duration-200 hover:scale-105 hover:bg-zinc-700 ${social.hoverColor}`}
                 >
                   <social.icon className="h-4 w-4" />
                 </a>
@@ -192,19 +191,19 @@ export function Footer() {
       {/* Bottom Bar */}
       <div className="border-t border-zinc-800">
         <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:justify-between">
-            <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+          <div className="flex flex-col-reverse items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-left">
+            <div className="flex w-full flex-col items-center gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-start sm:gap-5">
               {LEGAL_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-xs text-zinc-500 hover:text-zinc-300 uppercase tracking-wider transition-colors"
+                  className="text-xs uppercase tracking-wider text-zinc-500 transition-colors hover:text-zinc-300"
                 >
                   {link.label}
                 </Link>
               ))}
             </div>
-            <p className="text-xs text-zinc-600">
+            <p className="text-xs leading-relaxed text-zinc-600">
               Copyright &copy; {new Date().getFullYear()} All Rights Reserved{" "}
               <span className="font-semibold text-zinc-400">MLSCLASSES.COM</span>
             </p>

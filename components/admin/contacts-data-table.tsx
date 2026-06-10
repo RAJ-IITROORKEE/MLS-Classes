@@ -41,6 +41,8 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -54,6 +56,15 @@ import {
   ChevronLeft,
   ChevronRight,
   Trash2,
+  CalendarClock,
+  CheckCircle2,
+  Clock,
+  GraduationCap,
+  Mail,
+  MapPin,
+  MessageSquare,
+  Phone,
+  UserRound,
 } from "lucide-react";
 import { toast } from "sonner";
 import { updateContactStatus, deleteContact } from "@/lib/actions/contacts";
@@ -141,7 +152,7 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
       } else {
         toast.error(result.message);
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete contact");
     }
   }
@@ -408,41 +419,169 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
 
        {/* Detail Dialog */}
        <Dialog open={!!detailRow} onOpenChange={() => setDetailRow(null)}>
-         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-           <DialogHeader>
-             <DialogTitle>Contact Details</DialogTitle>
-           </DialogHeader>
-          {detailRow && (
-            <div className="space-y-5 text-sm">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[
-                  ["Name", `${detailRow.firstName} ${detailRow.lastName}`],
-                  ["Email", detailRow.email],
-                  ["Phone", detailRow.phone],
-                  ["Student Name", detailRow.studentName],
-                  ["Program", detailRow.program],
-                  ["Grade", detailRow.grade],
-                  ["Timezone", detailRow.timezone],
-                  ["Availability", detailRow.availability],
-                  ["Status", detailRow.status],
-                  ["Submitted", new Date(detailRow.createdAt).toLocaleString()],
-                ].map(([label, value]) => (
-                  <div key={label} className="min-w-0">
-                    <p className="text-xs text-muted-foreground mb-0.5">{label}</p>
-                    <p className="font-medium break-words">{value}</p>
-                  </div>
-                ))}
-              </div>
-              {detailRow.message && (
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">Message</p>
-                  <p className="bg-muted rounded-lg p-3 text-sm break-words whitespace-pre-wrap">
-                    {detailRow.message}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
+         <DialogContent className="flex max-h-[92vh] w-[calc(100vw-1.5rem)] flex-col overflow-hidden p-0 sm:max-w-4xl lg:max-w-5xl">
+           {detailRow && (
+             <>
+               <DialogHeader className="border-b bg-muted/30 px-5 py-4 sm:px-6">
+                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                   <div className="min-w-0 space-y-2">
+                     <DialogTitle className="flex items-center gap-3 text-xl font-semibold">
+                       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                         <CalendarClock className="h-5 w-5" />
+                       </span>
+                       <span className="min-w-0 truncate">Trial Request Details</span>
+                     </DialogTitle>
+                     <DialogDescription>
+                       Submitted by {detailRow.firstName} {detailRow.lastName} for {detailRow.studentName}
+                     </DialogDescription>
+                   </div>
+                   <Badge className={`w-fit rounded-full px-3 py-1 text-xs font-semibold ${STATUS_COLORS[detailRow.status] ?? ""}`}>
+                     {detailRow.status}
+                   </Badge>
+                 </div>
+               </DialogHeader>
+
+               <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6">
+                 <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
+                   <div className="space-y-5">
+                     <section className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
+                       <div className="mb-4 flex items-center gap-3">
+                         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                           <UserRound className="h-4 w-4" />
+                         </span>
+                         <div>
+                           <h3 className="text-sm font-semibold">Parent / Guardian</h3>
+                           <p className="text-xs text-muted-foreground">Primary contact for this enquiry</p>
+                         </div>
+                       </div>
+                       <div className="grid gap-3 sm:grid-cols-2">
+                         <div className="rounded-xl border bg-muted/20 p-3">
+                           <p className="text-xs font-medium text-muted-foreground">Full Name</p>
+                           <p className="mt-1 break-words text-sm font-semibold">{detailRow.firstName} {detailRow.lastName}</p>
+                         </div>
+                         <div className="rounded-xl border bg-muted/20 p-3">
+                           <p className="text-xs font-medium text-muted-foreground">Email</p>
+                           <a href={`mailto:${detailRow.email}`} className="mt-1 block break-all text-sm font-semibold text-primary hover:underline">
+                             {detailRow.email}
+                           </a>
+                         </div>
+                         <div className="rounded-xl border bg-muted/20 p-3 sm:col-span-2">
+                           <p className="text-xs font-medium text-muted-foreground">Phone</p>
+                           <a href={`tel:${detailRow.phone}`} className="mt-1 inline-flex items-center gap-2 break-all text-sm font-semibold text-foreground hover:text-primary">
+                             <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+                             {detailRow.phone}
+                           </a>
+                         </div>
+                       </div>
+                     </section>
+
+                     <section className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
+                       <div className="mb-4 flex items-center gap-3">
+                         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                           <GraduationCap className="h-4 w-4" />
+                         </span>
+                         <div>
+                           <h3 className="text-sm font-semibold">Student & Program</h3>
+                           <p className="text-xs text-muted-foreground">Class request details</p>
+                         </div>
+                       </div>
+                       <div className="grid gap-3 sm:grid-cols-3">
+                         <div className="rounded-xl border bg-muted/20 p-3">
+                           <p className="text-xs font-medium text-muted-foreground">Student</p>
+                           <p className="mt-1 break-words text-sm font-semibold">{detailRow.studentName}</p>
+                         </div>
+                         <div className="rounded-xl border bg-muted/20 p-3">
+                           <p className="text-xs font-medium text-muted-foreground">Program</p>
+                           <p className="mt-1 break-words text-sm font-semibold">{detailRow.program}</p>
+                         </div>
+                         <div className="rounded-xl border bg-muted/20 p-3">
+                           <p className="text-xs font-medium text-muted-foreground">Grade</p>
+                           <p className="mt-1 break-words text-sm font-semibold">{detailRow.grade}</p>
+                         </div>
+                       </div>
+                     </section>
+
+                     <section className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
+                       <div className="mb-4 flex items-center gap-3">
+                         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                           <MessageSquare className="h-4 w-4" />
+                         </span>
+                         <div>
+                           <h3 className="text-sm font-semibold">Message</h3>
+                           <p className="text-xs text-muted-foreground">Notes shared by the requester</p>
+                         </div>
+                       </div>
+                       <div className="rounded-2xl border bg-muted/30 p-4 text-sm leading-relaxed">
+                         {detailRow.message ? (
+                           <p className="break-words whitespace-pre-wrap">{detailRow.message}</p>
+                         ) : (
+                           <p className="text-muted-foreground">No additional message was provided.</p>
+                         )}
+                       </div>
+                     </section>
+                   </div>
+
+                   <aside className="space-y-5 lg:sticky lg:top-0 lg:self-start">
+                     <section className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
+                       <div className="mb-4 flex items-center gap-3">
+                         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-green-500/10 text-green-600 dark:text-green-400">
+                           <Clock className="h-4 w-4" />
+                         </span>
+                         <div>
+                           <h3 className="text-sm font-semibold">Schedule</h3>
+                           <p className="text-xs text-muted-foreground">Preferred timing</p>
+                         </div>
+                       </div>
+                       <div className="space-y-3">
+                         <div className="rounded-xl border bg-muted/20 p-3">
+                           <p className="text-xs font-medium text-muted-foreground">Availability</p>
+                           <p className="mt-1 break-words text-sm font-semibold">{detailRow.availability}</p>
+                         </div>
+                         <div className="rounded-xl border bg-muted/20 p-3">
+                           <p className="text-xs font-medium text-muted-foreground">Timezone</p>
+                           <p className="mt-1 inline-flex items-center gap-2 break-words text-sm font-semibold">
+                             <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                             {detailRow.timezone}
+                           </p>
+                         </div>
+                         <div className="rounded-xl border bg-muted/20 p-3">
+                           <p className="text-xs font-medium text-muted-foreground">Submitted</p>
+                           <p className="mt-1 break-words text-sm font-semibold">{new Date(detailRow.createdAt).toLocaleString()}</p>
+                         </div>
+                       </div>
+                     </section>
+
+                     <section className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
+                       <div className="mb-4 flex items-center gap-3">
+                         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                           <CheckCircle2 className="h-4 w-4" />
+                         </span>
+                         <div>
+                           <h3 className="text-sm font-semibold">Status</h3>
+                           <p className="text-xs text-muted-foreground">Update from the table row</p>
+                         </div>
+                       </div>
+                       <Badge className={`rounded-full px-3 py-1 text-xs font-semibold ${STATUS_COLORS[detailRow.status] ?? ""}`}>
+                         {detailRow.status}
+                       </Badge>
+                     </section>
+                   </aside>
+                 </div>
+               </div>
+
+               <DialogFooter className="mx-0 mb-0 gap-2 rounded-none border-t bg-background/95 px-5 py-4 sm:px-6">
+                 <Button type="button" variant="outline" onClick={() => setDetailRow(null)}>
+                   Close
+                 </Button>
+                 <Button asChild>
+                   <a href={`mailto:${detailRow.email}`}>
+                     <Mail className="h-4 w-4" />
+                     Email Parent
+                   </a>
+                 </Button>
+               </DialogFooter>
+             </>
+           )}
         </DialogContent>
       </Dialog>
     </div>

@@ -240,7 +240,9 @@ export function PerformanceDashboardClient({
                       innerRadius={60}
                       outerRadius={80}
                       stroke="none"
-                      label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
+                      label={({ name, percent }) =>
+                        `${name} ${new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format((percent ?? 0) * 100)}%`
+                      }
                     >
                       {answerDistribution.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />

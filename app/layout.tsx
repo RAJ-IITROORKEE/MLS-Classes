@@ -23,6 +23,11 @@ export const metadata: Metadata = {
   description:
     "MLS Classes offers Live, Online 1-1 Personalized Tutoring of Math, English (ELA), Science, Coding and SAT, ACT, AP, IGCSE, A-level, IB and more for students in grades K-12.",
   keywords: ["online tutoring", "SAT prep", "ACT prep", "IGCSE", "A-levels", "K-12", "1-on-1"],
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({

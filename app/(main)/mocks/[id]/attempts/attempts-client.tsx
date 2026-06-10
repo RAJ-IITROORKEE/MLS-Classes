@@ -61,6 +61,10 @@ function scoreLabel(percentage: number | null | undefined) {
   return "Needs work";
 }
 
+function formatPercentage(percentage: number) {
+  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(percentage);
+}
+
 export function MockAttemptsClient({ attempts }: MockAttemptsClientProps) {
   const mockTitle = attempts[0]?.mockTest?.title ?? "Mock attempts";
   const mockId = attempts[0]?.mockTest?.id ?? "";
@@ -114,7 +118,7 @@ export function MockAttemptsClient({ attempts }: MockAttemptsClientProps) {
             </CardTitle>
           </CardHeader>
           <CardContent className="text-2xl font-semibold">
-            {summary.bestScore.toFixed(0)}%
+            {formatPercentage(summary.bestScore)}%
           </CardContent>
         </Card>
         <Card className="border-border/60 bg-background/80">
@@ -124,7 +128,7 @@ export function MockAttemptsClient({ attempts }: MockAttemptsClientProps) {
             </CardTitle>
           </CardHeader>
           <CardContent className="text-2xl font-semibold">
-            {summary.avgScore.toFixed(0)}%
+            {formatPercentage(summary.avgScore)}%
           </CardContent>
         </Card>
       </div>
@@ -159,7 +163,7 @@ export function MockAttemptsClient({ attempts }: MockAttemptsClientProps) {
                   </div>
                   <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                     <span className="flex items-center gap-1">
-                      <ListChecks className="h-4 w-4" /> {percentage.toFixed(0)}%
+                      <ListChecks className="h-4 w-4" /> {formatPercentage(percentage)}%
                     </span>
                     <span className="flex items-center gap-1">
                       <Clock3 className="h-4 w-4" />

@@ -23,6 +23,20 @@ const asNode = (value: unknown): TipTapNode | null => {
   return value as TipTapNode;
 };
 
+const getAlignmentStyle = (node: TipTapNode): string => {
+  const align = node.attrs?.textAlign;
+  if (align === 'left' || align === 'center' || align === 'right' || align === 'justify') {
+    return ` style="text-align:${align}"`;
+  }
+
+  return '';
+};
+
+const tableWrapperClass = 'my-8 overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800';
+const tableClass = 'w-full min-w-[520px] border-collapse text-sm';
+const tableHeaderClass = 'border border-slate-300 bg-slate-100 px-4 py-3 text-left font-semibold text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50';
+const tableCellClass = 'border border-slate-200 px-4 py-3 align-top text-slate-700 dark:border-slate-800 dark:text-slate-300';
+
 export function generateHtml(content: unknown): string {
   const root = asNode(content);
   if (!root || !Array.isArray(root.content)) return '';
@@ -34,6 +48,11 @@ export function generateHtml(content: unknown): string {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
+
+  const getCellStyle = (node: TipTapNode): string => {
+    const backgroundColor = node.attrs?.backgroundColor;
+    return backgroundColor ? ` style="background-color:${escapeHtml(String(backgroundColor))}"` : '';
+  };
 
   let html = '';
 
@@ -48,13 +67,13 @@ export function generateHtml(content: unknown): string {
         break;
 
       case 'paragraph':
-        nodeHtml = `<p>${renderContent(node)}</p>`;
+        nodeHtml = `<p${getAlignmentStyle(node)}>${renderContent(node)}</p>`;
         break;
 
       case 'heading':
         const rawLevel = Number(node.attrs?.level ?? 1);
         const level = Math.min(6, Math.max(1, Number.isNaN(rawLevel) ? 1 : rawLevel));
-        nodeHtml = `<h${level}>${renderContent(node)}</h${level}>`;
+        nodeHtml = `<h${level}${getAlignmentStyle(node)}>${renderContent(node)}</h${level}>`;
         break;
 
       case 'bulletList':
@@ -74,7 +93,7 @@ export function generateHtml(content: unknown): string {
         break;
 
       case 'table':
-        nodeHtml = `<table>${renderContent(node)}</table>`;
+        nodeHtml = `<div class="${tableWrapperClass}"><table class="${tableClass}">${renderContent(node)}</table></div>`;
         break;
 
       case 'tableRow':
@@ -82,11 +101,11 @@ export function generateHtml(content: unknown): string {
         break;
 
       case 'tableHeader':
-        nodeHtml = `<th>${renderContent(node)}</th>`;
+        nodeHtml = `<th class="${tableHeaderClass}"${getCellStyle(node)}>${renderContent(node)}</th>`;
         break;
 
       case 'tableCell':
-        nodeHtml = `<td>${renderContent(node)}</td>`;
+        nodeHtml = `<td class="${tableCellClass}"${getCellStyle(node)}>${renderContent(node)}</td>`;
         break;
 
       case 'codeBlock':

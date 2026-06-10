@@ -63,6 +63,10 @@ const DIFFICULTY_COLORS: Record<string, string> = {
   HARD: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
 }
 
+function formatPercentage(percentage: number) {
+  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(percentage)
+}
+
 function getInitials(name?: string | null) {
   if (!name) return "U"
   return name
@@ -115,7 +119,7 @@ export default function AdminMockStatsClient() {
   const uniqueUsers = userStats.length
   const avgPercentage =
     totalAttempts > 0
-      ? Math.round(attempts.reduce((sum, a) => sum + (a.percentage ?? 0), 0) / totalAttempts)
+      ? attempts.reduce((sum, a) => sum + (a.percentage ?? 0), 0) / totalAttempts
       : 0
   const totalMocks = mockStats.length
 
@@ -149,7 +153,7 @@ export default function AdminMockStatsClient() {
         {[
           { label: "Total Attempts", value: totalAttempts, icon: ClipboardList },
           { label: "Unique Students", value: uniqueUsers, icon: Users },
-          { label: "Avg Score", value: totalAttempts ? `${avgPercentage}%` : "—", icon: TrendingUp },
+          { label: "Avg Score", value: totalAttempts ? `${formatPercentage(avgPercentage)}%` : "—", icon: TrendingUp },
           { label: "Active Mocks", value: totalMocks, icon: BarChart2 },
         ].map((stat) => (
           <motion.div
@@ -225,7 +229,7 @@ export default function AdminMockStatsClient() {
                       </TableCell>
                       <TableCell className="text-sm tabular-nums">{stat.totalAttempts}</TableCell>
                       <TableCell>
-                        <Badge variant="secondary">{stat.avgPercentage}%</Badge>
+                        <Badge variant="secondary">{formatPercentage(stat.avgPercentage)}%</Badge>
                       </TableCell>
                       <TableCell className="text-sm tabular-nums">{stat.mocksAttempted}</TableCell>
                     </TableRow>
@@ -291,7 +295,7 @@ export default function AdminMockStatsClient() {
                       </TableCell>
                       <TableCell className="text-sm tabular-nums">{stat.totalAttempts}</TableCell>
                       <TableCell>
-                        <Badge variant="secondary">{stat.avgPercentage}%</Badge>
+                        <Badge variant="secondary">{formatPercentage(stat.avgPercentage)}%</Badge>
                       </TableCell>
                       <TableCell className="text-sm tabular-nums">{stat.uniqueUsers}</TableCell>
                     </TableRow>
@@ -374,7 +378,7 @@ export default function AdminMockStatsClient() {
                         <div className="text-sm tabular-nums">
                           {attempt.score ?? 0}/{attempt.totalQuestions}
                           <Badge variant="secondary" className="ml-2">
-                            {Math.round(attempt.percentage ?? 0)}%
+                            {formatPercentage(attempt.percentage ?? 0)}%
                           </Badge>
                         </div>
                       </TableCell>

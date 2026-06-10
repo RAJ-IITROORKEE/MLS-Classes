@@ -28,6 +28,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { useAdminNotifications } from "@/components/admin/admin-notifications-provider";
 import {
   LayoutDashboard,
   HelpCircle,
@@ -41,6 +43,7 @@ import {
   Trophy,
   ClipboardList,
   Send,
+  FileText,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -58,11 +61,23 @@ const NAV_ITEMS = [
         href: "/admin/dashboard",
         icon: LayoutDashboard,
       },
+      {
+        label: "Users",
+        href: "/admin/users",
+        icon: Users,
+      },
     ],
   },
   {
-    title: "Mocks & Tests",
+    title: "Content",
     items: [
+      {
+        label: "Blogs",
+        icon: FileText,
+        subItems: [
+          { label: "Manage Blogs", href: "/admin/blogs" },
+        ],
+      },
       {
         label: "Mocks",
         icon: ClipboardList,
@@ -86,11 +101,6 @@ const NAV_ITEMS = [
         label: "Contacts",
         href: "/admin/contact-us",
         icon: Send,
-      },
-      {
-        label: "Users",
-        href: "/admin/users",
-        icon: Users,
       },
       {
         label: "Testimonials",
@@ -121,11 +131,22 @@ const NAV_ITEMS = [
   },
 ];
 
+function formatBadgeCount(count: number) {
+  return count > 99 ? "99+" : String(count);
+}
+
 export function AdminAppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
   const router = useRouter();
   const { data: session } = useSession();
   const user = session?.user;
+  const { trial, contact } = useAdminNotifications();
+
+  const getNotificationCount = (label: string) => {
+    if (label === "Trial Requests") return trial;
+    if (label === "Contacts") return contact;
+    return 0;
+  };
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -136,7 +157,7 @@ export function AdminAppSidebar({ ...props }: React.ComponentProps<typeof Sideba
             <SidebarMenuButton size="lg" asChild>
               <Link href="/" className="flex items-center justify-center py-2">
                 <Image
-                  src="/mls-logo.webp"
+                  src="/logo.png"
                   alt="MLS Classes"
                   width={140}
                   height={56}
@@ -197,6 +218,7 @@ export function AdminAppSidebar({ ...props }: React.ComponentProps<typeof Sideba
 
                   const isActive =
                     "href" in item && item.href ? pathname === item.href : false;
+                  const notificationCount = getNotificationCount(item.label);
                   return (
                     <SidebarMenuItem key={item.label}>
                       <SidebarMenuButton
@@ -205,9 +227,14 @@ export function AdminAppSidebar({ ...props }: React.ComponentProps<typeof Sideba
                         isActive={isActive}
                         className={cn(isActive && "bg-sidebar-accent text-sidebar-accent-foreground")}
                       >
-                        <Link href={"href" in item && item.href ? item.href : "#"}>
+                        <Link href={"href" in item && item.href ? item.href : "#"} className="flex w-full items-center gap-2">
                           <item.icon className="h-4 w-4" />
-                          <span>{item.label}</span>
+                          <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                          {notificationCount > 0 && (
+                            <Badge className="ml-auto h-5 min-w-5 rounded-full bg-red-500 px-1.5 text-[10px] font-semibold text-white hover:bg-red-500">
+                              {formatBadgeCount(notificationCount)}
+                            </Badge>
+                          )}
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>

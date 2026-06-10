@@ -168,11 +168,10 @@ export function ResultClient({
     attempt.incorrectCount ?? Math.max(0, attemptedCount - correctCount);
   const unansweredCount =
     attempt.unansweredCount ?? Math.max(0, totalQuestions - attemptedCount);
-  const scorePercentage = attempt.percentage
-    ? Math.round(attempt.percentage)
-    : totalQuestions > 0
-      ? Math.round((correctCount / totalQuestions) * 100)
-      : 0;
+  const scorePercentageValue = attempt.percentage ?? (totalQuestions > 0 ? (correctCount / totalQuestions) * 100 : 0);
+  const scorePercentage = new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 2,
+  }).format(scorePercentageValue);
 
   const startedAt = new Date(attempt.startedAt);
   const submittedAt = new Date(attempt.submittedAt ?? Date.now());
@@ -226,7 +225,7 @@ export function ResultClient({
                   <span className="text-3xl font-semibold">{correctCount}</span>
                   <span className="text-muted-foreground">/ {totalQuestions}</span>
                 </div>
-                <Progress value={scorePercentage} className="h-2" />
+                <Progress value={scorePercentageValue} className="h-2" />
                 <p className="text-xs text-muted-foreground">
                   {scorePercentage}% correct
                 </p>

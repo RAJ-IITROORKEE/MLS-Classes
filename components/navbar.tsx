@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -141,14 +141,6 @@ const ACADEMIC_MENU = [
 
 /* ─── Social / Utility icons ────────────────────────────────────────── */
 
-function WhatsAppIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-    </svg>
-  );
-}
-
 function FacebookIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
@@ -189,6 +181,146 @@ const LOGIN_MENU = [
 /* ─── Sub-menu item types ────────────────────────────────────────────── */
 interface SubItem { label: string; href: string; }
 interface MenuItem { label: string; href: string; sub?: SubItem[]; }
+
+function isExternalHref(href: string) {
+  return href.startsWith("http");
+}
+
+function MobileMenuLink({
+  href,
+  onNavigate,
+  children,
+  className,
+}: {
+  href: string;
+  onNavigate: () => void;
+  children: ReactNode;
+  className?: string;
+}) {
+  return isExternalHref(href) ? (
+    <a href={href} target="_blank" rel="noopener noreferrer" onClick={onNavigate} className={className}>
+      {children}
+    </a>
+  ) : (
+    <Link href={href} onClick={onNavigate} className={className}>
+      {children}
+    </Link>
+  );
+}
+
+function MobileNavSection({
+  id,
+  label,
+  items,
+  activeSection,
+  activeItem,
+  onToggleSection,
+  onToggleItem,
+  onNavigate,
+}: {
+  id: string;
+  label: string;
+  items: MenuItem[];
+  activeSection: string | null;
+  activeItem: string | null;
+  onToggleSection: (id: string) => void;
+  onToggleItem: (id: string) => void;
+  onNavigate: () => void;
+}) {
+  const isOpen = activeSection === id;
+
+  return (
+    <div className="rounded-2xl border border-border/70 bg-background/80 shadow-sm">
+      <button
+        type="button"
+        onClick={() => onToggleSection(id)}
+        className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left text-sm font-bold text-foreground"
+        aria-expanded={isOpen}
+      >
+        <span>{label}</span>
+        <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", isOpen && "rotate-180 text-primary")} />
+      </button>
+
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="overflow-hidden border-t border-border/70"
+          >
+            <div className="space-y-1 p-2">
+              {items.map((item) => {
+                const itemKey = `${id}-${item.label}`;
+                const itemOpen = activeItem === itemKey;
+
+                if (!item.sub?.length) {
+                  return (
+                    <MobileMenuLink
+                      key={item.label}
+                      href={item.href}
+                      onNavigate={onNavigate}
+                      className="block rounded-xl px-3 py-3 text-sm font-medium text-foreground hover:bg-primary/10 hover:text-primary"
+                    >
+                      {item.label}
+                    </MobileMenuLink>
+                  );
+                }
+
+                return (
+                  <div key={item.label} className="rounded-xl bg-muted/40">
+                    <button
+                      type="button"
+                      onClick={() => onToggleItem(itemKey)}
+                      className="flex w-full items-center justify-between gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-foreground hover:bg-primary/10 hover:text-primary"
+                      aria-expanded={itemOpen}
+                    >
+                      <span>{item.label}</span>
+                      <ChevronRight className={cn("h-4 w-4 text-muted-foreground transition-transform", itemOpen && "rotate-90 text-primary")} />
+                    </button>
+
+                    <AnimatePresence initial={false}>
+                      {itemOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.16 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="space-y-1 border-t border-border/60 px-2 py-2">
+                            <MobileMenuLink
+                              href={item.href}
+                              onNavigate={onNavigate}
+                              className="block rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-wide text-primary hover:bg-primary/10"
+                            >
+                              View {item.label}
+                            </MobileMenuLink>
+                            {item.sub.map((sub) => (
+                              <MobileMenuLink
+                                key={sub.label}
+                                href={sub.href}
+                                onNavigate={onNavigate}
+                                className="block rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:bg-background hover:text-primary"
+                              >
+                                {sub.label}
+                              </MobileMenuLink>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 /* ─── MegaDropdown ───────────────────────────────────────────────────── */
 
@@ -325,6 +457,8 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [activeMobileSection, setActiveMobileSection] = useState<string | null>(null);
+  const [activeMobileItem, setActiveMobileItem] = useState<string | null>(null);
 
   const navRef = useRef<HTMLElement>(null);
 
@@ -348,6 +482,24 @@ export function Navbar() {
   const toggleDropdown = (name: string) =>
     setActiveDropdown((prev) => (prev === name ? null : name));
 
+  const closeMobileMenu = () => {
+    setIsOpen(false);
+    setActiveMobileSection(null);
+    setActiveMobileItem(null);
+  };
+
+  const toggleMobileSection = (id: string) => {
+    setActiveMobileSection((prev) => {
+      const next = prev === id ? null : id;
+      setActiveMobileItem(null);
+      return next;
+    });
+  };
+
+  const toggleMobileItem = (id: string) => {
+    setActiveMobileItem((prev) => (prev === id ? null : id));
+  };
+
   return (
     <header ref={navRef} className="fixed top-0 left-0 right-0 z-50">
       {/* ── Main nav ── */}
@@ -363,7 +515,7 @@ export function Navbar() {
           {/* Logo */}
           <Link href="/" className="shrink-0" onClick={() => setActiveDropdown(null)}>
             <Image
-              src="/mls-logo.webp"
+              src="/logo.png"
               alt="MLS Classes"
               width={130}
               height={52}
@@ -538,139 +690,89 @@ export function Navbar() {
             transition={{ duration: 0.2 }}
             className="lg:hidden border-t border-border bg-background/98 backdrop-blur-md overflow-hidden"
           >
-            <div className="flex flex-col px-4 py-4 gap-1 max-h-[80vh] overflow-y-auto">
-              <p className="px-3 py-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                Test Preparation
-              </p>
-              {TEST_PREP_MENU.map((item) =>
-                item.href.startsWith("http") ? (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setIsOpen(false)}
-                    className="px-3 py-2.5 text-sm font-medium text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-                  >
-                    {item.label}
+            <div className="flex max-h-[calc(100vh-4.75rem)] flex-col gap-3 overflow-y-auto px-4 py-4">
+              <MobileNavSection
+                id="test-prep"
+                label="Test Preparation"
+                items={TEST_PREP_MENU}
+                activeSection={activeMobileSection}
+                activeItem={activeMobileItem}
+                onToggleSection={toggleMobileSection}
+                onToggleItem={toggleMobileItem}
+                onNavigate={closeMobileMenu}
+              />
+
+              <MobileNavSection
+                id="academic"
+                label="Academic Tutoring"
+                items={ACADEMIC_MENU}
+                activeSection={activeMobileSection}
+                activeItem={activeMobileItem}
+                onToggleSection={toggleMobileSection}
+                onToggleItem={toggleMobileItem}
+                onNavigate={closeMobileMenu}
+              />
+
+              <div className="grid gap-2 rounded-2xl border border-border/70 bg-background/80 p-2 shadow-sm">
+                <Link
+                  href="/about"
+                  onClick={closeMobileMenu}
+                  className="rounded-xl px-3 py-3 text-sm font-semibold text-foreground hover:bg-primary/10 hover:text-primary"
+                >
+                  About Us
+                </Link>
+                <Link
+                  href="/mocks"
+                  onClick={closeMobileMenu}
+                  className="rounded-xl px-3 py-3 text-sm font-semibold text-foreground hover:bg-primary/10 hover:text-primary"
+                >
+                  Practice Tests
+                </Link>
+                <Link
+                  href="/student-corner"
+                  onClick={closeMobileMenu}
+                  className="rounded-xl px-3 py-3 text-sm font-semibold text-foreground hover:bg-primary/10 hover:text-primary"
+                >
+                  Student Corner
+                </Link>
+              </div>
+
+              <MobileNavSection
+                id="login"
+                label="Login Portals"
+                items={LOGIN_MENU}
+                activeSection={activeMobileSection}
+                activeItem={activeMobileItem}
+                onToggleSection={toggleMobileSection}
+                onToggleItem={toggleMobileItem}
+                onNavigate={closeMobileMenu}
+              />
+
+              <div className="rounded-2xl border border-border/70 bg-muted/40 p-3 shadow-sm">
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <Button asChild className="w-full font-bold" size="default">
+                    <Link href="/book-trial" onClick={closeMobileMenu}>
+                      Book Free Trial
+                    </Link>
+                  </Button>
+                  <SignedOut>
+                    <Button asChild className="w-full font-bold" size="default" variant="outline">
+                      <Link href="/sign-in" onClick={closeMobileMenu}>
+                        Sign In
+                      </Link>
+                    </Button>
+                  </SignedOut>
+                </div>
+
+                <div className="mt-4 flex flex-wrap items-center justify-center gap-4 border-t border-border/70 pt-4">
+                  <a href="https://wa.me/message/XMS5KMWBGQZLG1" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-2 text-xs font-bold text-primary">
+                    <MessageCircle className="h-4 w-4" /> WhatsApp
                   </a>
-                ) : (
-                  <Link
-                    key={item.label}
-                    href={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className="px-3 py-2.5 text-sm font-medium text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                )
-              )}
-
-              <div className="my-1 border-t border-border" />
-              <p className="px-3 py-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                Academic Tutoring
-              </p>
-              {ACADEMIC_MENU.map((item) =>
-                item.href.startsWith("http") ? (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setIsOpen(false)}
-                    className="px-3 py-2.5 text-sm font-medium text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-                  >
-                    {item.label}
-                  </a>
-                ) : (
-                  <Link
-                    key={item.label}
-                    href={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className="px-3 py-2.5 text-sm font-medium text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                )
-              )}
-
-              <div className="my-1 border-t border-border" />
-              <Link
-                href="/about"
-                onClick={() => setIsOpen(false)}
-                className="px-3 py-2.5 text-sm font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-              >
-                About Us
-              </Link>
-              <Link
-                href="/mocks"
-                onClick={() => setIsOpen(false)}
-                className="px-3 py-2.5 text-sm font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-              >
-                Practice Tests
-              </Link>
-               <Link
-                 href="/student-corner"
-                 onClick={() => setIsOpen(false)}
-                 className="px-3 py-2.5 text-sm font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-               >
-                 Student Corner
-               </Link>
-
-               <div className="my-1 border-t border-border" />
-               <p className="px-3 py-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                 Login
-               </p>
-               {LOGIN_MENU.map((item) => (
-                 <a
-                   key={item.label}
-                   href={item.href}
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   onClick={() => setIsOpen(false)}
-                   className="px-3 py-2.5 text-sm font-semibold text-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-                 >
-                   {item.label}
-                 </a>
-               ))}
-
-               <SignedOut>
-                 <div className="mt-2">
-                   <Button asChild className="w-full font-bold" size="default">
-                      <Link href="/sign-in" onClick={() => setIsOpen(false)}>
-                       Sign In
-                     </Link>
-                   </Button>
-                 </div>
-               </SignedOut>
-
-               {/* Social row */}
-               <div className="flex items-center gap-4 px-3 pt-2">
-                  <a href="https://wa.me/message/XMS5KMWBGQZLG1" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-primary font-semibold">
-                   <MessageCircle className="h-4 w-4" /> WhatsApp
-                 </a>
-                 <a href="https://www.facebook.com/mlsclasses?mibextid=ZbWKwL" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><FacebookIcon /></a>
-                 <a href="https://www.instagram.com/mlsclasses?utm_source=ig_web_button_share_sheet" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><InstagramIcon /></a>
-                 <a href="https://www.youtube.com/@mlsclasses8293?si=KBojcjPosvKjfwjH" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><YoutubeIcon /></a>
-               </div>
-
-               <div className="mt-3">
-                 <Button asChild className="w-full font-bold" size="default">
-                   <Link href="/book-trial" onClick={() => setIsOpen(false)}>
-                     Book Free Trial
-                   </Link>
-                 </Button>
-               </div>
-
-               <SignedOut>
-                 <div className="mt-2">
-                    <Button asChild className="w-full font-bold" size="default">
-                      <Link href="/sign-in" onClick={() => setIsOpen(false)}>
-                       Sign In
-                     </Link>
-                   </Button>
-                 </div>
-               </SignedOut>
+                  <a href="https://www.facebook.com/mlsclasses?mibextid=ZbWKwL" target="_blank" rel="noopener noreferrer" className="rounded-full p-2 text-muted-foreground hover:bg-primary/10 hover:text-primary"><FacebookIcon /></a>
+                  <a href="https://www.instagram.com/mlsclasses?utm_source=ig_web_button_share_sheet" target="_blank" rel="noopener noreferrer" className="rounded-full p-2 text-muted-foreground hover:bg-primary/10 hover:text-primary"><InstagramIcon /></a>
+                  <a href="https://www.youtube.com/@mlsclasses8293?si=KBojcjPosvKjfwjH" target="_blank" rel="noopener noreferrer" className="rounded-full p-2 text-muted-foreground hover:bg-primary/10 hover:text-primary"><YoutubeIcon /></a>
+                </div>
+              </div>
             </div>
           </motion.div>
         )}

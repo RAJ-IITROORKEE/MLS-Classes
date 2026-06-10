@@ -23,6 +23,10 @@ interface MockPerformanceProps {
 const COLORS = ["var(--theme-color)", "color-mix(in srgb, var(--theme-color) 25%, transparent)"]
 
 export function MockPerformance({ stats }: MockPerformanceProps) {
+  const averagePercentage = new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 2,
+  }).format(stats.averagePercentage)
+
   const chartData = [
     { name: "Attempted", value: stats.attemptedMocks },
     { name: "Remaining", value: Math.max(0, stats.totalMocks - stats.attemptedMocks) },
@@ -81,7 +85,7 @@ export function MockPerformance({ stats }: MockPerformanceProps) {
 
           <div className="absolute inset-0 flex items-center justify-center flex-col">
             <span className="text-2xl font-bold text-foreground">
-              {stats.averagePercentage}%
+              {averagePercentage}%
             </span>
             <span className="text-xs text-muted-foreground mt-1">Average</span>
           </div>

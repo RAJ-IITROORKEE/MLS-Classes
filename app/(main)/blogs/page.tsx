@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import BlogsListingClient from "@/components/blogs/blogs-listing-client";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: "Blogs | MLS Classes - Insights & Resources",
   description:

@@ -23,10 +23,10 @@ interface RecentAttemptsProps {
   }>
 }
 
-function getPerformanceColor(percentage: number): string {
-  if (percentage >= 70) return "text-green-600 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800"
-  if (percentage >= 40) return "text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800"
-  return "text-red-600 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800"
+function getPerformanceTextColor(percentage: number): string {
+  if (percentage >= 70) return "text-green-600 dark:text-green-400"
+  if (percentage >= 40) return "text-yellow-600 dark:text-yellow-400"
+  return "text-red-600 dark:text-red-400"
 }
 
 function getPerformanceBadge(percentage: number): string {
@@ -52,6 +52,10 @@ function formatDate(dateString: string | null): string {
   })
 }
 
+function formatPercentage(percentage: number): string {
+  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(percentage)
+}
+
 export function RecentAttempts({ attempts }: RecentAttemptsProps) {
   return (
     <Card>
@@ -64,16 +68,13 @@ export function RecentAttempts({ attempts }: RecentAttemptsProps) {
       <CardContent>
         <div className="space-y-3">
           {attempts.map((attempt, idx) => {
-            const colorClass = getPerformanceColor(attempt.percentage)
+            const scoreColorClass = getPerformanceTextColor(attempt.percentage)
             const badgeClass = getPerformanceBadge(attempt.percentage)
 
             return (
               <div
                 key={attempt.id}
-                className={cn(
-                  "rounded-lg border p-3 transition-colors hover:bg-muted/30",
-                  colorClass
-                )}
+                className="rounded-lg border bg-card p-3 text-card-foreground transition-colors hover:bg-muted/30"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
@@ -102,7 +103,7 @@ export function RecentAttempts({ attempts }: RecentAttemptsProps) {
                     </div>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="text-2xl font-bold">{attempt.percentage}%</p>
+                    <p className={cn("text-2xl font-bold", scoreColorClass)}>{formatPercentage(attempt.percentage)}%</p>
                     <p className="text-xs text-muted-foreground">
                       {attempt.score}/{attempt.totalQuestions}
                     </p>

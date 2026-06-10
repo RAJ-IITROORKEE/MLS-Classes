@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { AdminAppSidebar } from "@/components/admin/app-sidebar";
 import { AdminSiteHeader } from "@/components/admin/site-header";
+import { AdminNotificationsProvider } from "@/components/admin/admin-notifications-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { TopProgress } from "@/components/top-progress";
@@ -48,13 +49,15 @@ export default function AdminLayout({
       <Suspense fallback={null}>
         <TopProgress />
       </Suspense>
-      <AdminAppSidebar variant="inset" />
-      <SidebarInset>
-        <AdminSiteHeader />
-        <main className="flex flex-1 flex-col p-4 md:p-6">
-          {children}
-        </main>
-      </SidebarInset>
+      <AdminNotificationsProvider>
+        <AdminAppSidebar variant="inset" />
+        <SidebarInset>
+          <AdminSiteHeader />
+          <main className="flex flex-1 flex-col p-4 md:p-6">
+            {children}
+          </main>
+        </SidebarInset>
+      </AdminNotificationsProvider>
       <Toaster richColors position="top-right" />
     </SidebarProvider>
   );

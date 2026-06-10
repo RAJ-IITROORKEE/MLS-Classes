@@ -2,60 +2,70 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { signIn } from "@/lib/auth-client";
-import { MockAuthShell } from "./../_components/auth-shell";
+import { signIn, signUp } from "@/lib/auth-client";
+import { MockAuthShell } from "@/app/(main)/mocks/_components/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Loader2, Lock, Mail } from "lucide-react";
+import { Loader2, Mail, User, Lock } from "lucide-react";
 
-const formSchema = z.object({
-  email: z.string().email("Enter a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
+const formSchema = z
+  .object({
+    name: z.string().min(2, "Enter your full name"),
+    email: z.string().email("Enter a valid email"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(6, "Confirm your password"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function MockSignInPage() {
+export default function MockSignUpPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const oauthError = searchParams.get("error");
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: { email: "", password: "" },
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
 
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
     setError(null);
     try {
-      await signIn.email({
+      await signUp.email({
         email: values.email,
         password: values.password,
+        name: values.name,
         callbackURL: "/mocks",
-        rememberMe: true,
       });
       router.push("/mocks");
     } catch (err) {
       const message =
         err instanceof Error
           ? err.message
-          : "Unable to sign in. Please try again.";
+          : "Unable to create your account. Please try again.";
       setError(message);
       setIsSubmitting(false);
     }
   }
 
-  async function handleGoogleSignIn() {
+  async function handleGoogleSignUp() {
     setIsSubmitting(true);
     setError(null);
     try {
@@ -64,33 +74,52 @@ export default function MockSignInPage() {
         callbackURL: "/mocks",
       });
     } catch {
-      setError("Google sign in failed. Please try again.");
+      setError("Google sign up failed. Please try again.");
       setIsSubmitting(false);
     }
   }
 
   return (
     <MockAuthShell
-      title="Welcome back to MLS mocks"
-      description="Sign in to continue your practice tests, track attempt limits, and review past scores in seconds."
+      title="Create your MLS mock account"
+      description="Join thousands of learners practicing with MLS mock tests. Track attempts, unlock premium mocks, and review every solution."
     >
       <Card className="border-border/70 bg-background/80 shadow-xl">
         <CardHeader className="space-y-2">
-          <CardTitle className="text-2xl">Sign in</CardTitle>
+          <CardTitle className="text-2xl">Create account</CardTitle>
           <CardDescription>
-            Use your MLS account to access mock tests.
+            Sign up to access mock tests and performance insights.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {(error || oauthError) && (
+          {error && (
             <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              {oauthError === "OAuthAccountNotLinked"
-                ? "This email is linked to another sign-in method."
-                : error ?? "Something went wrong. Please try again."}
+              {error}
             </div>
           )}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Full name</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                          placeholder="Jane Doe"
+                          className="h-11 pl-10 text-base"
+                          autoComplete="name"
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="email"
@@ -124,9 +153,31 @@ export default function MockSignInPage() {
                         <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
                           type="password"
-                          placeholder="Enter your password"
+                          placeholder="Create a password"
                           className="h-11 pl-10 text-base"
-                          autoComplete="current-password"
+                          autoComplete="new-password"
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm password</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                          type="password"
+                          placeholder="Repeat your password"
+                          className="h-11 pl-10 text-base"
+                          autoComplete="new-password"
                           {...field}
                         />
                       </div>
@@ -144,7 +195,7 @@ export default function MockSignInPage() {
                 {isSubmitting ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : null}
-                {isSubmitting ? "Signing in" : "Sign in"}
+                {isSubmitting ? "Creating account" : "Create account"}
               </Button>
             </form>
           </Form>
@@ -154,7 +205,7 @@ export default function MockSignInPage() {
             variant="outline"
             size="lg"
             className="w-full gap-3"
-            onClick={handleGoogleSignIn}
+            onClick={handleGoogleSignUp}
             disabled={isSubmitting}
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
@@ -178,9 +229,9 @@ export default function MockSignInPage() {
             Continue with Google
           </Button>
           <p className="text-center text-sm text-muted-foreground">
-            New here?{" "}
-            <Link className="font-semibold text-foreground hover:text-primary" href="/sign-up">
-              Create an account
+            Already have an account?{" "}
+            <Link className="font-semibold text-foreground hover:text-primary" href="/sign-in">
+              Sign in
             </Link>
           </p>
         </CardContent>

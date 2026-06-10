@@ -7,7 +7,7 @@ import { MockPerformance } from "./MockPerformance"
 import { QuickActions } from "./QuickActions"
 import { RecentAttempts } from "./RecentAttempts"
 import { BookTrialCTA } from "./BookTrialCTA"
-import { TestimonialsStrip } from "./TestimonialsStrip"
+import { TestimonialsSection } from "@/components/shared/testimonials-section"
 
 interface DashboardClientProps {
   user: {
@@ -124,7 +124,7 @@ export function DashboardClient({
         <BookTrialCTA />
 
         {/* Testimonials */}
-        <TestimonialsStrip testimonials={testimonials} />
+        <TestimonialsSection testimonials={testimonials} />
       </div>
     </main>
   )

@@ -66,6 +66,9 @@ function tipTapToHtml(content: unknown): string {
     const children = Array.isArray(typedNode.content)
       ? typedNode.content.map(renderNode).join('')
       : '';
+    const cellStyle = typedNode.attrs?.backgroundColor
+      ? ` style="background-color:${String(typedNode.attrs.backgroundColor)}"`
+      : '';
 
     switch (typedNode.type) {
       case 'paragraph':
@@ -86,13 +89,13 @@ function tipTapToHtml(content: unknown): string {
       case 'codeBlock':
         return `<pre><code>${children}</code></pre>`;
       case 'table':
-        return `<table>${children}</table>`;
+        return `<div class="tableWrapper"><table>${children}</table></div>`;
       case 'tableRow':
         return `<tr>${children}</tr>`;
       case 'tableHeader':
-        return `<th>${children}</th>`;
+        return `<th${cellStyle}>${children}</th>`;
       case 'tableCell':
-        return `<td>${children}</td>`;
+        return `<td${cellStyle}>${children}</td>`;
       case 'image': {
         const src = String(typedNode.attrs?.src || '');
         const alt = String(typedNode.attrs?.alt || '');
@@ -198,13 +201,25 @@ export default function BlogDetailClient({ blog, relatedBlogs = [] }: BlogDetail
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             className={cn(
-              'prose prose-slate mx-auto max-w-4xl dark:prose-invert',
-              'prose-headings:font-semibold prose-h2:text-3xl prose-h3:text-2xl',
-              'prose-p:leading-8 prose-a:text-slate-900 dark:prose-a:text-slate-100',
-              'prose-table:my-8 prose-table:w-full prose-table:border-collapse',
-              'prose-th:border prose-th:border-slate-300 prose-th:bg-slate-100 prose-th:px-3 prose-th:py-2 prose-th:text-left dark:prose-th:border-slate-700 dark:prose-th:bg-slate-900',
-              'prose-td:border prose-td:border-slate-200 prose-td:px-3 prose-td:py-2 dark:prose-td:border-slate-800',
-              'prose-img:rounded-xl prose-img:shadow-md prose-pre:rounded-xl',
+              'blog-content mx-auto max-w-4xl text-slate-700 dark:text-slate-300',
+              '[&_h1]:mb-5 [&_h1]:mt-10 [&_h1]:text-4xl [&_h1]:font-bold [&_h1]:leading-tight [&_h1]:tracking-tight [&_h1]:text-slate-950 dark:[&_h1]:text-white',
+              '[&_h2]:mb-4 [&_h2]:mt-10 [&_h2]:text-3xl [&_h2]:font-bold [&_h2]:leading-tight [&_h2]:tracking-tight [&_h2]:text-slate-950 dark:[&_h2]:text-white',
+              '[&_h3]:mb-3 [&_h3]:mt-8 [&_h3]:text-2xl [&_h3]:font-semibold [&_h3]:leading-tight [&_h3]:text-slate-950 dark:[&_h3]:text-white',
+              '[&_p]:my-4 [&_p]:text-base [&_p]:leading-8 [&_p]:text-slate-700 dark:[&_p]:text-slate-300',
+              '[&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-4',
+              '[&_strong]:font-semibold [&_strong]:text-slate-950 dark:[&_strong]:text-white',
+              '[&_ul]:my-5 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-6 [&_ol]:my-5 [&_ol]:list-decimal [&_ol]:space-y-2 [&_ol]:pl-6',
+              '[&_blockquote]:my-7 [&_blockquote]:rounded-r-2xl [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:bg-slate-50 [&_blockquote]:px-5 [&_blockquote]:py-4 [&_blockquote]:italic dark:[&_blockquote]:bg-slate-900/60',
+              '[&_code]:rounded-md [&_code]:bg-slate-100 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-sm dark:[&_code]:bg-slate-900',
+              '[&_pre]:my-6 [&_pre]:overflow-x-auto [&_pre]:rounded-2xl [&_pre]:bg-slate-950 [&_pre]:p-5 [&_pre]:text-slate-50',
+              '[&_img]:my-8 [&_img]:rounded-2xl [&_img]:shadow-lg',
+              '[&_.tableWrapper]:my-8 [&_.tableWrapper]:overflow-x-auto [&_.tableWrapper]:rounded-2xl [&_.tableWrapper]:border [&_.tableWrapper]:border-slate-200 dark:[&_.tableWrapper]:border-slate-800',
+              '[&_table]:my-8 [&_table]:block [&_table]:w-full [&_table]:min-w-full [&_table]:overflow-x-auto [&_table]:rounded-2xl [&_table]:border [&_table]:border-slate-200 [&_table]:text-sm [&_table]:shadow-sm dark:[&_table]:border-slate-800',
+              '[&_.tableWrapper_table]:my-0 [&_.tableWrapper_table]:table [&_.tableWrapper_table]:min-w-[520px] [&_.tableWrapper_table]:border-0 [&_.tableWrapper_table]:shadow-none',
+              '[&_tbody]:block [&_thead]:block [&_tr]:table [&_tr]:w-full [&_tr]:table-fixed [&_.tableWrapper_tbody]:table-row-group [&_.tableWrapper_thead]:table-header-group [&_.tableWrapper_tr]:table-row',
+              '[&_th]:border [&_th]:border-slate-200 [&_th]:bg-slate-100 [&_th]:px-4 [&_th]:py-3 [&_th]:text-left [&_th]:font-semibold [&_th]:text-slate-950 dark:[&_th]:border-slate-800 dark:[&_th]:bg-slate-900 dark:[&_th]:text-white',
+              '[&_td]:border [&_td]:border-slate-200 [&_td]:px-4 [&_td]:py-3 [&_td]:align-top [&_td]:text-slate-700 dark:[&_td]:border-slate-800 dark:[&_td]:text-slate-300',
+              '[&_td_p]:my-0 [&_th_p]:my-0',
               activeHeading ? 'scroll-smooth' : ''
             )}
             dangerouslySetInnerHTML={{ __html: htmlContent }}

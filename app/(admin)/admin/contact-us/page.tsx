@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -20,7 +20,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -435,169 +434,181 @@ export default function AdminContactPage() {
 
        {/* View Dialog */}
        <Dialog open={viewOpen} onOpenChange={setViewOpen}>
-         <DialogContent className="w-11/12 max-w-6xl max-h-[90vh] overflow-y-auto">
-           <DialogHeader className="border-b border-border pb-4">
-             <DialogTitle className="flex items-center gap-3 text-2xl">
-               <div className="rounded-lg bg-primary/10 p-2">
-                 <MessageSquare className="h-6 w-6 text-primary" />
-               </div>
-               Contact Message Details
-             </DialogTitle>
-             {selected && (
-               <DialogDescription className="text-sm mt-2">
-                 Message ID: <span className="font-mono text-xs bg-muted px-2 py-1 rounded">{selected.id.slice(0, 12)}</span>
-               </DialogDescription>
-             )}
-           </DialogHeader>
-
+         <DialogContent className="flex max-h-[92vh] w-[calc(100vw-1.5rem)] flex-col overflow-hidden p-0 sm:max-w-4xl lg:max-w-5xl">
            {selected && (
-             <div className="space-y-5">
-               {/* Contact Info - Better Layout */}
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 bg-gradient-to-br from-muted/40 to-muted/20 rounded-xl p-5 border border-border/60">
-                 {/* Name */}
-                 <div className="flex items-start gap-4 group">
-                   <div className="rounded-xl bg-primary/15 p-3 group-hover:bg-primary/25 transition-colors">
-                     <User className="h-5 w-5 text-primary" />
+             <>
+               <DialogHeader className="border-b bg-muted/30 px-5 py-4 sm:px-6">
+                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                   <div className="min-w-0 space-y-2">
+                     <DialogTitle className="flex items-center gap-3 text-xl font-semibold">
+                       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                         <MessageSquare className="h-5 w-5" />
+                       </span>
+                       <span className="min-w-0 truncate">Contact Message Details</span>
+                     </DialogTitle>
+                     <DialogDescription>
+                       Message ID <span className="rounded-md bg-background px-2 py-1 font-mono text-xs text-foreground">{selected.id.slice(0, 12)}</span>
+                     </DialogDescription>
                    </div>
-                   <div className="min-w-0 flex-1">
-                     <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                       Full Name
-                     </label>
-                     <p className="text-base font-semibold text-foreground mt-2">{selected.name}</p>
-                   </div>
+                   <Badge
+                     className={
+                       selected.status === "RESOLVED"
+                         ? "w-fit rounded-full bg-green-500/10 px-3 py-1 text-xs font-semibold text-green-700 dark:text-green-400"
+                         : selected.status === "DELETED"
+                           ? "w-fit rounded-full bg-red-500/10 px-3 py-1 text-xs font-semibold text-red-700 dark:text-red-400"
+                           : "w-fit rounded-full bg-yellow-500/10 px-3 py-1 text-xs font-semibold text-yellow-700 dark:text-yellow-400"
+                     }
+                   >
+                     {selected.status}
+                   </Badge>
                  </div>
+               </DialogHeader>
 
-                 {/* Email */}
-                 <div className="flex items-start gap-4 group">
-                    <div className="rounded-xl bg-primary/15 p-3 group-hover:bg-primary/25 transition-colors">
-                      <Mail className="h-5 w-5 text-primary" />
-                   </div>
-                   <div className="min-w-0 flex-1">
-                     <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                       Email Address
-                     </label>
-                     <a
-                       href={`mailto:${selected.email}`}
-                       className="text-sm font-semibold text-primary hover:underline mt-2 block break-words"
-                     >
-                       {selected.email}
-                     </a>
-                   </div>
-                 </div>
+               <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6">
+                 <div className="grid gap-5 lg:grid-cols-[320px_minmax(0,1fr)]">
+                   <aside className="space-y-5 lg:sticky lg:top-0 lg:self-start">
+                     <section className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
+                       <div className="mb-4 flex items-center gap-3">
+                         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                           <User className="h-4 w-4" />
+                         </span>
+                         <div>
+                           <h3 className="text-sm font-semibold">Sender</h3>
+                           <p className="text-xs text-muted-foreground">Contact information</p>
+                         </div>
+                       </div>
+                       <div className="space-y-3">
+                         <div className="rounded-xl border bg-muted/20 p-3">
+                           <p className="text-xs font-medium text-muted-foreground">Name</p>
+                           <p className="mt-1 break-words text-sm font-semibold">{selected.name}</p>
+                         </div>
+                         <div className="rounded-xl border bg-muted/20 p-3">
+                           <p className="text-xs font-medium text-muted-foreground">Email</p>
+                           <a href={`mailto:${selected.email}`} className="mt-1 block break-all text-sm font-semibold text-primary hover:underline">
+                             {selected.email}
+                           </a>
+                         </div>
+                       </div>
+                     </section>
 
-                 {/* Status */}
-                 <div className="flex items-start gap-4 group md:col-span-2">
-                   <div className="rounded-xl bg-amber-500/15 p-3 group-hover:bg-amber-500/25 transition-colors">
-                     <CheckCircle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-                   </div>
-                   <div className="min-w-0 flex-1">
-                     <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                       Current Status
-                     </label>
-                     <div className="mt-2">
-                       <Badge variant="secondary" className="text-xs font-semibold px-3 py-1 capitalize">
+                     <section className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
+                       <div className="mb-4 flex items-center gap-3">
+                         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-green-500/10 text-green-600 dark:text-green-400">
+                           <Calendar className="h-4 w-4" />
+                         </span>
+                         <div>
+                           <h3 className="text-sm font-semibold">Timeline</h3>
+                           <p className="text-xs text-muted-foreground">Submission details</p>
+                         </div>
+                       </div>
+                       <div className="space-y-3">
+                         <div className="rounded-xl border bg-muted/20 p-3">
+                           <p className="text-xs font-medium text-muted-foreground">Date</p>
+                           <p className="mt-1 text-sm font-semibold">
+                             {new Date(selected.createdAt).toLocaleDateString("en-US", {
+                               year: "numeric",
+                               month: "long",
+                               day: "numeric",
+                             })}
+                           </p>
+                         </div>
+                         <div className="rounded-xl border bg-muted/20 p-3">
+                           <p className="text-xs font-medium text-muted-foreground">Time</p>
+                           <p className="mt-1 inline-flex items-center gap-2 text-sm font-semibold">
+                             <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                             {new Date(selected.createdAt).toLocaleTimeString("en-US", {
+                               hour: "2-digit",
+                               minute: "2-digit",
+                               hour12: true,
+                             })}
+                           </p>
+                         </div>
+                       </div>
+                     </section>
+
+                     <section className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
+                       <div className="mb-4 flex items-center gap-3">
+                         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                           <CheckCircle className="h-4 w-4" />
+                         </span>
+                         <div>
+                           <h3 className="text-sm font-semibold">Status</h3>
+                           <p className="text-xs text-muted-foreground">Current workflow state</p>
+                         </div>
+                       </div>
+                       <Badge variant="secondary" className="rounded-full px-3 py-1 text-xs font-semibold">
                          {selected.status}
                        </Badge>
-                     </div>
+                     </section>
+                   </aside>
+
+                   <div className="space-y-5">
+                     <section className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
+                       <div className="mb-4 flex items-center gap-3">
+                         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-orange-600 dark:text-orange-400">
+                           <Tag className="h-4 w-4" />
+                         </span>
+                         <div>
+                           <h3 className="text-sm font-semibold">Subject</h3>
+                           <p className="text-xs text-muted-foreground">Inquiry topic</p>
+                         </div>
+                       </div>
+                       <div className="rounded-2xl border bg-muted/30 p-4">
+                         <p className="break-words text-base font-semibold leading-relaxed">{selected.subject}</p>
+                       </div>
+                     </section>
+
+                     <section className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
+                       <div className="mb-4 flex items-center gap-3">
+                         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                           <FileText className="h-4 w-4" />
+                         </span>
+                         <div>
+                           <h3 className="text-sm font-semibold">Message</h3>
+                           <p className="text-xs text-muted-foreground">Full customer message</p>
+                         </div>
+                       </div>
+                       <div className="rounded-2xl border bg-muted/30 p-4 text-sm leading-7 sm:p-5">
+                         <p className="max-h-[42vh] overflow-y-auto break-words whitespace-pre-wrap pr-1">{selected.message}</p>
+                       </div>
+                     </section>
                    </div>
                  </div>
                </div>
 
-               {/* Date and Time */}
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 bg-gradient-to-br from-muted/40 to-muted/20 rounded-xl p-5 border border-border/60">
-                 {/* Created Date */}
-                 <div className="flex items-start gap-4 group">
-                   <div className="rounded-xl bg-green-500/15 p-3 group-hover:bg-green-500/25 transition-colors">
-                     <Calendar className="h-5 w-5 text-green-600 dark:text-green-400" />
-                   </div>
-                   <div className="min-w-0 flex-1">
-                     <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                       Date Submitted
-                     </label>
-                     <p className="text-base font-semibold text-foreground mt-2">
-                       {new Date(selected.createdAt).toLocaleDateString("en-US", {
-                         year: "numeric",
-                         month: "long",
-                         day: "numeric",
-                       })}
-                     </p>
-                   </div>
-                 </div>
-
-                 {/* Time */}
-                 <div className="flex items-start gap-4 group">
-                   <div className="rounded-xl bg-purple-500/15 p-3 group-hover:bg-purple-500/25 transition-colors">
-                     <Clock className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                   </div>
-                   <div className="min-w-0 flex-1">
-                     <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                       Time Submitted
-                     </label>
-                     <p className="text-base font-semibold text-foreground mt-2">
-                       {new Date(selected.createdAt).toLocaleTimeString("en-US", {
-                         hour: "2-digit",
-                         minute: "2-digit",
-                         hour12: true,
-                       })}
-                     </p>
-                   </div>
-                 </div>
-              </div>
-
-               {/* Subject */}
-               <div className="bg-gradient-to-br from-muted/40 to-muted/20 rounded-xl p-5 border border-border/60">
-                 <div className="flex items-center gap-3 mb-4">
-                   <div className="rounded-xl bg-orange-500/15 p-3">
-                     <Tag className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-                   </div>
-                   <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Subject</label>
-                 </div>
-                 <p className="text-base text-foreground bg-background/60 rounded-lg p-4 border border-border/40 font-medium">
-                   {selected.subject}
-                 </p>
-               </div>
-
-               {/* Message */}
-               <div className="bg-gradient-to-br from-muted/40 to-muted/20 rounded-xl p-5 border border-border/60">
-                 <div className="flex items-center gap-3 mb-4">
-                   <div className="rounded-xl bg-indigo-500/15 p-3">
-                     <FileText className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-                   </div>
-                   <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Message Content</label>
-                 </div>
-                 <p className="text-sm text-foreground bg-background/60 rounded-lg p-4 border border-border/40 whitespace-pre-wrap max-h-64 overflow-y-auto leading-relaxed">
-                   {selected.message}
-                 </p>
-               </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-3 border-t border-border pt-4">
-                <Button
-                  onClick={() => {
-                    setViewOpen(false);
-                    setStatusUpdateOpen(true);
-                    setSelectedStatus(selected.status);
-                  }}
-                  className="flex-1"
-                  variant="outline"
-                >
-                  <CheckCircle className="h-4 w-4 mr-2" />
-                  Update Status
-                </Button>
-                <Button
-                  onClick={() => {
-                    setViewOpen(false);
-                    setDeleteOpen(true);
-                  }}
-                  variant="destructive"
-                  className="flex-1"
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
-                </Button>
-              </div>
-            </div>
-          )}
+               <DialogFooter className="mx-0 mb-0 gap-2 rounded-none border-t bg-background/95 px-5 py-4 sm:px-6">
+                 <Button
+                   type="button"
+                   variant="outline"
+                   onClick={() => {
+                     setViewOpen(false);
+                     setStatusUpdateOpen(true);
+                     setSelectedStatus(selected.status);
+                   }}
+                 >
+                   <CheckCircle className="h-4 w-4" />
+                   Update Status
+                 </Button>
+                 <Button asChild type="button">
+                   <a href={`mailto:${selected.email}`}>
+                     <Mail className="h-4 w-4" />
+                     Reply by Email
+                   </a>
+                 </Button>
+                 <Button
+                   type="button"
+                   onClick={() => {
+                     setViewOpen(false);
+                     setDeleteOpen(true);
+                   }}
+                   variant="destructive"
+                 >
+                   <Trash2 className="h-4 w-4" />
+                   Delete
+                 </Button>
+               </DialogFooter>
+             </>
+           )}
         </DialogContent>
       </Dialog>
 
@@ -612,7 +623,12 @@ export default function AdminContactPage() {
           </DialogHeader>
 
           <div className="space-y-4">
-            <Select value={selectedStatus} onValueChange={(value: any) => setSelectedStatus(value)}>
+            <Select
+              value={selectedStatus}
+              onValueChange={(value) =>
+                setSelectedStatus(value as "PENDING" | "RESOLVED" | "DELETED")
+              }
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
