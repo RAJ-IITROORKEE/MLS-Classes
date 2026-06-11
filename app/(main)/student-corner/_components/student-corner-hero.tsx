@@ -2,13 +2,20 @@
 
 import { motion } from "framer-motion";
 
+const STATS = [
+  { value: "2500+", label: "Students Taught" },
+  { value: "100%", label: "On Time delivery" },
+  { value: "7 yrs", label: "Experience" },
+  { value: "⭐⭐⭐⭐⭐", label: "1:1 Tutoring & HW Help" },
+];
+
 export function StudentCornerHero() {
   return (
     <section className="relative py-20 px-4 overflow-hidden bg-gradient-to-br from-background via-muted/30 to-background">
       <div className="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
 
-      <div className="relative mx-auto max-w-3xl text-center">
+      <div className="relative mx-auto max-w-7xl text-center">
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -41,16 +48,13 @@ export function StudentCornerHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-10 flex flex-wrap justify-center gap-8"
+          className="mx-auto mt-10 flex max-w-3xl flex-wrap justify-evenly gap-6 rounded-xl px-6 py-5 text-white"
+          style={{ background: "var(--theme-color)" }}
         >
-          {[
-            { value: "15k+", label: "Students Helped" },
-            { value: "⭐⭐⭐⭐⭐", label: "Average Rating" },
-            { value: "6+", label: "Countries Served" },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <p className="text-2xl font-bold">{stat.value}</p>
-              <p className="text-sm text-muted-foreground mt-0.5">{stat.label}</p>
+          {STATS.map((stat) => (
+            <div key={stat.label} className="flex min-w-[100px] flex-col items-center gap-0.5">
+              <p className="text-2xl font-bold leading-tight">{stat.value}</p>
+              <p className="text-sm text-white/80">{stat.label}</p>
             </div>
           ))}
         </motion.div>

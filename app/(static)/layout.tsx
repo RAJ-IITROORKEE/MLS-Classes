@@ -3,8 +3,7 @@
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { WhatsAppStickyButton } from "@/components/whatsapp-sticky-button";
 
 interface StaticLayoutProps {
   children: React.ReactNode;
@@ -33,6 +32,7 @@ export default function StaticLayout({ children }: StaticLayoutProps) {
         </motion.div>
       </main>
       <Footer />
+      <WhatsAppStickyButton />
     </>
   );
 }

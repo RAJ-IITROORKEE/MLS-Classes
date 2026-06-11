@@ -663,9 +663,7 @@ export function Navbar() {
 
           {/* Mobile Menu Button */}
           <div className="flex lg:hidden items-center gap-2">
-            <SignedOut>
-              <ThemeToggle />
-            </SignedOut>
+            <ThemeToggle />
             <SignedIn>
               <UserButton />
             </SignedIn>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 // Social icons as simple SVG components (lucide-react v1.x doesn't include brand icons)
 function FacebookIcon({ className }: { className?: string }) {
@@ -103,6 +104,14 @@ export function Footer() {
               STAAR, AMC, GCSE, A-level, IGCSE, IB and NAPLAN Classes for
               students in grades K-12.
             </p>
+            <div className="flex items-center justify-center gap-3 sm:justify-start">
+              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                Theme
+              </span>
+              <div className="rounded-full border border-zinc-800 bg-zinc-900 text-zinc-100">
+                <ThemeToggle />
+              </div>
+            </div>
           </div>
 
           {/* Company */}

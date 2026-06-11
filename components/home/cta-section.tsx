@@ -3,12 +3,13 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, GraduationCap, Users, Trophy } from "lucide-react";
+import { ArrowRight, GraduationCap, Star, Trophy, Users } from "lucide-react";
 
 const STATS = [
-  { icon: Users, value: "15k+", label: "Applications" },
-  { icon: Trophy, value: "100%", label: "On Time Delivery" },
-  { icon: GraduationCap, value: "5 yrs", label: "Experience" },
+  { icon: Users, value: "2500+", label: "Students Taught" },
+  { icon: Trophy, value: "100%", label: "On Time delivery" },
+  { icon: GraduationCap, value: "7 yrs", label: "Experience" },
+  { icon: Star, value: "⭐⭐⭐⭐⭐", label: "1:1 Tutoring & HW Help" },
 ];
 
 export function CTASection() {
