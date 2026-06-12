@@ -205,3 +205,36 @@ html {
 .dark [data-sonner-toaster] [data-close-button]:hover {
   background: hsl(0 0% 35%) !important;
 }
+
+@keyframes whatsapp-attention {
+  0%, 76%, 100% {
+    transform: translateX(0) scale(1);
+    box-shadow: 0 10px 22px rgb(0 0 0 / 0.2), 0 0 0 0 rgb(37 211 102 / 0.35);
+  }
+  80% {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 16px 32px rgb(0 0 0 / 0.24), 0 0 0 10px rgb(37 211 102 / 0.18);
+  }
+  84% {
+    transform: translateY(0) scale(1.02);
+  }
+  88% {
+    transform: translateY(-5px) scale(1.04);
+  }
+  92% {
+    transform: translateY(0) scale(1.02);
+  }
+  96% {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 14px 28px rgb(0 0 0 / 0.24), 0 0 0 12px rgb(37 211 102 / 0);
+  }
+}
+
+.whatsapp-attention {
+  animation: whatsapp-attention 5s ease-in-out infinite;
+}
+
+.whatsapp-attention:hover,
+.whatsapp-attention:focus-visible {
+  animation-play-state: paused;
+}

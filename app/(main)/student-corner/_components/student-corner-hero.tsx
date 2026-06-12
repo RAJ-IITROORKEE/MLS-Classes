@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 const STATS = [
   { value: "2500+", label: "Students Taught" },
   { value: "100%", label: "On Time delivery" },
-  { value: "7 yrs", label: "Experience" },
+  { value: "7+ years", label: "Experience" },
   { value: "⭐⭐⭐⭐⭐", label: "1:1 Tutoring & HW Help" },
 ];
 

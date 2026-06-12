@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowRight, Mail, Phone, MapPin, Send, MessageCircle } from "lucide-react";
+import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { toast } from "sonner";
 
 // Social Icons
@@ -30,6 +30,14 @@ function YoutubeIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+    </svg>
+  );
+}
+
+function WhatsAppIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 32 32" fill="currentColor">
+      <path d="M16.04 3.2C9.02 3.2 3.32 8.88 3.32 15.88c0 2.24.58 4.43 1.7 6.36L3.2 28.8l6.74-1.77a12.72 12.72 0 0 0 6.09 1.55h.01c7.01 0 12.72-5.69 12.72-12.69S23.05 3.2 16.04 3.2Zm0 23.23h-.01c-1.88 0-3.72-.5-5.33-1.46l-.38-.23-4 .95 1.07-3.8-.25-.39a10.47 10.47 0 0 1-1.61-5.62c0-5.81 4.72-10.53 10.52-10.53 2.81 0 5.45 1.1 7.44 3.08a10.46 10.46 0 0 1 3.08 7.45c0 5.8-4.72 10.52-10.53 10.52Zm5.77-7.87c-.32-.16-1.87-.92-2.16-1.03-.29-.1-.5-.16-.71.16-.21.31-.82 1.03-1 1.24-.18.21-.37.24-.69.08-.32-.16-1.34-.49-2.55-1.57-.94-.84-1.58-1.87-1.76-2.19-.18-.31-.02-.48.14-.64.14-.14.32-.37.47-.55.16-.18.21-.31.32-.53.11-.21.05-.4-.03-.55-.08-.16-.71-1.71-.97-2.34-.26-.61-.52-.53-.71-.54h-.6c-.21 0-.55.08-.84.4-.29.31-1.1 1.08-1.1 2.63s1.13 3.05 1.29 3.26c.16.21 2.23 3.4 5.4 4.76.75.32 1.34.52 1.8.66.76.24 1.45.21 2 .13.61-.09 1.87-.76 2.13-1.5.26-.74.26-1.37.18-1.5-.08-.14-.29-.22-.61-.38Z" />
     </svg>
   );
 }
@@ -112,30 +120,26 @@ export default function ContactUsPage() {
     {
       label: "WhatsApp",
       href: "https://wa.me/message/XMS5KMWBGQZLG1",
-      icon: MessageCircle,
-      color: "hover:text-primary bg-primary/10",
-      isCustom: false,
+      icon: WhatsAppIcon,
+      color: "bg-[#25D366]/10 text-[#25D366] hover:border-[#25D366] hover:bg-[#25D366]/15 hover:shadow-[0_0_18px_rgba(37,211,102,0.28)]",
     },
     {
       label: "Facebook",
       href: "https://www.facebook.com/mlsclasses?mibextid=ZbWKwL",
       icon: FacebookIcon,
-      color: "hover:text-primary bg-primary/10",
-      isCustom: true,
+      color: "bg-[#1877F2]/10 text-[#1877F2] hover:border-[#1877F2] hover:bg-[#1877F2]/15 hover:shadow-[0_0_18px_rgba(24,119,242,0.28)]",
     },
     {
       label: "Instagram",
       href: "https://www.instagram.com/mlsclasses?utm_source=ig_web_button_share_sheet",
       icon: InstagramIcon,
-      color: "hover:text-primary bg-primary/10",
-      isCustom: true,
+      color: "bg-[#E4405F]/10 text-[#E4405F] hover:border-[#E4405F] hover:bg-[#E4405F]/15 hover:shadow-[0_0_18px_rgba(228,64,95,0.28)]",
     },
     {
       label: "YouTube",
       href: "https://www.youtube.com/@mlsclasses8293?si=KBojcjPosvKjfwjH",
       icon: YoutubeIcon,
-      color: "hover:text-primary bg-primary/10",
-      isCustom: true,
+      color: "bg-[#FF0000]/10 text-[#FF0000] hover:border-[#FF0000] hover:bg-[#FF0000]/15 hover:shadow-[0_0_18px_rgba(255,0,0,0.24)]",
     },
   ];
 
@@ -158,7 +162,7 @@ export default function ContactUsPage() {
             Contact Us
           </h1>
           <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-            Have a question or need assistance? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+            Have a question or need assistance? We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
           </p>
         </motion.div>
 
@@ -173,7 +177,7 @@ export default function ContactUsPage() {
             {/* Contact Information */}
             <div className="space-y-4">
               <h3 className="text-xl font-bold text-foreground mb-6">Contact Information</h3>
-              {contactInfo.map((info, index) => {
+              {contactInfo.map((info) => {
                 const Icon = info.icon;
                 return (
                   <motion.a
@@ -212,7 +216,7 @@ export default function ContactUsPage() {
                        rel="noopener noreferrer"
                        whileHover={{ scale: 1.05 }}
                        whileTap={{ scale: 0.95 }}
-                       className={`flex items-center justify-center gap-2 rounded-lg border border-border/50 px-4 py-3 text-sm font-semibold transition-all ${social.color}`}
+                        className={`flex items-center justify-center gap-2 rounded-lg border border-border/50 px-4 py-3 text-sm font-semibold transition-all duration-300 ${social.color}`}
                      >
                        <Icon className="h-5 w-5" />
                        <span className="hidden sm:inline">{social.label}</span>
@@ -351,7 +355,7 @@ export default function ContactUsPage() {
               Frequently Asked Questions
             </h2>
             <p className="text-muted-foreground">
-              Can't find what you're looking for? Check out our FAQ section
+              Can&apos;t find what you&apos;re looking for? Check out our FAQ section
             </p>
           </div>
 

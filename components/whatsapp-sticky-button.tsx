@@ -19,7 +19,7 @@ export function WhatsAppStickyButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with MLS Classes on WhatsApp"
-      className="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-full bg-[#25D366] p-2.5 text-white shadow-lg shadow-black/20 ring-1 ring-white/30 transition duration-300 hover:-translate-y-0.5 hover:bg-[#1ebe5d] hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:ring-offset-2 sm:bottom-5 sm:right-5 sm:pr-3"
+      className="whatsapp-attention fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-full bg-[#25D366] p-2.5 text-white shadow-lg shadow-black/20 ring-1 ring-white/30 transition duration-300 hover:-translate-y-0.5 hover:bg-[#1ebe5d] hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:ring-offset-2 sm:bottom-5 sm:right-5 sm:pr-3"
     >
       <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#25D366] sm:h-9 sm:w-9">
         <svg
