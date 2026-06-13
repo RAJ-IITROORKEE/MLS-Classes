@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import {
   FREE_MOCK_ATTEMPT_LIMIT,
   PAID_MOCK_ATTEMPT_LIMIT,
@@ -23,10 +22,6 @@ export default async function MocksPage({ searchParams }: PageProps) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-
-  if (!session?.user) {
-    redirect("/sign-in");
-  }
 
   const [mocks, bundles, mockAccess] = await Promise.all([
     prisma.mockTest.findMany({
@@ -51,10 +46,12 @@ export default async function MocksPage({ searchParams }: PageProps) {
       where: { status: "PUBLISHED" },
       orderBy: { order: "asc" },
     }),
-    prisma.mockAccess.findMany({
-      where: { userId: session.user.id, paid: true },
-      select: { mockTestId: true, mockBundleId: true },
-    }),
+    session?.user
+      ? prisma.mockAccess.findMany({
+          where: { userId: session.user.id, paid: true },
+          select: { mockTestId: true, mockBundleId: true },
+        })
+      : Promise.resolve([]),
   ]);
 
   const mocksWithCount = mocks.map((mock) => ({
