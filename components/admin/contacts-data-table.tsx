@@ -62,9 +62,7 @@ import {
   GraduationCap,
   Mail,
   MapPin,
-  MessageCircle,
   MessageSquare,
-  Phone,
   UserRound,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -107,6 +105,20 @@ function getWhatsAppHref(phone: string, name: string) {
   );
 
   return `https://wa.me/${normalizedPhone}?text=${message}`;
+}
+
+function WhatsAppIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className={className}
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M19.05 4.91A9.82 9.82 0 0 0 12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.33 4.95L2.05 22l5.25-1.38a9.88 9.88 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91a9.86 9.86 0 0 0-2.91-7.01Zm-7.01 15.24h-.01a8.2 8.2 0 0 1-4.18-1.14l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.25-4.38c0-4.55 3.7-8.25 8.25-8.25a8.2 8.2 0 0 1 5.83 2.42 8.19 8.19 0 0 1 2.41 5.83c-.01 4.53-3.72 8.23-8.26 8.23Zm4.52-6.17c-.25-.12-1.47-.72-1.69-.8-.23-.08-.39-.12-.56.12-.16.25-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-2-1.24-.74-.66-1.24-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.56-1.35-.76-1.85-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.43.06-.66.31-.23.25-.86.84-.86 2.05s.88 2.38 1 2.54c.12.16 1.73 2.64 4.2 3.7.59.25 1.05.41 1.41.52.59.19 1.13.16 1.55.1.47-.07 1.47-.6 1.67-1.18.21-.58.21-1.08.14-1.18-.06-.11-.23-.17-.48-.29Z" />
+    </svg>
+  );
 }
 
 function SortableHeader({
@@ -483,7 +495,7 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
                            </a>
                          </div>
                           <div className="rounded-xl border bg-muted/20 p-3 sm:col-span-2">
-                            <p className="text-xs font-medium text-muted-foreground">Phone</p>
+                            <p className="text-xs font-medium text-muted-foreground">WhatsApp Number</p>
                             <div className="mt-2 flex flex-wrap items-center gap-2">
                               {detailWhatsAppHref ? (
                                 <a
@@ -493,22 +505,15 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
                                   className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-sm font-semibold text-emerald-700 transition hover:border-emerald-500/50 hover:bg-emerald-500/15 dark:text-emerald-300"
                                   title="Open this number in WhatsApp"
                                 >
-                                  <MessageCircle className="h-3.5 w-3.5" />
+                                  <WhatsAppIcon className="h-3.5 w-3.5 text-[#25D366]" />
                                   <span className="break-all">{detailRow.phone}</span>
                                 </a>
                               ) : (
                                 <span className="inline-flex items-center gap-2 break-all text-sm font-semibold text-foreground">
-                                  <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+                                  <WhatsAppIcon className="h-3.5 w-3.5 text-[#25D366]" />
                                   {detailRow.phone}
                                 </span>
                               )}
-                              <a
-                                href={`tel:${detailRow.phone}`}
-                                className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold text-foreground transition hover:border-primary/40 hover:text-primary"
-                              >
-                                <Phone className="h-3.5 w-3.5 text-muted-foreground" />
-                                Call
-                              </a>
                             </div>
                             <p className="mt-2 text-xs text-muted-foreground">
                               Opens WhatsApp if this number is registered there.

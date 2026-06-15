@@ -46,7 +46,7 @@ const COMPANY_LINKS = [
 
 const REACH_LINKS = [
   { label: "ritik@mlsclasses.com", href: "mailto:ritik@mlsclasses.com" },
-  { label: "Contact us", href: "/contact-us" },
+  { label: "Contact us", href: "/book-trial" },
 ];
 
 const RESOURCE_LINKS = [

@@ -65,6 +65,7 @@ import {
   Reply,
 } from "lucide-react";
 import { toast } from "sonner";
+import { formatAdminDate } from "@/lib/format-admin-date";
 
 type ContactUs = {
   id: string;
@@ -244,7 +245,7 @@ export default function AdminContactPage() {
       cell: ({ row }) => (
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Calendar className="h-4 w-4" />
-          {new Date(row.getValue("createdAt")).toLocaleDateString()}
+          {formatAdminDate(row.getValue("createdAt") as string)}
         </div>
       ),
     },

@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { formatAdminDate } from "@/lib/format-admin-date";
 import {
   Mail,
   HelpCircle,
@@ -158,7 +159,7 @@ export default function DashboardClient({
                       {contact.status}
                     </span>
                     <span className="text-xs text-muted-foreground">
-                      {new Date(contact.createdAt).toLocaleDateString()}
+                      {formatAdminDate(contact.createdAt)}
                     </span>
                   </div>
                 </div>

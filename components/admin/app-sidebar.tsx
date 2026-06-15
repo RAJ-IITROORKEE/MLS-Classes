@@ -42,7 +42,6 @@ import {
   MessageSquare,
   Trophy,
   ClipboardList,
-  Send,
   FileText,
   Lock,
 } from "lucide-react";
@@ -100,11 +99,6 @@ const NAV_ITEMS = [
         icon: Mail,
       },
       {
-        label: "Contacts",
-        href: "/admin/contact-us",
-        icon: Send,
-      },
-      {
         label: "Testimonials",
         href: "/admin/testimonials",
         icon: MessageSquare,
@@ -154,12 +148,11 @@ export function AdminAppSidebar({
   const { data: session } = useSession();
   const user = currentUser ?? session?.user;
   const userRole = currentUser?.role ?? session?.user?.role ?? "STUDENT";
-  const { trial, contact } = useAdminNotifications();
+  const { trial } = useAdminNotifications();
 
   const getNotificationCount = (label: string) => {
     if (userRole !== "ADMIN") return 0;
     if (label === "Trial Requests") return trial;
-    if (label === "Contacts") return contact;
     return 0;
   };
 
