@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { AdminAppSidebar } from "@/components/admin/app-sidebar";
 import { AdminSiteHeader } from "@/components/admin/site-header";
 import { AdminNotificationsProvider } from "@/components/admin/admin-notifications-provider";
+import { ThemeProvider } from "@/components/theme-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { TopProgress } from "@/components/top-progress";
@@ -38,27 +39,29 @@ export default function AdminLayout({
   }
 
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <Suspense fallback={null}>
-        <TopProgress />
-      </Suspense>
-      <AdminNotificationsProvider>
-        <AdminAppSidebar variant="inset" />
-        <SidebarInset>
-          <AdminSiteHeader />
-          <main className="flex flex-1 flex-col p-4 md:p-6">
-            {children}
-          </main>
-        </SidebarInset>
-      </AdminNotificationsProvider>
-      <Toaster richColors position="top-right" />
-    </SidebarProvider>
+    <ThemeProvider attribute="class" forcedTheme="dark" disableTransitionOnChange>
+      <SidebarProvider
+        style={
+          {
+            "--sidebar-width": "calc(var(--spacing) * 72)",
+            "--header-height": "calc(var(--spacing) * 12)",
+          } as React.CSSProperties
+        }
+      >
+        <Suspense fallback={null}>
+          <TopProgress />
+        </Suspense>
+        <AdminNotificationsProvider>
+          <AdminAppSidebar variant="inset" />
+          <SidebarInset>
+            <AdminSiteHeader />
+            <main className="flex flex-1 flex-col p-4 md:p-6">
+              {children}
+            </main>
+          </SidebarInset>
+        </AdminNotificationsProvider>
+        <Toaster richColors position="top-right" />
+      </SidebarProvider>
+    </ThemeProvider>
   );
 }

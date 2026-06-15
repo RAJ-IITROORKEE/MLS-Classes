@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 import { SignedIn } from "@/components/auth/signed-in";
-import { SignedOut } from "@/components/auth/signed-out";
 import { UserButton } from "@/components/auth/user-button";
 
 /* ─── Nav Data ─────────────────────────────────────────────────────── */
@@ -430,8 +429,12 @@ function LoginDropdown({ onClose }: { onClose: () => void }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -6 }}
       transition={{ duration: 0.15 }}
-      className="absolute top-full left-0 mt-1 z-50 rounded-xl border border-border bg-popover shadow-xl overflow-hidden"
+      className="absolute right-0 top-full z-50 mt-2 min-w-64 overflow-hidden rounded-2xl border border-brand-yellow/50 bg-popover shadow-2xl shadow-amber-500/10"
     >
+      <div className="border-b border-brand-yellow/30 bg-gradient-to-r from-brand-yellow/35 via-brand-yellow/20 to-primary/10 px-4 py-3">
+        <p className="text-xs font-black uppercase tracking-[0.22em] text-primary">MLS Login</p>
+        <p className="mt-1 text-sm font-semibold text-foreground">Choose your learning portal</p>
+      </div>
       {LOGIN_MENU.map((item) => (
         <a
           key={item.label}
@@ -439,7 +442,7 @@ function LoginDropdown({ onClose }: { onClose: () => void }) {
           target="_blank"
           rel="noopener noreferrer"
           onClick={onClose}
-          className="flex flex-col gap-0.5 px-4 py-3 text-sm font-medium text-foreground hover:bg-primary/10 hover:text-primary transition-colors whitespace-nowrap"
+          className="flex flex-col gap-1 px-4 py-3 text-sm font-bold text-foreground transition-colors hover:bg-brand-yellow/20 hover:text-primary"
         >
           {item.label}
           <span className="text-xs font-normal text-muted-foreground">
@@ -612,15 +615,25 @@ export function Navbar() {
                 Student Corner
               </Link>
 
-              {/* Login Dropdown */}
+            </div>
+
+           {/* Desktop Actions */}
+           <div className="hidden lg:flex items-center gap-3">
+             <ThemeToggle />
+             <Button asChild size="sm" className="font-bold text-sm px-5 h-9">
+               <Link href="/book-trial" onClick={() => setActiveDropdown(null)}>
+                 Book Trial
+                </Link>
+              </Button>
               <div className="relative">
                 <button
+                  type="button"
                   onClick={() => toggleDropdown("login")}
                   className={cn(
-                    "flex items-center gap-1 px-3.5 py-2 text-[0.9rem] font-semibold rounded-md transition-colors",
+                    "flex h-9 items-center gap-1.5 rounded-full border px-5 text-sm font-black shadow-sm transition-all",
                     activeDropdown === "login"
-                      ? "text-primary bg-primary/10"
-                      : "text-foreground hover:text-primary hover:bg-primary/5"
+                      ? "border-brand-yellow bg-brand-yellow text-slate-950 shadow-amber-500/20"
+                      : "border-brand-yellow/70 bg-brand-yellow/20 text-slate-950 hover:border-brand-yellow hover:bg-brand-yellow dark:text-foreground dark:hover:text-slate-950"
                   )}
                 >
                   Login
@@ -633,32 +646,13 @@ export function Navbar() {
                 </button>
                 <AnimatePresence>
                   {activeDropdown === "login" && (
-                    <LoginDropdown
-                      onClose={() => setActiveDropdown(null)}
-                    />
+                    <LoginDropdown onClose={() => setActiveDropdown(null)} />
                   )}
                 </AnimatePresence>
               </div>
-            </div>
-
-           {/* Desktop Actions */}
-           <div className="hidden lg:flex items-center gap-3">
-             <ThemeToggle />
-             <Button asChild size="sm" className="font-bold text-sm px-5 h-9">
-               <Link href="/book-trial" onClick={() => setActiveDropdown(null)}>
-                 Book Trial
-               </Link>
-             </Button>
-             <SignedOut>
-               <Button asChild size="sm" variant="outline" className="font-semibold text-sm px-5 h-9">
-                  <Link href="/sign-in" onClick={() => setActiveDropdown(null)}>
-                   Sign In
-                 </Link>
-               </Button>
-             </SignedOut>
-             <SignedIn>
-               <UserButton />
-             </SignedIn>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
            </div>
 
           {/* Mobile Menu Button */}
@@ -747,19 +741,12 @@ export function Navbar() {
               />
 
               <div className="rounded-2xl border border-border/70 bg-muted/40 p-3 shadow-sm">
-                <div className="grid gap-2 sm:grid-cols-2">
+                <div className="grid gap-2">
                   <Button asChild className="w-full font-bold" size="default">
                     <Link href="/book-trial" onClick={closeMobileMenu}>
                       Book Free Trial
                     </Link>
                   </Button>
-                  <SignedOut>
-                    <Button asChild className="w-full font-bold" size="default" variant="outline">
-                      <Link href="/sign-in" onClick={closeMobileMenu}>
-                        Sign In
-                      </Link>
-                    </Button>
-                  </SignedOut>
                 </div>
 
                 <div className="mt-4 flex flex-wrap items-center justify-center gap-4 border-t border-border/70 pt-4">

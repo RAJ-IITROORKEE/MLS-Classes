@@ -31,7 +31,7 @@ export function ThemeToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-36">
         <DropdownMenuLabel>Theme</DropdownMenuLabel>
-        <DropdownMenuRadioGroup value={theme ?? "dark"} onValueChange={setTheme}>
+        <DropdownMenuRadioGroup value={theme ?? "light"} onValueChange={setTheme}>
           {THEME_OPTIONS.map((option) => {
             const Icon = option.icon;
 
