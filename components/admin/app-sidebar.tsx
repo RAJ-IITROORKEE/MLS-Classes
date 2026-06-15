@@ -197,11 +197,26 @@ export function AdminAppSidebar({
               <SidebarMenu>
                 {group.items.map((item) => {
                   if ("subItems" in item && item.subItems) {
-                      const allowedSubItems = item.subItems.map((sub) => ({
-                        ...sub,
-                        allowed: canAccessAdminPath(userRole, sub.href, adminAccess),
-                      }));
+                    const allowedSubItems = item.subItems.map((sub) => ({
+                      ...sub,
+                      allowed: canAccessAdminPath(userRole, sub.href, adminAccess),
+                    }));
+                    const hasAllowedSubItem = allowedSubItems.some((sub) => sub.allowed);
                     const isActive = item.subItems.some((sub) => pathname.startsWith(sub.href));
+                    if (!hasAllowedSubItem) {
+                      return (
+                        <SidebarMenuItem key={item.label}>
+                          <SidebarMenuButton tooltip={lockedTooltip} className="cursor-not-allowed opacity-70">
+                            <div className="flex w-full items-center gap-2">
+                              <item.icon className="h-4 w-4" />
+                              <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                              <Lock className="h-3.5 w-3.5 text-red-400" />
+                            </div>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      );
+                    }
+
                     return (
                       <Collapsible
                         key={item.label}

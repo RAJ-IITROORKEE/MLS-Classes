@@ -20,6 +20,13 @@ assert.equal(canAccessAdminPath(USER_ROLES.ADMIN, "/admin/users"), true)
 assert.equal(canAccessAdminPath(USER_ROLES.CONTENT, "/admin/dashboard"), true)
 assert.equal(canAccessAdminPath(USER_ROLES.CONTENT, "/admin/blogs/create"), false)
 assert.equal(
+  canAccessAdminPath(USER_ROLES.CONTENT, "/admin/blogs", [
+    ADMIN_ACCESS_KEYS.MOCKS,
+    ADMIN_ACCESS_KEYS.TESTIMONIALS,
+  ]),
+  false
+)
+assert.equal(
   canAccessAdminPath(USER_ROLES.CONTENT, "/admin/blogs/create", [ADMIN_ACCESS_KEYS.BLOGS]),
   true
 )
@@ -55,6 +62,13 @@ assert.equal(canAccessAdminPath(USER_ROLES.STUDENT, "/admin/dashboard"), false)
 
 assert.equal(canAccessAdminApi(USER_ROLES.ADMIN, "/api/admin/users"), true)
 assert.equal(canAccessAdminApi(USER_ROLES.CONTENT, "/api/admin/blogs/abc123"), false)
+assert.equal(
+  canAccessAdminApi(USER_ROLES.CONTENT, "/api/admin/blogs", [
+    ADMIN_ACCESS_KEYS.MOCKS,
+    ADMIN_ACCESS_KEYS.TESTIMONIALS,
+  ]),
+  false
+)
 assert.equal(
   canAccessAdminApi(USER_ROLES.CONTENT, "/api/admin/blogs/abc123", [ADMIN_ACCESS_KEYS.BLOGS]),
   true
