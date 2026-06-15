@@ -249,10 +249,11 @@ export function UserManagementClient() {
   async function saveUser() {
     setSaving(true)
     try {
+      const payload = form.id ? { ...form, userId: form.id } : form
       const res = await fetch("/api/admin/user-management", {
         method: form.id ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? "Failed to save user")

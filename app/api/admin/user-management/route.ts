@@ -142,7 +142,7 @@ export async function PATCH(req: NextRequest) {
   try {
     const session = await assertAdminAccess()
     const body = await req.json()
-    const userId = z.string().min(1).safeParse(body.userId)
+    const userId = z.string().min(1).safeParse(body.userId ?? body.id)
     const parsed = userManagementSchema.safeParse(body)
 
     if (!userId.success) {
