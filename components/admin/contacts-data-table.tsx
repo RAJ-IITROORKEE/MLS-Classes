@@ -62,6 +62,7 @@ import {
   GraduationCap,
   Mail,
   MapPin,
+  MessageCircle,
   MessageSquare,
   Phone,
   UserRound,
@@ -94,6 +95,19 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const STATUS_OPTIONS = ["PENDING", "CONTACTED", "SCHEDULED", "COMPLETED", "CANCELLED"];
+
+function getWhatsAppHref(phone: string, name: string) {
+  const digits = phone.replace(/\D/g, "");
+  const normalizedPhone = digits.startsWith("00") ? digits.slice(2) : digits;
+
+  if (!normalizedPhone) return null;
+
+  const message = encodeURIComponent(
+    `Hi ${name}, this is MLS Classes regarding your trial request.`
+  );
+
+  return `https://wa.me/${normalizedPhone}?text=${message}`;
+}
 
 function SortableHeader({
   column,
@@ -129,6 +143,9 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
   const [detailRow, setDetailRow] = useState<ContactRow | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [tableData, setTableData] = useState<ContactRow[]>(data);
+  const detailWhatsAppHref = detailRow
+    ? getWhatsAppHref(detailRow.phone, `${detailRow.firstName} ${detailRow.lastName}`)
+    : null;
 
   async function handleStatusChange(id: string, newStatus: string) {
     const result = await updateContactStatus(id, newStatus);
@@ -465,13 +482,38 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
                              {detailRow.email}
                            </a>
                          </div>
-                         <div className="rounded-xl border bg-muted/20 p-3 sm:col-span-2">
-                           <p className="text-xs font-medium text-muted-foreground">Phone</p>
-                           <a href={`tel:${detailRow.phone}`} className="mt-1 inline-flex items-center gap-2 break-all text-sm font-semibold text-foreground hover:text-primary">
-                             <Phone className="h-3.5 w-3.5 text-muted-foreground" />
-                             {detailRow.phone}
-                           </a>
-                         </div>
+                          <div className="rounded-xl border bg-muted/20 p-3 sm:col-span-2">
+                            <p className="text-xs font-medium text-muted-foreground">Phone</p>
+                            <div className="mt-2 flex flex-wrap items-center gap-2">
+                              {detailWhatsAppHref ? (
+                                <a
+                                  href={detailWhatsAppHref}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-sm font-semibold text-emerald-700 transition hover:border-emerald-500/50 hover:bg-emerald-500/15 dark:text-emerald-300"
+                                  title="Open this number in WhatsApp"
+                                >
+                                  <MessageCircle className="h-3.5 w-3.5" />
+                                  <span className="break-all">{detailRow.phone}</span>
+                                </a>
+                              ) : (
+                                <span className="inline-flex items-center gap-2 break-all text-sm font-semibold text-foreground">
+                                  <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+                                  {detailRow.phone}
+                                </span>
+                              )}
+                              <a
+                                href={`tel:${detailRow.phone}`}
+                                className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold text-foreground transition hover:border-primary/40 hover:text-primary"
+                              >
+                                <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+                                Call
+                              </a>
+                            </div>
+                            <p className="mt-2 text-xs text-muted-foreground">
+                              Opens WhatsApp if this number is registered there.
+                            </p>
+                          </div>
                        </div>
                      </section>
 
