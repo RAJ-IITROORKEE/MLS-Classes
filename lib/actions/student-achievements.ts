@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/db";
+import { assertAdminApiAccess } from "@/lib/admin-auth";
 import { deleteFromCloudinary } from "@/lib/cloudinary";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
@@ -24,6 +25,7 @@ function revalidate() {
 
 export async function createAchievement(data: AchievementInput): Promise<ActionResult> {
   try {
+    await assertAdminApiAccess("/api/admin/student-corner");
     const validated = achievementSchema.parse(data);
     await prisma.studentAchievement.create({ data: validated });
     revalidate();
@@ -42,6 +44,7 @@ export async function updateAchievement(
   oldImagePublicId?: string | null
 ): Promise<ActionResult> {
   try {
+    await assertAdminApiAccess("/api/admin/student-corner");
     const validated = achievementSchema.parse(data);
 
     if (
@@ -71,6 +74,7 @@ export async function deleteAchievement(
   imagePublicId?: string | null
 ): Promise<ActionResult> {
   try {
+    await assertAdminApiAccess("/api/admin/student-corner");
     if (imagePublicId) {
       try {
         await deleteFromCloudinary(imagePublicId, "image");
@@ -91,6 +95,7 @@ export async function toggleAchievementStatus(
   isActive: boolean
 ): Promise<ActionResult> {
   try {
+    await assertAdminApiAccess("/api/admin/student-corner");
     await prisma.studentAchievement.update({ where: { id }, data: { isActive } });
     revalidate();
     return {

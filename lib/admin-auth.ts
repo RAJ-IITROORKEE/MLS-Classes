@@ -32,7 +32,7 @@ async function getSessionWithDbUser() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { id: true, name: true, email: true, image: true, role: true },
+    select: { id: true, name: true, email: true, image: true, role: true, adminAccess: true },
   })
 
   return { session, user }
@@ -63,7 +63,7 @@ export async function assertAdminApiAccess(path: string) {
     throw new AuthError("Unauthorized — please sign in", 401)
   }
 
-  if (!canAccessAdminApi(user.role, path)) {
+  if (!canAccessAdminApi(user.role, path, user.adminAccess)) {
     throw new AuthError("Forbidden — admin access required", 403)
   }
 
@@ -87,7 +87,7 @@ export async function requireAdminPanelAccess() {
 export async function requireAdminPathAccess(path: string) {
   const result = await requireAdminPanelAccess()
 
-  if (!canAccessAdminPath(result.user.role, path)) {
+  if (!canAccessAdminPath(result.user.role, path, result.user.adminAccess)) {
     redirect("/admin/dashboard?admin_error=forbidden")
   }
 

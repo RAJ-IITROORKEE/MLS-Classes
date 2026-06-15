@@ -37,6 +37,7 @@ import {
   Settings,
   ChevronRight,
   Users,
+  UserCog,
   LogOut,
   ExternalLink,
   MessageSquare,
@@ -123,6 +124,11 @@ const NAV_ITEMS = [
         href: "/admin/settings",
         icon: Settings,
       },
+      {
+        label: "User Management",
+        href: "/admin/user-management",
+        icon: UserCog,
+      },
     ],
   },
 ];
@@ -137,6 +143,7 @@ type AdminSidebarUser = {
   email: string;
   image: string | null;
   role: string;
+  adminAccess?: string[];
 };
 
 export function AdminAppSidebar({
@@ -148,6 +155,7 @@ export function AdminAppSidebar({
   const { data: session } = useSession();
   const user = currentUser ?? session?.user;
   const userRole = currentUser?.role ?? session?.user?.role ?? "STUDENT";
+  const adminAccess = currentUser?.adminAccess ?? [];
   const { trial } = useAdminNotifications();
 
   const getNotificationCount = (label: string) => {
@@ -189,10 +197,10 @@ export function AdminAppSidebar({
               <SidebarMenu>
                 {group.items.map((item) => {
                   if ("subItems" in item && item.subItems) {
-                    const allowedSubItems = item.subItems.map((sub) => ({
-                      ...sub,
-                      allowed: canAccessAdminPath(userRole, sub.href),
-                    }));
+                      const allowedSubItems = item.subItems.map((sub) => ({
+                        ...sub,
+                        allowed: canAccessAdminPath(userRole, sub.href, adminAccess),
+                      }));
                     const isActive = item.subItems.some((sub) => pathname.startsWith(sub.href));
                     return (
                       <Collapsible
@@ -243,7 +251,7 @@ export function AdminAppSidebar({
                   const isActive =
                     "href" in item && item.href ? pathname === item.href : false;
                   const href = "href" in item && item.href ? item.href : "#";
-                  const isAllowed = canAccessAdminPath(userRole, href);
+                  const isAllowed = canAccessAdminPath(userRole, href, adminAccess);
                   const notificationCount = getNotificationCount(item.label);
                   return (
                     <SidebarMenuItem key={item.label}>

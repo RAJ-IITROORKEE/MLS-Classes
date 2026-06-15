@@ -19,6 +19,7 @@ type AdminShellUser = {
   email: string;
   image: string | null;
   role: string;
+  adminAccess: string[];
 };
 
 function AdminShellToast() {
@@ -46,7 +47,7 @@ export function AdminShell({
   const pathname = usePathname();
   const router = useRouter();
 
-  const canAccessCurrentPath = canAccessAdminPath(user.role, pathname);
+  const canAccessCurrentPath = canAccessAdminPath(user.role, pathname, user.adminAccess);
 
   useEffect(() => {
     if (canAccessCurrentPath) return;

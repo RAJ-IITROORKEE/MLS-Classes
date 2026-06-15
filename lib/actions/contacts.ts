@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/db";
+import { assertAdminApiAccess } from "@/lib/admin-auth";
 import { revalidatePath } from "next/cache";
 
 const VALID_STATUSES = ["PENDING", "CONTACTED", "SCHEDULED", "COMPLETED", "CANCELLED"];
@@ -13,6 +14,7 @@ export async function updateContactStatus(
     return { success: false, message: "Invalid status value." };
   }
   try {
+    await assertAdminApiAccess("/api/admin/contacts");
     await prisma.bookTrialRequest.update({
       where: { id },
       data: { status: status as "PENDING" | "CONTACTED" | "SCHEDULED" | "COMPLETED" | "CANCELLED" },
@@ -29,6 +31,7 @@ export async function deleteContact(
   id: string
 ): Promise<{ success: boolean; message: string }> {
   try {
+    await assertAdminApiAccess("/api/admin/contacts");
     await prisma.bookTrialRequest.delete({
       where: { id },
     });

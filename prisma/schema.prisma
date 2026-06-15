@@ -258,6 +258,7 @@ model User {
   emailVerified Boolean   @default(false)
   image         String?
   role          UserRole  @default(STUDENT)
+  adminAccess   String[]  @default([])
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]

@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/db";
+import { assertAdminApiAccess } from "@/lib/admin-auth";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
@@ -15,6 +16,7 @@ type FAQResult = { success: boolean; message: string };
 
 export async function createFAQ(data: z.infer<typeof faqSchema>): Promise<FAQResult> {
   try {
+    await assertAdminApiAccess("/api/admin/faq");
     const validated = faqSchema.parse(data);
     await prisma.fAQ.create({ data: validated });
     revalidatePath("/admin/faq");
@@ -33,6 +35,7 @@ export async function updateFAQ(
   data: z.infer<typeof faqSchema>
 ): Promise<FAQResult> {
   try {
+    await assertAdminApiAccess("/api/admin/faq");
     const validated = faqSchema.parse(data);
     await prisma.fAQ.update({ where: { id }, data: validated });
     revalidatePath("/admin/faq");
@@ -48,6 +51,7 @@ export async function updateFAQ(
 
 export async function deleteFAQ(id: string): Promise<FAQResult> {
   try {
+    await assertAdminApiAccess("/api/admin/faq");
     await prisma.fAQ.delete({ where: { id } });
     revalidatePath("/admin/faq");
     revalidatePath("/");
@@ -62,6 +66,7 @@ export async function toggleFAQStatus(
   isActive: boolean
 ): Promise<FAQResult> {
   try {
+    await assertAdminApiAccess("/api/admin/faq");
     await prisma.fAQ.update({ where: { id }, data: { isActive } });
     revalidatePath("/admin/faq");
     revalidatePath("/");
