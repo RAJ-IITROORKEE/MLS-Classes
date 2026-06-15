@@ -638,7 +638,7 @@ export function Navbar() {
                     "group flex h-9 items-center gap-1.5 rounded-full border px-5 text-sm font-black shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35",
                     activeDropdown === "login"
                       ? "border-primary/40 bg-primary text-primary-foreground shadow-primary/20"
-                      : "border-brand-yellow/80 bg-brand-yellow/10 text-amber-600 hover:border-brand-yellow hover:bg-brand-yellow/15 dark:border-white/15 dark:bg-white/10 dark:text-brand-yellow dark:hover:bg-white/15"
+                      : "border-amber-400/70 bg-amber-50 text-amber-700 hover:border-amber-500/80 hover:bg-amber-100/70 dark:border-white/15 dark:bg-white/10 dark:text-brand-yellow dark:hover:bg-white/15"
                   )}
                 >
                   <span>Login</span>
