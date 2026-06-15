@@ -429,10 +429,10 @@ function LoginDropdown({ onClose }: { onClose: () => void }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -6 }}
       transition={{ duration: 0.15 }}
-      className="absolute right-0 top-full z-50 mt-2 min-w-64 overflow-hidden rounded-2xl border border-brand-yellow/50 bg-popover shadow-2xl shadow-amber-500/10"
+      className="absolute right-0 top-full z-50 mt-2 min-w-72 overflow-hidden rounded-2xl border border-border/80 bg-popover/95 shadow-2xl shadow-slate-950/10 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/95 dark:shadow-black/40"
     >
-      <div className="border-b border-brand-yellow/30 bg-gradient-to-r from-brand-yellow/35 via-brand-yellow/20 to-primary/10 px-4 py-3">
-        <p className="text-xs font-black uppercase tracking-[0.22em] text-primary">MLS Login</p>
+      <div className="border-b border-border/70 bg-gradient-to-br from-primary/10 via-brand-yellow/15 to-background px-4 py-3 dark:border-white/10 dark:from-primary/20 dark:via-brand-yellow/10 dark:to-slate-950">
+        <p className="text-xs font-black uppercase tracking-[0.22em] text-primary dark:text-brand-yellow">MLS Login</p>
         <p className="mt-1 text-sm font-semibold text-foreground">Choose your learning portal</p>
       </div>
       {LOGIN_MENU.map((item) => (
@@ -442,11 +442,16 @@ function LoginDropdown({ onClose }: { onClose: () => void }) {
           target="_blank"
           rel="noopener noreferrer"
           onClick={onClose}
-          className="flex flex-col gap-1 px-4 py-3 text-sm font-bold text-foreground transition-colors hover:bg-brand-yellow/20 hover:text-primary"
+          className="group flex gap-3 px-4 py-3.5 text-sm font-bold text-foreground transition-colors hover:bg-primary/5 dark:hover:bg-white/5"
         >
-          {item.label}
-          <span className="text-xs font-normal text-muted-foreground">
-            {item.description}
+          <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-brand-yellow shadow-[0_0_0_4px_rgb(255_224_6_/_0.16)] transition-transform group-hover:scale-110" />
+          <span className="flex flex-col gap-1">
+            <span className="transition-colors group-hover:text-primary dark:group-hover:text-brand-yellow">
+              {item.label}
+            </span>
+            <span className="text-xs font-normal text-muted-foreground">
+              {item.description}
+            </span>
           </span>
         </a>
       ))}
@@ -630,16 +635,16 @@ export function Navbar() {
                   type="button"
                   onClick={() => toggleDropdown("login")}
                   className={cn(
-                    "flex h-9 items-center gap-1.5 rounded-full border px-5 text-sm font-black shadow-sm transition-all",
+                    "group flex h-9 items-center gap-1.5 rounded-full border px-5 text-sm font-black shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35",
                     activeDropdown === "login"
-                      ? "border-brand-yellow bg-brand-yellow text-slate-950 shadow-amber-500/20"
-                      : "border-brand-yellow/70 bg-brand-yellow/20 text-slate-950 hover:border-brand-yellow hover:bg-brand-yellow dark:text-foreground dark:hover:text-slate-950"
+                      ? "border-primary/40 bg-primary text-primary-foreground shadow-primary/20"
+                      : "border-brand-yellow/80 bg-brand-yellow/10 text-amber-600 hover:border-brand-yellow hover:bg-brand-yellow/15 dark:border-white/15 dark:bg-white/10 dark:text-brand-yellow dark:hover:bg-white/15"
                   )}
                 >
-                  Login
+                  <span>Login</span>
                   <ChevronDown
                     className={cn(
-                      "h-3.5 w-3.5 transition-transform duration-200",
+                      "h-3.5 w-3.5 transition-transform duration-200 text-current/70",
                       activeDropdown === "login" && "rotate-180"
                     )}
                   />
