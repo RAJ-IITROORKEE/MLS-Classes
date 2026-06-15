@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { assertAdminAccess, AuthError } from "@/lib/admin-auth"
+import { assertAdminApiAccess, AuthError } from "@/lib/admin-auth"
 
 // GET /api/admin/mock-bundles — list all bundles
 export async function GET() {
   try {
-    await assertAdminAccess()
+    await assertAdminApiAccess("/api/admin/mock-bundles")
 
     const bundles = await prisma.mockBundle.findMany({
       orderBy: { order: "asc" },
@@ -34,7 +34,7 @@ export async function GET() {
 // POST /api/admin/mock-bundles — create a bundle
 export async function POST(req: NextRequest) {
   try {
-    await assertAdminAccess()
+    await assertAdminApiAccess("/api/admin/mock-bundles")
 
     const body = await req.json()
     const { title, description, mockIds, discountedPrice, status } = body
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
 // PUT /api/admin/mock-bundles — update a bundle
 export async function PUT(req: NextRequest) {
   try {
-    await assertAdminAccess()
+    await assertAdminApiAccess("/api/admin/mock-bundles")
 
     const body = await req.json()
     const { id, title, description, mockIds, discountedPrice, status } = body
@@ -132,7 +132,7 @@ export async function PUT(req: NextRequest) {
 // DELETE /api/admin/mock-bundles?id=... — delete a bundle
 export async function DELETE(req: NextRequest) {
   try {
-    await assertAdminAccess()
+    await assertAdminApiAccess("/api/admin/mock-bundles")
 
     const { searchParams } = new URL(req.url)
     const id = searchParams.get("id")

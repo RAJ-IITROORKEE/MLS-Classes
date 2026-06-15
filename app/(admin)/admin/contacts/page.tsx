@@ -1,17 +1,20 @@
 import { prisma } from "@/lib/db";
 import { ContactsDataTable } from "@/components/admin/contacts-data-table";
 import type { Metadata } from "next";
+import { requireAdminPathAccess } from "@/lib/admin-auth";
 
 export const metadata: Metadata = {
   title: "Contacts | MLS Classes Admin",
 };
 
 export default async function AdminContactsPage() {
+  await requireAdminPathAccess("/admin/contacts");
+
   const contacts = await prisma.bookTrialRequest.findMany({
     orderBy: { createdAt: "desc" },
   });
 
-  const serialized = contacts.map((c: any) => ({
+  const serialized = contacts.map((c) => ({
     id: c.id,
     firstName: c.firstName,
     lastName: c.lastName,
@@ -27,8 +30,8 @@ export default async function AdminContactsPage() {
     createdAt: c.createdAt,
   }));
 
-  const statusCounts = contacts.reduce(
-    (acc: Record<string, number>, c: any) => {
+  const statusCounts = contacts.reduce<Record<string, number>>(
+    (acc, c) => {
       acc[c.status] = (acc[c.status] ?? 0) + 1;
       return acc;
     },

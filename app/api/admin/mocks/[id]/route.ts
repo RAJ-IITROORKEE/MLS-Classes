@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { assertAdminAccess, AuthError } from "@/lib/admin-auth"
+import { assertAdminApiAccess, AuthError } from "@/lib/admin-auth"
 
 // GET /api/admin/mocks/[id] — get single mock with full questions
 export async function GET(
@@ -8,7 +8,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await assertAdminAccess()
+    await assertAdminApiAccess("/api/admin/mocks")
     const { id } = await params
 
     const mock = await prisma.mockTest.findUnique({
@@ -37,7 +37,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await assertAdminAccess()
+    await assertAdminApiAccess("/api/admin/mocks")
     const { id } = await params
 
     await prisma.mockTest.delete({ where: { id } })

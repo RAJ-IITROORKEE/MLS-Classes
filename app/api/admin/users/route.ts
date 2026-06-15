@@ -133,9 +133,9 @@ export async function PATCH(req: NextRequest) {
       )
     }
 
-    if (!["STUDENT", "ADMIN"].includes(role)) {
+    if (!["STUDENT", "CONTENT", "ADMIN"].includes(role)) {
       return NextResponse.json(
-        { error: "Invalid role. Must be STUDENT or ADMIN" },
+        { error: "Invalid role. Must be STUDENT, CONTENT, or ADMIN" },
         { status: 400 }
       )
     }

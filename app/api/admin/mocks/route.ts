@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { assertAdminAccess, AuthError } from "@/lib/admin-auth"
+import { assertAdminApiAccess, AuthError } from "@/lib/admin-auth"
 
 // GET /api/admin/mocks — list all mocks with stats
 export async function GET() {
   try {
-    await assertAdminAccess()
+    await assertAdminApiAccess("/api/admin/mocks")
 
     const mocks = await prisma.mockTest.findMany({
       orderBy: { createdAt: "desc" },
@@ -45,7 +45,7 @@ export async function GET() {
 // POST /api/admin/mocks — create a new mock
 export async function POST(req: NextRequest) {
   try {
-    await assertAdminAccess()
+    await assertAdminApiAccess("/api/admin/mocks")
 
     const body = await req.json()
     const { title, description, price, actualPrice, duration, tags, difficulty, status } = body
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
 // PUT /api/admin/mocks — update a mock
 export async function PUT(req: NextRequest) {
   try {
-    await assertAdminAccess()
+    await assertAdminApiAccess("/api/admin/mocks")
 
     const body = await req.json()
     const { id, title, description, price, actualPrice, duration, tags, difficulty, status, questions } = body

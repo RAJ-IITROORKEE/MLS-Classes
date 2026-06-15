@@ -58,7 +58,6 @@ import {
   Users,
 } from "lucide-react"
 import { toast } from "sonner"
-import { cn } from "@/lib/utils"
 
 interface UserRow {
   id: string
@@ -172,11 +171,6 @@ export default function AdminUsersClient() {
     (page - 1) * PAGE_SIZE,
     page * PAGE_SIZE
   )
-
-  // Reset page when search changes
-  useEffect(() => {
-    setPage(1)
-  }, [search])
 
   const chartData = useMemo(() => {
     return monthlyStats.map((s) => ({
@@ -340,7 +334,10 @@ export default function AdminUsersClient() {
             <Input
               placeholder="Search users..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value)
+                setPage(1)
+              }}
               className="pl-8 h-8 w-60 text-sm"
             />
           </div>
@@ -428,6 +425,7 @@ export default function AdminUsersClient() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="STUDENT">STUDENT</SelectItem>
+                              <SelectItem value="CONTENT">CONTENT</SelectItem>
                               <SelectItem value="ADMIN">ADMIN</SelectItem>
                             </SelectContent>
                           </Select>
@@ -520,6 +518,12 @@ export default function AdminUsersClient() {
                 <span className="block mt-2 text-destructive">
                   This will grant full admin access to the admin panel and all
                   management features.
+                </span>
+              )}
+              {pendingRoleChange?.newRole === "CONTENT" && (
+                <span className="block mt-2 text-muted-foreground">
+                  This will grant limited admin access to Dashboard, Blogs, Mocks,
+                  Mock Bundles, and Mock Stats only.
                 </span>
               )}
             </AlertDialogDescription>

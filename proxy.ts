@@ -23,12 +23,12 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL("/admin/login", req.url))
   }
 
-  if (isUserProtectedRoute && !session) {
-    return NextResponse.redirect(new URL("/sign-in", req.url))
+  if (isAdminAuthRoute && !session && pathname !== "/admin/login") {
+    return NextResponse.redirect(new URL("/admin/login", req.url))
   }
 
-  if (isAdminAuthRoute && session) {
-    return NextResponse.redirect(new URL("/admin/dashboard", req.url))
+  if (isUserProtectedRoute && !session) {
+    return NextResponse.redirect(new URL("/sign-in", req.url))
   }
 
   if (isUserAuthRoute && session) {

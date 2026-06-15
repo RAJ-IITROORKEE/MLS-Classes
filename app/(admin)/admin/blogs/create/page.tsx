@@ -1,22 +1,13 @@
 import { prisma } from '@/lib/prisma';
 import BlogEditor from '../../../../components/admin/blog-editor-form';
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { requireAdminPathAccess } from '@/lib/admin-auth';
 
 export const metadata = {
   title: 'Create Blog | Admin',
 };
 
 export default async function CreateBlogPage() {
-  // Auth check
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user || session.user.role !== "ADMIN") {
-    redirect("/admin/sign-in");
-  }
+  await requireAdminPathAccess('/admin/blogs/create');
 
   const categories = await prisma.blogCategory.findMany({
     orderBy: { name: 'asc' },

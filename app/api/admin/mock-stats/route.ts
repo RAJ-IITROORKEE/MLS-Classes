@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { assertAdminAccess, AuthError } from "@/lib/admin-auth"
+import { assertAdminApiAccess, AuthError } from "@/lib/admin-auth"
 
 // GET /api/admin/mock-stats — user stats for all mocks
 export async function GET() {
   try {
-    await assertAdminAccess()
+    await assertAdminApiAccess("/api/admin/mock-stats")
 
     const attempts = await prisma.mockAttempt.findMany({
       where: { submittedAt: { not: null } },

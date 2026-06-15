@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import StudentCornerClient from "./student-corner-client";
+import { requireAdminPathAccess } from "@/lib/admin-auth";
 
 async function getStats() {
   const now = new Date();
@@ -20,6 +21,8 @@ async function getAllAchievements() {
 }
 
 export default async function AdminStudentCornerPage() {
+  await requireAdminPathAccess("/admin/student-corner");
+
   const [stats, achievements] = await Promise.all([getStats(), getAllAchievements()]);
 
   return <StudentCornerClient stats={stats} achievements={achievements} />;

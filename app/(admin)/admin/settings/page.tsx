@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { requireAdminPathAccess } from "@/lib/admin-auth";
 
 export const metadata: Metadata = {
   title: "Settings | MLS Classes Admin",
@@ -29,7 +30,9 @@ const SETTINGS_SECTIONS = [
   },
 ];
 
-export default function AdminSettingsPage() {
+export default async function AdminSettingsPage() {
+  await requireAdminPathAccess("/admin/settings");
+
   return (
     <div className="space-y-6">
       <div>

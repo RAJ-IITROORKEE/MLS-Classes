@@ -24,6 +24,7 @@ enum TrialStatus {
 
 enum UserRole {
   STUDENT
+  CONTENT
   ADMIN
 }
 

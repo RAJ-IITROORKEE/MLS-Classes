@@ -1,9 +1,12 @@
 import type { Metadata } from "next"
 import AdminUsersClient from "@/components/admin/users-table"
+import { requireAdminPathAccess } from "@/lib/admin-auth"
 
 export const metadata: Metadata = { title: "Users | MLS Classes Admin" }
 
-export default function AdminUsersPage() {
+export default async function AdminUsersPage() {
+  await requireAdminPathAccess("/admin/users")
+
   return (
     <div className="space-y-6">
       <div>

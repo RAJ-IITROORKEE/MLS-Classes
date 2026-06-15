@@ -4,6 +4,7 @@ import { generateReadingTime } from '@/lib/reading-time';
 import { generateHtml } from '@/lib/tiptap-to-html';
 import { BlogStatus, Prisma } from '@prisma/client';
 import { z } from 'zod';
+import { assertAdminApiAccess, AuthError } from '@/lib/admin-auth';
 
 const updateBlogPayloadSchema = z.object({
   title: z.string().min(3),
@@ -22,6 +23,8 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    await assertAdminApiAccess('/api/admin/blogs');
+
     const { id } = await params;
     const raw = await request.json();
     const data = updateBlogPayloadSchema.parse(raw);
@@ -57,6 +60,10 @@ export async function PATCH(
 
     return NextResponse.json(blog);
   } catch (error) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+    }
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid blog payload', details: error.flatten() },
@@ -88,6 +95,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    await assertAdminApiAccess('/api/admin/blogs');
+
     const { id } = await params;
 
     await prisma.blog.delete({
@@ -96,6 +105,10 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Blog deleted successfully' });
   } catch (error) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+    }
+
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === 'P2025'

@@ -4,6 +4,7 @@ import { generateReadingTime } from '@/lib/reading-time';
 import { generateHtml } from '@/lib/tiptap-to-html';
 import { Prisma, BlogStatus } from '@prisma/client';
 import { z } from 'zod';
+import { assertAdminApiAccess, AuthError } from '@/lib/admin-auth';
 
 const blogPayloadSchema = z.object({
   title: z.string().min(3),
@@ -19,6 +20,8 @@ const blogPayloadSchema = z.object({
 // GET all blogs for admin
 export async function GET(request: NextRequest) {
   try {
+    await assertAdminApiAccess('/api/admin/blogs');
+
     const searchParams = request.nextUrl.searchParams;
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
@@ -61,6 +64,10 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+    }
+
     console.error('Error fetching admin blogs:', error);
     return NextResponse.json(
       { error: 'Failed to fetch blogs' },
@@ -72,6 +79,8 @@ export async function GET(request: NextRequest) {
 // POST create blog
 export async function POST(request: NextRequest) {
   try {
+    await assertAdminApiAccess('/api/admin/blogs');
+
     const raw = await request.json();
     const data = blogPayloadSchema.parse(raw);
 
@@ -94,6 +103,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(blog, { status: 201 });
   } catch (error) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+    }
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid blog payload', details: error.flatten() },

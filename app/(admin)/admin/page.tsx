@@ -1,11 +1,7 @@
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { requireAdminPanelAccess } from "@/lib/admin-auth";
 import { redirect } from "next/navigation";
 
 export default async function AdminIndexPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  redirect(session?.user ? "/admin/dashboard" : "/admin/login");
+  await requireAdminPanelAccess();
+  redirect("/admin/dashboard");
 }

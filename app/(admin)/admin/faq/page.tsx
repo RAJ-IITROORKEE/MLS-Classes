@@ -1,12 +1,15 @@
 import { prisma } from "@/lib/db";
 import { FAQTable } from "@/components/admin/faq-table";
 import type { Metadata } from "next";
+import { requireAdminPathAccess } from "@/lib/admin-auth";
 
 export const metadata: Metadata = {
   title: "FAQ Management | MLS Classes Admin",
 };
 
 export default async function AdminFAQPage() {
+  await requireAdminPathAccess("/admin/faq");
+
   const faqs = await prisma.fAQ.findMany({
     orderBy: { order: "asc" },
   });

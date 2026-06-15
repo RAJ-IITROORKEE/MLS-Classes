@@ -44,6 +44,7 @@ import {
   ClipboardList,
   Send,
   FileText,
+  Lock,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -51,6 +52,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useSession, signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { canAccessAdminPath, getRoleLabel } from "@/lib/admin-permissions";
 
 const NAV_ITEMS = [
   {
@@ -135,18 +137,33 @@ function formatBadgeCount(count: number) {
   return count > 99 ? "99+" : String(count);
 }
 
-export function AdminAppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type AdminSidebarUser = {
+  id: string;
+  name: string | null;
+  email: string;
+  image: string | null;
+  role: string;
+};
+
+export function AdminAppSidebar({
+  currentUser,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & { currentUser?: AdminSidebarUser }) {
   const pathname = usePathname();
   const router = useRouter();
   const { data: session } = useSession();
-  const user = session?.user;
+  const user = currentUser ?? session?.user;
+  const userRole = currentUser?.role ?? session?.user?.role ?? "STUDENT";
   const { trial, contact } = useAdminNotifications();
 
   const getNotificationCount = (label: string) => {
+    if (userRole !== "ADMIN") return 0;
     if (label === "Trial Requests") return trial;
     if (label === "Contacts") return contact;
     return 0;
   };
+
+  const lockedTooltip = "Locked for this role. Contact admin for access.";
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -179,9 +196,11 @@ export function AdminAppSidebar({ ...props }: React.ComponentProps<typeof Sideba
               <SidebarMenu>
                 {group.items.map((item) => {
                   if ("subItems" in item && item.subItems) {
-                    const isActive = item.subItems.some((sub) =>
-                      pathname.startsWith(sub.href)
-                    );
+                    const allowedSubItems = item.subItems.map((sub) => ({
+                      ...sub,
+                      allowed: canAccessAdminPath(userRole, sub.href),
+                    }));
+                    const isActive = item.subItems.some((sub) => pathname.startsWith(sub.href));
                     return (
                       <Collapsible
                         key={item.label}
@@ -199,14 +218,26 @@ export function AdminAppSidebar({ ...props }: React.ComponentProps<typeof Sideba
                           </CollapsibleTrigger>
                           <CollapsibleContent>
                             <SidebarMenuSub>
-                              {item.subItems.map((sub) => (
+                              {allowedSubItems.map((sub) => (
                                 <SidebarMenuSubItem key={sub.href}>
-                                  <SidebarMenuSubButton
-                                    asChild
-                                    isActive={pathname === sub.href}
-                                  >
-                                    <Link href={sub.href}>{sub.label}</Link>
-                                  </SidebarMenuSubButton>
+                                  {sub.allowed ? (
+                                    <SidebarMenuSubButton
+                                      asChild
+                                      isActive={pathname === sub.href}
+                                    >
+                                      <Link href={sub.href}>{sub.label}</Link>
+                                    </SidebarMenuSubButton>
+                                  ) : (
+                                    <SidebarMenuSubButton
+                                      title={lockedTooltip}
+                                      className="cursor-not-allowed opacity-70"
+                                    >
+                                      <span className="flex w-full items-center justify-between gap-2">
+                                        <span>{sub.label}</span>
+                                        <Lock className="h-3.5 w-3.5 text-red-400" />
+                                      </span>
+                                    </SidebarMenuSubButton>
+                                  )}
                                 </SidebarMenuSubItem>
                               ))}
                             </SidebarMenuSub>
@@ -218,25 +249,37 @@ export function AdminAppSidebar({ ...props }: React.ComponentProps<typeof Sideba
 
                   const isActive =
                     "href" in item && item.href ? pathname === item.href : false;
+                  const href = "href" in item && item.href ? item.href : "#";
+                  const isAllowed = canAccessAdminPath(userRole, href);
                   const notificationCount = getNotificationCount(item.label);
                   return (
                     <SidebarMenuItem key={item.label}>
-                      <SidebarMenuButton
-                        asChild
-                        tooltip={item.label}
-                        isActive={isActive}
-                        className={cn(isActive && "bg-sidebar-accent text-sidebar-accent-foreground")}
-                      >
-                        <Link href={"href" in item && item.href ? item.href : "#"} className="flex w-full items-center gap-2">
-                          <item.icon className="h-4 w-4" />
-                          <span className="min-w-0 flex-1 truncate">{item.label}</span>
-                          {notificationCount > 0 && (
-                            <Badge className="ml-auto h-5 min-w-5 rounded-full bg-red-500 px-1.5 text-[10px] font-semibold text-white hover:bg-red-500">
-                              {formatBadgeCount(notificationCount)}
-                            </Badge>
-                          )}
-                        </Link>
-                      </SidebarMenuButton>
+                      {isAllowed ? (
+                        <SidebarMenuButton
+                          asChild
+                          tooltip={item.label}
+                          isActive={isActive}
+                          className={cn(isActive && "bg-sidebar-accent text-sidebar-accent-foreground")}
+                        >
+                          <Link href={href} className="flex w-full items-center gap-2">
+                            <item.icon className="h-4 w-4" />
+                            <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                            {notificationCount > 0 && (
+                              <Badge className="ml-auto h-5 min-w-5 rounded-full bg-red-500 px-1.5 text-[10px] font-semibold text-white hover:bg-red-500">
+                                {formatBadgeCount(notificationCount)}
+                              </Badge>
+                            )}
+                          </Link>
+                        </SidebarMenuButton>
+                      ) : (
+                        <SidebarMenuButton tooltip={lockedTooltip} className="cursor-not-allowed opacity-70">
+                          <div className="flex w-full items-center gap-2">
+                            <item.icon className="h-4 w-4" />
+                            <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                            <Lock className="h-3.5 w-3.5 text-red-400" />
+                          </div>
+                        </SidebarMenuButton>
+                      )}
                     </SidebarMenuItem>
                   );
                 })}
@@ -268,6 +311,9 @@ export function AdminAppSidebar({ ...props }: React.ComponentProps<typeof Sideba
                     </span>
                     <span className="truncate text-xs text-muted-foreground">
                       {user?.email ?? "admin"}
+                    </span>
+                    <span className="truncate text-[10px] uppercase tracking-wide text-muted-foreground/80">
+                      {getRoleLabel(userRole)}
                     </span>
                   </div>
                   <ChevronRight className="ml-auto h-3.5 w-3.5" />

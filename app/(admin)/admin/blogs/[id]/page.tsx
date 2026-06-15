@@ -1,8 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import BlogEditor from '../../../../components/admin/blog-editor-form';
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { notFound, redirect } from "next/navigation";
+import { requireAdminPathAccess } from '@/lib/admin-auth';
+import { notFound } from "next/navigation";
 
 export const metadata = {
   title: 'Edit Blog | Admin',
@@ -13,14 +12,7 @@ export default async function EditBlogPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  // Auth check
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user || session.user.role !== "ADMIN") {
-    redirect("/admin/sign-in");
-  }
+  await requireAdminPathAccess('/admin/blogs');
 
   const { id } = await params;
 

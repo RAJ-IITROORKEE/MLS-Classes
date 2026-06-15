@@ -29,12 +29,25 @@ const EMPTY_COUNTS: AdminNotificationCounts = { trial: 0, contact: 0, total: 0 }
 
 const AdminNotificationsContext = React.createContext<AdminNotificationsContextValue | null>(null)
 
-export function AdminNotificationsProvider({ children }: { children: React.ReactNode }) {
+export function AdminNotificationsProvider({
+  children,
+  enabled = true,
+}: {
+  children: React.ReactNode
+  enabled?: boolean
+}) {
   const [notifications, setNotifications] = React.useState<AdminNotification[]>([])
   const [counts, setCounts] = React.useState<AdminNotificationCounts>(EMPTY_COUNTS)
-  const [isLoading, setIsLoading] = React.useState(true)
+  const [isLoading, setIsLoading] = React.useState(enabled)
 
   const refresh = React.useCallback(async () => {
+    if (!enabled) {
+      setNotifications([])
+      setCounts(EMPTY_COUNTS)
+      setIsLoading(false)
+      return
+    }
+
     try {
       const response = await fetch("/api/admin/notifications", { cache: "no-store" })
 
@@ -59,9 +72,11 @@ export function AdminNotificationsProvider({ children }: { children: React.React
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [enabled])
 
   React.useEffect(() => {
+    if (!enabled) return
+
     queueMicrotask(() => {
       void refresh()
     })
@@ -80,7 +95,7 @@ export function AdminNotificationsProvider({ children }: { children: React.React
       window.clearInterval(intervalId)
       window.removeEventListener("focus", handleFocus)
     }
-  }, [refresh])
+  }, [enabled, refresh])
 
   const value = React.useMemo<AdminNotificationsContextValue>(
     () => ({
