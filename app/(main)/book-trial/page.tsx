@@ -73,11 +73,12 @@ export default function BookTrialPage() {
 
       {/* ── Form section ── */}
       <section className="py-16 px-4 bg-muted/20">
-        <div className="mx-auto max-w-2xl">
+        <div className="mx-auto max-w-5xl">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold">Tell Us About Your Student</h2>
-            <p className="mt-2 text-muted-foreground">
-              All fields marked with <span className="text-destructive font-semibold">*</span> are required.
+            <h2 className="text-3xl font-bold">Share the essentials</h2>
+            <p className="mx-auto mt-2 max-w-2xl text-muted-foreground">
+              A shorter request form for contact details, student level, subject, and timezone.
+              Fields marked with <span className="text-destructive font-semibold">*</span> are required.
             </p>
           </div>
           <BookTrialForm />

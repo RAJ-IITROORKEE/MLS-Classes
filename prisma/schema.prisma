@@ -70,15 +70,12 @@ enum BlogStatus {
 // ─────────────────────────────────────────────
 model BookTrialRequest {
   id             String      @id @default(auto()) @map("_id") @db.ObjectId
-  firstName      String
-  lastName       String
   email          String
   phone          String
   studentName    String
   program        String
   grade          String
   timezone       String
-  availability   String
   message        String?
   status         TrialStatus @default(PENDING)
   createdAt      DateTime    @default(now())

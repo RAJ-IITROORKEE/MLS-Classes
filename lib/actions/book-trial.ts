@@ -3,21 +3,7 @@
 import { prisma } from "@/lib/db";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-
-const bookTrialSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().min(7, "WhatsApp number is required"),
-  studentName: z.string().min(1, "Student name is required"),
-  program: z.string().min(1, "Please select a program"),
-  grade: z.string().min(1, "Please select a grade"),
-  timezone: z.string().min(1, "Please select a timezone"),
-  availability: z.string().min(1, "Please indicate your availability"),
-  message: z.string().optional(),
-});
-
-export type BookTrialFormData = z.infer<typeof bookTrialSchema>;
+import { bookTrialSchema, type BookTrialFormData } from "@/lib/book-trial-validation";
 
 export async function submitBookTrial(
   data: BookTrialFormData
@@ -27,15 +13,12 @@ export async function submitBookTrial(
 
     await prisma.bookTrialRequest.create({
       data: {
-        firstName: validated.firstName,
-        lastName: validated.lastName,
         email: validated.email,
         phone: validated.phone,
         studentName: validated.studentName,
         program: validated.program,
         grade: validated.grade,
         timezone: validated.timezone,
-        availability: validated.availability,
         message: validated.message ?? null,
         status: "PENDING",
       },

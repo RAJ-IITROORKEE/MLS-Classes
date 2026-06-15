@@ -20,8 +20,6 @@ export async function GET() {
         where: { status: "PENDING" },
         select: {
           id: true,
-          firstName: true,
-          lastName: true,
           email: true,
           studentName: true,
           program: true,
@@ -53,8 +51,8 @@ export async function GET() {
       ...trialRequests.map((request) => ({
         id: `trial-${request.id}`,
         type: "trial" as const,
-        title: `Trial request from ${request.firstName} ${request.lastName}`,
-        message: `${request.studentName} • ${request.program} • ${request.grade}`,
+        title: `Trial request for ${request.studentName}`,
+        message: `${request.email} • ${request.program} • ${request.grade}`,
         email: request.email,
         createdAt: request.createdAt,
         link: "/admin/contacts",

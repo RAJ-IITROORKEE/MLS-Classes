@@ -14,9 +14,8 @@ async function getDashboardStats() {
         orderBy: { createdAt: "desc" },
         select: {
           id: true,
-          firstName: true,
-          lastName: true,
           email: true,
+          studentName: true,
           program: true,
           status: true,
           createdAt: true,

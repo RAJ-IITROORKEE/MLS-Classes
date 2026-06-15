@@ -16,15 +16,12 @@ export default async function AdminContactsPage() {
 
   const serialized = contacts.map((c) => ({
     id: c.id,
-    firstName: c.firstName,
-    lastName: c.lastName,
     email: c.email,
     phone: c.phone,
     studentName: c.studentName,
     program: c.program,
     grade: c.grade,
     timezone: c.timezone,
-    availability: c.availability,
     message: c.message,
     status: c.status,
     createdAt: c.createdAt,

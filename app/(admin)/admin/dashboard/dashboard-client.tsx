@@ -35,9 +35,8 @@ interface DashboardClientProps {
   totalAchievements: number;
   recentContacts: Array<{
     id: string;
-    firstName: string;
-    lastName: string;
     email: string;
+    studentName: string;
     program: string;
     status: string;
     createdAt: string;
@@ -146,7 +145,7 @@ export default function DashboardClient({
                 >
                   <div className="min-w-0">
                     <p className="text-sm font-medium truncate">
-                      {contact.firstName} {contact.lastName}
+                      {contact.studentName}
                     </p>
                     <p className="text-xs text-muted-foreground truncate">
                       {contact.email} · {contact.program}

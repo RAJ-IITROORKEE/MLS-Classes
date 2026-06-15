@@ -70,15 +70,12 @@ import { updateContactStatus, deleteContact } from "@/lib/actions/contacts";
 
 export type ContactRow = {
   id: string;
-  firstName: string;
-  lastName: string;
   email: string;
   phone: string;
   studentName: string;
   program: string;
   grade: string;
   timezone: string;
-  availability: string;
   message: string | null;
   status: string;
   createdAt: Date;
@@ -156,7 +153,7 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [tableData, setTableData] = useState<ContactRow[]>(data);
   const detailWhatsAppHref = detailRow
-    ? getWhatsAppHref(detailRow.phone, `${detailRow.firstName} ${detailRow.lastName}`)
+    ? getWhatsAppHref(detailRow.phone, detailRow.studentName || "there")
     : null;
 
   async function handleStatusChange(id: string, newStatus: string) {
@@ -188,15 +185,13 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
 
   const columns: ColumnDef<ContactRow>[] = [
     {
-      id: "name",
-      header: ({ column }) => <SortableHeader column={column} label="Name" />,
-      accessorFn: (row) => `${row.firstName} ${row.lastName}`,
+      id: "contact",
+      header: ({ column }) => <SortableHeader column={column} label="Contact" />,
+      accessorFn: (row) => `${row.email} ${row.phone}`,
       cell: ({ row }) => (
         <div>
-          <p className="font-medium">
-            {row.original.firstName} {row.original.lastName}
-          </p>
-          <p className="text-xs text-muted-foreground">{row.original.email}</p>
+          <p className="font-medium">{row.original.email}</p>
+          <p className="text-xs text-muted-foreground">{row.original.phone}</p>
         </div>
       ),
     },
@@ -460,9 +455,9 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
                        </span>
                        <span className="min-w-0 truncate">Trial Request Details</span>
                      </DialogTitle>
-                     <DialogDescription>
-                       Submitted by {detailRow.firstName} {detailRow.lastName} for {detailRow.studentName}
-                     </DialogDescription>
+                      <DialogDescription>
+                        Trial request for {detailRow.studentName} from {detailRow.email}
+                      </DialogDescription>
                    </div>
                    <Badge className={`w-fit rounded-full px-3 py-1 text-xs font-semibold ${STATUS_COLORS[detailRow.status] ?? ""}`}>
                      {detailRow.status}
@@ -474,27 +469,23 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
                  <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
                    <div className="space-y-5">
                      <section className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
-                       <div className="mb-4 flex items-center gap-3">
-                         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                           <UserRound className="h-4 w-4" />
-                         </span>
-                         <div>
-                           <h3 className="text-sm font-semibold">Parent / Guardian</h3>
-                           <p className="text-xs text-muted-foreground">Primary contact for this enquiry</p>
-                         </div>
-                       </div>
-                       <div className="grid gap-3 sm:grid-cols-2">
-                         <div className="rounded-xl border bg-muted/20 p-3">
-                           <p className="text-xs font-medium text-muted-foreground">Full Name</p>
-                           <p className="mt-1 break-words text-sm font-semibold">{detailRow.firstName} {detailRow.lastName}</p>
-                         </div>
-                         <div className="rounded-xl border bg-muted/20 p-3">
-                           <p className="text-xs font-medium text-muted-foreground">Email</p>
-                           <a href={`mailto:${detailRow.email}`} className="mt-1 block break-all text-sm font-semibold text-primary hover:underline">
-                             {detailRow.email}
-                           </a>
-                         </div>
-                          <div className="rounded-xl border bg-muted/20 p-3 sm:col-span-2">
+                        <div className="mb-4 flex items-center gap-3">
+                          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                            <UserRound className="h-4 w-4" />
+                          </span>
+                          <div>
+                            <h3 className="text-sm font-semibold">Contact Information</h3>
+                            <p className="text-xs text-muted-foreground">Primary contact for this enquiry</p>
+                          </div>
+                        </div>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div className="rounded-xl border bg-muted/20 p-3">
+                            <p className="text-xs font-medium text-muted-foreground">Email</p>
+                            <a href={`mailto:${detailRow.email}`} className="mt-1 block break-all text-sm font-semibold text-primary hover:underline">
+                              {detailRow.email}
+                            </a>
+                          </div>
+                          <div className="rounded-xl border bg-muted/20 p-3">
                             <p className="text-xs font-medium text-muted-foreground">WhatsApp Number</p>
                             <div className="mt-2 flex flex-wrap items-center gap-2">
                               {detailWhatsAppHref ? (
@@ -519,7 +510,7 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
                               Opens WhatsApp if this number is registered there.
                             </p>
                           </div>
-                       </div>
+                        </div>
                      </section>
 
                      <section className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
@@ -570,22 +561,18 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
 
                    <aside className="space-y-5 lg:sticky lg:top-0 lg:self-start">
                      <section className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
-                       <div className="mb-4 flex items-center gap-3">
-                         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-green-500/10 text-green-600 dark:text-green-400">
-                           <Clock className="h-4 w-4" />
-                         </span>
-                         <div>
-                           <h3 className="text-sm font-semibold">Schedule</h3>
-                           <p className="text-xs text-muted-foreground">Preferred timing</p>
-                         </div>
-                       </div>
-                       <div className="space-y-3">
-                         <div className="rounded-xl border bg-muted/20 p-3">
-                           <p className="text-xs font-medium text-muted-foreground">Availability</p>
-                           <p className="mt-1 break-words text-sm font-semibold">{detailRow.availability}</p>
-                         </div>
-                         <div className="rounded-xl border bg-muted/20 p-3">
-                           <p className="text-xs font-medium text-muted-foreground">Timezone</p>
+                        <div className="mb-4 flex items-center gap-3">
+                          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-green-500/10 text-green-600 dark:text-green-400">
+                            <Clock className="h-4 w-4" />
+                          </span>
+                          <div>
+                            <h3 className="text-sm font-semibold">Schedule</h3>
+                            <p className="text-xs text-muted-foreground">Preferred timing</p>
+                          </div>
+                        </div>
+                        <div className="space-y-3">
+                          <div className="rounded-xl border bg-muted/20 p-3">
+                            <p className="text-xs font-medium text-muted-foreground">Timezone</p>
                            <p className="mt-1 inline-flex items-center gap-2 break-words text-sm font-semibold">
                              <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
                              {detailRow.timezone}
@@ -623,7 +610,7 @@ export function ContactsDataTable({ data }: { data: ContactRow[] }) {
                  <Button asChild>
                    <a href={`mailto:${detailRow.email}`}>
                      <Mail className="h-4 w-4" />
-                     Email Parent
+                      Email Contact
                    </a>
                  </Button>
                </DialogFooter>
