@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "prisma generate && next dev",
+    "dev": "next dev --webpack",
+    "db:generate": "prisma generate",
     "build": "prisma generate && next build",
     "postinstall": "prisma generate",
     "start": "next start",
