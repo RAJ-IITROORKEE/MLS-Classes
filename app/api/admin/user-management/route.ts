@@ -9,6 +9,7 @@ import {
   normalizeAdminAccess,
   USER_ROLES,
 } from "@/lib/admin-permissions"
+import { getManagedUserAuthFields } from "@/lib/admin-user-management"
 
 const userManagementSchema = z.object({
   name: z.string().trim().min(2, "Full name is required"),
@@ -40,10 +41,6 @@ function toUserRow(user: {
   }
 }
 
-function getRoleAccess(role: string, adminAccess: string[]) {
-  return role === USER_ROLES.CONTENT ? normalizeAdminAccess(adminAccess) : []
-}
-
 async function assertAdminCanLoseAdminRole(userId: string) {
   const user = await prisma.user.findUnique({ where: { id: userId }, select: { role: true } })
   if (user?.role !== USER_ROLES.ADMIN) return
@@ -63,6 +60,14 @@ function authErrorResponse(error: AuthError) {
 export async function GET() {
   try {
     await assertAdminAccess()
+
+    await prisma.user.updateMany({
+      where: {
+        role: { in: [USER_ROLES.ADMIN, USER_ROLES.CONTENT] },
+        emailVerified: false,
+      },
+      data: { emailVerified: true },
+    })
 
     const users = await prisma.user.findMany({
       select: {
@@ -105,6 +110,7 @@ export async function POST(req: NextRequest) {
 
     const data = parsed.data
     const email = data.email.toLowerCase()
+    const authFields = getManagedUserAuthFields(data.role, data.adminAccess)
     const existingUser = await prisma.user.findUnique({ where: { email }, select: { id: true } })
     if (existingUser) {
       return NextResponse.json({ error: "A user with this email already exists" }, { status: 409 })
@@ -115,9 +121,9 @@ export async function POST(req: NextRequest) {
         id: randomUUID(),
         name: data.name,
         email,
-        emailVerified: false,
+        emailVerified: authFields.emailVerified,
         role: data.role,
-        adminAccess: getRoleAccess(data.role, data.adminAccess),
+        adminAccess: authFields.adminAccess,
       },
       select: {
         id: true,
@@ -164,6 +170,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     const email = parsed.data.email.toLowerCase()
+    const authFields = getManagedUserAuthFields(parsed.data.role, parsed.data.adminAccess)
     const existingUser = await prisma.user.findUnique({ where: { email }, select: { id: true } })
     if (existingUser && existingUser.id !== userId.data) {
       return NextResponse.json({ error: "A user with this email already exists" }, { status: 409 })
@@ -174,8 +181,9 @@ export async function PATCH(req: NextRequest) {
       data: {
         name: parsed.data.name,
         email,
+        emailVerified: authFields.emailVerified,
         role: parsed.data.role,
-        adminAccess: getRoleAccess(parsed.data.role, parsed.data.adminAccess),
+        adminAccess: authFields.adminAccess,
       },
       select: {
         id: true,

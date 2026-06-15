@@ -56,11 +56,22 @@ export const auth = betterAuth({
     requireEmailVerification: false,
   },
 
+  account: {
+    updateAccountOnSignIn: true,
+    accountLinking: {
+      enabled: true,
+      allowDifferentEmails: false,
+      requireLocalEmailVerified: true,
+      updateUserInfoOnLink: true,
+    },
+  },
+
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID?.trim() || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET?.trim() || "",
       enabled: true,
+      overrideUserInfoOnSignIn: true,
     },
   },
 
